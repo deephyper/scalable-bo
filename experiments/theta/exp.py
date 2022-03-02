@@ -10,6 +10,11 @@ PROBLEMS = {
     "ackley": scalbo.benchmark.ackley
 }
 
+SEARCHES = {
+    "DMBS": scalbo.search.dmbs, # Fully Distributed Model-Based Search
+    "AMBS": scalbo.search.ambs, # Centralized Model-Based Search (Master-Worker)
+}
+
 
 def create_parser():
     parser = argparse.ArgumentParser(description="Command line to run experiments.")

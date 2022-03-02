@@ -1,2 +1,7 @@
-# scalable-bo
-Scaling Bayesian Optimization
+# Scaling Bayesian Optimization
+
+## Installations
+
+```console
+pip install -e src/scalbo
+```

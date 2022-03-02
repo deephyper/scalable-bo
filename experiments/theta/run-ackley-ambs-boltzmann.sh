@@ -7,8 +7,8 @@ export PROBLEMS=("ackley")
 # AMBS + Liar Strategy
 for random_state in ${RANDOM_STATES[@]}; do
     for problem in ${PROBLEMS[@]}; do
-        echo "Running: python exp.py --problem $problem --search AMBS --timeout 5 --verbose 1 --random-state $random_state --strategy liar";
-        python exp.py --problem $problem --search AMBS --timeout 5 --verbose 1 --random-state $random_state --strategy liar
+        echo "Running: python exp.py --problem $problem --search AMBS --sync 0 --timeout 5 --verbose 1 --random-state $random_state --strategy boltzmann";
+        python exp.py --problem $problem --search AMBS --sync 0 --timeout 5 --verbose 1 --random-state $random_state --strategy boltzmann
         done
     done
 done

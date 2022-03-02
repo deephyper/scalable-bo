@@ -11,29 +11,14 @@ PROBLEMS = {
 }
 
 SEARCHES = {
-    "DMBS": scalbo.search.dmbs, # Fully Distributed Model-Based Search
     "AMBS": scalbo.search.ambs, # Centralized Model-Based Search (Master-Worker)
+    "DMBS": scalbo.search.dmbs, # Fully Distributed Model-Based Search
 }
 
 
 def create_parser():
     parser = argparse.ArgumentParser(description="Command line to run experiments.")
 
-    parser.add_argument(
-        "--log-dir",
-        type=str,
-        default="output",
-        help="Logging directory to store produced outputs.",
-    )
-    parser.add_argument(
-        "--timeout"
-    )
-    parser.add_argument(
-        "--max-evals",
-        type=int,
-        default=-1,
-        help="Number of iterations to run for each optimization.",
-    )
     parser.add_argument(
         "--problem",
         type=str,
@@ -42,11 +27,35 @@ def create_parser():
         help="Problem on which to experiment.",
     )
     parser.add_argument(
-        "-v",
-        "--verbose",
+        "--search",
+        type=str,
+        choices=list(SEARCHES.keys()),
+        required=True,
+        help="Search the experiment must be done with.",
+    )
+    parser.add_argument(
+        "--sync",
         type=bool,
         default=False,
-        help="Wether to activate or not the verbose mode.",
+        help="If the search workers must be syncronized or not.",
+    )
+    parser.add_argument(
+        "--liar-strategy",
+        type=bool,
+        default="boltzmann",
+        help="The liar strategy the optimizer must use.",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=10,
+        help="Search maximum duration (in min.) for each optimization.",
+    )
+    parser.add_argument(
+        "--max-evals",
+        type=int,
+        default=-1,
+        help="Number of iterations to run for each optimization.",
     )
     parser.add_argument(
         "--random-state",
@@ -54,13 +63,29 @@ def create_parser():
         default=42,
         help="Control the random-state of the algorithm."
     )
+    parser.add_argument(
+        "--log-dir",
+        type=str,
+        default="/dev/shm",
+        help="Logging directory to store produced outputs.",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        type=bool,
+        default=False,
+        help="Wether to activate or not the verbose mode.",
+    )
 
     return parser
 
 
 def main(args):
 
-    ...
+    problem = PROBLEMS.get(args.problem)
+    search = SEARCHES.get(args.search)
+
+    search.execute(problem, args.sync, args.liar_strategy, args.timeout, args.max_evals, args.random_state, args.log_dir)
 
 
 if __name__ == "__main__":

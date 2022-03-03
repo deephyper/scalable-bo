@@ -4,8 +4,6 @@ import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
-import time
-
 import mpi4py
 
 mpi4py.rc.initialize = False
@@ -26,32 +24,32 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 
-def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_dir_spec):
-    problem_name = problem.name
+def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_dir, cache_dir):
+    """Execute the AMBS algorithm.
+
+    Args:
+        problem (HpProblem): problem (search space) definition.
+        sync (bool): Boolean to execute the search in "synchronous" (``True``) or "asynchronous" (``False``) communication.
+        liar_strategy (str): strategy to use to generate batches of samples.
+        timeout (int): duration in seconds of the search.
+        max_evals (int): maximum number of evaluations for the search.
+        random_state (int): random state/seed of the search.
+        log_dir_spec (str): path of the logging directory (i.e., where to store results).
+    """
     hp_problem = problem.hp_problem
     run = problem.run
-    config = [
-        problem_name,
-        str(size),
-        "ambs",
-        "sync" if sync else "async",
-        liar_strategy,
-        str(timeout),
-        "0" if max_evals == -1 else str(max_evals),
-        str(random_state)
-    ]
-    
+
+    # define where the outputs are saved live (in cache-dir if possible)
+    if cache_dir is not None and os.path.exists(cache_dir):
+        search_log_dir = cache_dir
+    else:
+        search_log_dir = log_dir
+
     if rank == 0:
-        exp_name = (
-            "-".join(config)
-        )
-
-        log_dir = os.path.join(log_dir_spec, exp_name)
-        pathlib.Path(log_dir).mkdir(parents=False, exist_ok=True)
-
-        log_file = os.path.join(log_dir, "deephyper.log")
+        
+        path_log_file = os.path.join(search_log_dir, "deephyper.log")
         logging.basicConfig(
-            filename=log_file,
+            filename=path_log_file,
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
         )
@@ -78,17 +76,17 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
             search = AMBS(
                 hp_problem,
                 evaluator,
-                log_dir=log_dir,
-                liar_strategy=liar_strategy
+                log_dir=search_log_dir,
+                liar_strategy=liar_strategy,
+                random_state=random_state
             )
             logging.info("Creation of the search done")
 
             logging.info("Starting the search...")
-            results = search.search(timeout=60 * timeout, max_evals=max_evals)
+            results = search.search(timeout=timeout, max_evals=max_evals)
             logging.info("Search is done")
 
-            results.to_csv(os.path.join(log_dir, "results.csv"))# f"{exp_name}.csv"))
+            results.to_csv(os.path.join(search_log_dir, f"results.csv"))
 
-            pathlib.Path("results").mkdir(parents=False, exist_ok=True)
-            os.system(f"mv {log_dir} {os.path.join('results', exp_name)}")
-            # os.system(f"rm results/{exp_name}/results.csv")
+            if log_dir != search_log_dir: # means the cache was used
+                os.system(f"mv {search_log_dir} {log_dir}")

@@ -12,8 +12,6 @@ mpi4py.rc.initialize = False
 mpi4py.rc.threads = True
 mpi4py.rc.thread_level = "multiple"
 
-import numpy as np
-import scipy.stats
 from deephyper.search.hps import DMBSMPI
 
 from mpi4py import MPI
@@ -45,7 +43,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
     )
 
     log_dir = os.path.join(log_dir_spec, exp_name)
-    pathlib.Path(log_dir).mkdir(parents=False, exist_ok=False)
+    pathlib.Path(log_dir).mkdir(parents=False, exist_ok=True)
 
     log_file = os.path.join(log_dir, f"deephyper.{rank}.log")
     logging.basicConfig(
@@ -76,16 +74,17 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
 
     
     if "/dev/shm" in log_dir:
-        results_path = os.path.join("results", exp_name)
-        logs_path = os.path.join(results_path, "deephyper-logs")
+        results_exp = os.path.join("results", exp_name)
+        results_exp_logs = os.path.join(results_exp, "deephyper-logs")
         if rank == 0:
             pathlib.Path("results").mkdir(parents=False, exist_ok=True)
-            pathlib.Path(results_path).mkdir(parents=False, exist_ok=True)
-            os.system(f"mv {"log_dir/*"} {results_path}")
-            pathlib.Path(logs_path).mkdir(parents=False, exist_ok=True)
-            os.system(f"mv {results_path}/deephyper.*.log {logs_path}")
+            pathlib.Path(results_exp).mkdir(parents=False, exist_ok=True)
+            os.system(f"mv {log_dir}/* {results_exp}")
+            pathlib.Path(results_exp_logs).mkdir(parents=False, exist_ok=True)
+            os.system(f"mv {results_exp}/deephyper.*.log {results_exp_logs}")
 
         comm.Barrier()
 
-        if rank > 0 and rank % args.num_ranks_per_node == 0:
-            os.system(f"mv {log_dir}/* {logs_path}")
+        if rank > 0:
+            if os.path.isfile(f"{log_dir}/deephyper.{rank}.log"):
+                os.system(f"mv {log_dir}/deephyper.{rank}.log {results_exp_logs}")

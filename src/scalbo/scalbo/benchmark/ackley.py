@@ -2,6 +2,8 @@ import numpy as np
 from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
+name = "ackley"
+
 nb_dim = 10
 domain = (-32.768, 32.768)
 hp_problem = HpProblem()
@@ -17,7 +19,6 @@ def ackley(x, a=20, b=0.2, c=2*np.pi):
     y = term1 + term2 + a + np.exp(1)
     return y
 
-@profile
 def run(config):
     x = np.array([config[k] for k in config if "x" in k])
     x = np.asarray_chkfinite(x)  # ValueError if any NaN or Inf

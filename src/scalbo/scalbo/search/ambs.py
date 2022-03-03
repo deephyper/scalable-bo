@@ -12,10 +12,9 @@ mpi4py.rc.initialize = False
 mpi4py.rc.threads = True
 mpi4py.rc.thread_level = "multiple"
 
-import numpy as np
-import scipy.stats
 from deephyper.evaluator import Evaluator
 from deephyper.search.hps import AMBS
+from deephyper.evaluator.callback import ProfilingCallback
 
 from mpi4py import MPI
 
@@ -41,13 +40,14 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         "0" if max_evals == -1 else str(max_evals),
         str(random_state)
     ]
+    
     if rank == 0:
         exp_name = (
             "-".join(config)
         )
 
         log_dir = os.path.join(log_dir_spec, exp_name)
-        pathlib.Path(log_dir).mkdir(parents=False, exist_ok=False)
+        pathlib.Path(log_dir).mkdir(parents=False, exist_ok=True)
 
         log_file = os.path.join(log_dir, "deephyper.log")
         logging.basicConfig(
@@ -59,9 +59,14 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         # Evaluator creation
         logging.info("Creation of the Evaluator...")
 
+    profiler = ProfilingCallback()
+
     with Evaluator.create(
         run,
         method="mpicomm",
+        method_kwargs={
+            "callbacks": [profiler],
+        },
     ) as evaluator:
         if evaluator is not None:
             logging.info(
@@ -82,7 +87,8 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
             results = search.search(timeout=60 * timeout, max_evals=max_evals)
             logging.info("Search is done")
 
-            results.to_csv(os.path.join(log_dir, f"{exp_name}.csv"))
+            results.to_csv(os.path.join(log_dir, "results.csv"))# f"{exp_name}.csv"))
 
-            pathlib.Path("results").mkdir(parents=False, exist_ok=False)
-            os.system(f"mv {log_dir} {os.path.join("results", exp_name)")
+            pathlib.Path("results").mkdir(parents=False, exist_ok=True)
+            os.system(f"mv {log_dir} {os.path.join('results', exp_name)}")
+            # os.system(f"rm results/{exp_name}/results.csv")

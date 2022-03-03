@@ -5,6 +5,9 @@ warnings.simplefilter("ignore")
 import argparse
 
 import scalbo.benchmark.ackley
+import scalbo.search.ambs
+import scalbo.search.dmbs
+
 
 PROBLEMS = {
     "ackley": scalbo.benchmark.ackley
@@ -40,8 +43,8 @@ def create_parser():
         help="If the search workers must be syncronized or not.",
     )
     parser.add_argument(
-        "--liar-strategy",
-        type=bool,
+        "--strategy",
+        type=str,
         default="boltzmann",
         help="The liar strategy the optimizer must use.",
     )
@@ -85,7 +88,7 @@ def main(args):
     problem = PROBLEMS.get(args.problem)
     search = SEARCHES.get(args.search)
 
-    search.execute(problem, args.sync, args.liar_strategy, args.timeout, args.max_evals, args.random_state, args.log_dir)
+    search.execute(problem, args.sync, args.strategy, args.timeout, args.max_evals, args.random_state, args.log_dir)
 
 
 if __name__ == "__main__":

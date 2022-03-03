@@ -133,3 +133,4 @@ dmypy.json
 *.csv
 .vscode/
 figures/
+.DS_Store

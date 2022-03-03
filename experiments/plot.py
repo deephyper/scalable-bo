@@ -12,8 +12,9 @@ import numpy as np
 
 try:
     from yaml import CLoader as Loader
+    from yaml import CDumper as Dumper
 except ImportError:
-    from yaml import Loader
+    from yaml import Loader, Dumper
 
 width = 8
 height = width / 1.618
@@ -37,6 +38,10 @@ def yaml_load(path):
     with open(path, "r") as f:
         yaml_data = yaml.load(f, Loader=Loader)
     return yaml_data
+
+def yaml_dump(path, data):
+    with open(path, "w") as f:
+        yaml.dump(data, f, Dumper=Dumper)
 
 
 def load_results(exp_root: str, exp_config: dict) -> dict:
@@ -67,7 +72,7 @@ def hour_major_formatter(x, pos):
     return x
 
 
-def plot_scatter_multi(df, exp_config, output_dir):
+def plot_scatter_multi(df, exp_config, output_dir, show):
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
     output_path = os.path.join(output_dir, output_file_name)
 
@@ -117,7 +122,9 @@ def plot_scatter_multi(df, exp_config, output_dir):
     plt.grid()
     plt.tight_layout()
     plt.savefig(output_path)
-    plt.show()
+    if show:
+        plt.show()
+    plt.close()
 
 
 def only_min(values):
@@ -127,7 +134,7 @@ def only_min(values):
     return np.array(res)
 
 
-def plot_objective_multi(df, exp_config, output_dir):
+def plot_objective_multi(df, exp_config, output_dir, show):
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
     output_path = os.path.join(output_dir, output_file_name)
 
@@ -206,10 +213,12 @@ def plot_objective_multi(df, exp_config, output_dir):
     plt.grid()
     plt.tight_layout()
     plt.savefig(output_path)
-    plt.show()
+    if show:
+        plt.show()
+    plt.close()
 
 
-def plot_objective_multi_iter(df, exp_config, output_dir):
+def plot_objective_multi_iter(df, exp_config, output_dir, show):
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
     output_path = os.path.join(output_dir, output_file_name)
 
@@ -267,7 +276,9 @@ def plot_objective_multi_iter(df, exp_config, output_dir):
     plt.grid()
     plt.tight_layout()
     plt.savefig(output_path)
-    plt.show()
+    if show:
+        plt.show()
+    plt.close()
 
 
 def compile_profile(df):
@@ -291,7 +302,7 @@ def compile_profile(df):
     return timestamp, n_jobs_running
 
 
-def plot_utilization_multi_iter(df, exp_config, output_dir):
+def plot_utilization_multi_iter(df, exp_config, output_dir, show):
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
     output_path = os.path.join(output_dir, output_file_name)
 
@@ -348,13 +359,32 @@ def plot_utilization_multi_iter(df, exp_config, output_dir):
     plt.grid()
     plt.tight_layout()
     plt.savefig(output_path)
-    plt.show()
+    if show:
+        plt.show()
+    plt.close()
 
+
+def write_infos(df, exp_config, output_dir):
+    output_file_name = f"infos.yaml"
+    output_path = os.path.join(output_dir, output_file_name)
+
+    infos = {}
+
+    for exp_name, exp_df in df.items():
+
+        if "rep" in exp_config["data"][exp_name]:
+            exp_dfs = exp_df
+        else:
+            infos[exp_name] = {}
+            infos[exp_name]["num_evaluations"] = len(exp_df)
+            
+            yaml_dump(output_path, infos)
 
 
 def generate_figures(config):
 
     exp_root = config["root"]
+    show = config.get("show", False)
     figures_dir = os.path.join(HERE, "figures")
 
     for exp_num, exp_config in config["experiments"].items():
@@ -365,10 +395,18 @@ def generate_figures(config):
 
         df = load_results(exp_root, exp_config)
 
-        plot_scatter_multi(df, exp_config, output_dir)
-        # plot_objective_multi(df, exp_config, output_dir)
-        plot_objective_multi_iter(df, exp_config, output_dir)
-        plot_utilization_multi_iter(df, exp_config, output_dir)
+        write_infos(df, exp_config, output_dir)
+
+        plot_functions = [
+            plot_scatter_multi,
+            plot_objective_multi,
+            plot_objective_multi_iter,
+            plot_utilization_multi_iter,
+
+        ]
+
+        for plot_func in plot_functions:
+            plot_func(df, exp_config, output_dir, show)
 
 
 if __name__ == "__main__":

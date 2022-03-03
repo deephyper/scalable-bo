@@ -1,37 +1,64 @@
 root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output
+show: False
 experiments:
-  # 0:
-  #   title: "ackley-amsb-async-boltzmann-1-8-5-42"
+  test-ambs-liar-strategy:
+    title: "A-CMBS: cl_min vs boltzmann vs topk"
+    data:
+      ackley-amsb-async-cl_max-1-8-10-42:
+          label: "cl_min"
+          color: "orange"
+          linestyle: "-"
+      ackley-amsb-async-boltzmann-1-8-10-42:
+        label: "boltzmann"
+        color: "cyan" 
+        linestyle: "-"
+      ackley-amsb-async-topk-1-8-10-42:
+        label: "topk"
+        color: "lime" 
+        linestyle: "-"
+  test-ambs-sync-vs-async:
+    title: "S-CMBS vs A-CMBS"
+    data:
+      ackley-amsb-async-boltzmann-1-8-10-42:
+          label: "A-CMBS"
+          color: "orange"
+          linestyle: "-"
+      ackley-amsb-sync-boltzmann-1-8-10-42:
+        label: "S-CMBS"
+        color: "cyan" 
+        linestyle: "-"
+  test-dmbs-liar-strategy:
+    title: "A-DMBS: cl_min vs boltzmann vs topk"
+    data:
+      ackley-amsb-async-cl_max-1-8-10-42:
+          label: "cl_min"
+          color: "orange"
+          linestyle: "-"
+      ackley-amsb-async-boltzmann-1-8-10-42:
+        label: "boltzmann"
+        color: "cyan" 
+        linestyle: "-"
+      ackley-amsb-async-topk-1-8-10-42:
+        label: "topk"
+        color: "lime" 
+        linestyle: "-"
+  test-dmbs-sync-vs-async:
+    title: "S-DMBS vs A-DMBS"
+    data:
+      ackley-amsb-async-boltzmann-1-8-10-42:
+          label: "A-CMBS"
+          color: "orange"
+          linestyle: "-"
+      ackley-amsb-sync-boltzmann-1-8-10-42:
+        label: "S-CMBS"
+        color: "cyan" 
+        linestyle: "-"
+  # 1:
+  #   title: "ackley-amsb-async-cl_max-1-8-5"
   #   # ylim: [0,400]
   #   data:
-  #     ackley-amsb-async-boltzmann-1-8-5-42:
+  #     ackley-amsb-async-cl_max-1-8-5:
   #       label: ""
   #       color: "orange"
   #       linestyle: "-"
-  1:
-    title: "ackley-amsb-async-cl_max-1-8-5"
-    # ylim: [0,400]
-    data:
-      ackley-amsb-async-cl_max-1-8-5:
-        label: ""
-        color: "orange"
-        linestyle: "-"
-        rep: [42, 2022, 1451, 8317, 213, 7607, 4978, 1516, 2335, 3366]
-  2:
-    title: "ackley-amsb-async-boltzmann-1-8-5"
-    # ylim: [0,400]
-    data:
-      ackley-amsb-async-boltzmann-1-8-5:
-        label: ""
-        color: "orange"
-        linestyle: "-"
-        rep: [42, 2022, 1451, 8317, 213, 7607, 4978, 1516, 2335, 3366]
-  # 4-3-preliminary-experiments:
-  #   title: "Preliminary Experiments"
-  #   ylim: [0,400]
-  #   data:
-  #     exp-1:
-  #       label: "1, 11, 4"
-  #       color: "orange"
-  #       linestyle: "-"
-  #       rep: [1,2,3,4,5]
+  #       rep: [42, 2022, 1451, 8317, 213, 7607, 4978, 1516, 2335, 3366]

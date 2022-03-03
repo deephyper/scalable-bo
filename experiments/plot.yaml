@@ -1,0 +1,37 @@
+root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output
+experiments:
+  # 0:
+  #   title: "ackley-amsb-async-boltzmann-1-8-5-42"
+  #   # ylim: [0,400]
+  #   data:
+  #     ackley-amsb-async-boltzmann-1-8-5-42:
+  #       label: ""
+  #       color: "orange"
+  #       linestyle: "-"
+  1:
+    title: "ackley-amsb-async-cl_max-1-8-5"
+    # ylim: [0,400]
+    data:
+      ackley-amsb-async-cl_max-1-8-5:
+        label: ""
+        color: "orange"
+        linestyle: "-"
+        rep: [42, 2022, 1451, 8317, 213, 7607, 4978, 1516, 2335, 3366]
+  2:
+    title: "ackley-amsb-async-boltzmann-1-8-5"
+    # ylim: [0,400]
+    data:
+      ackley-amsb-async-boltzmann-1-8-5:
+        label: ""
+        color: "orange"
+        linestyle: "-"
+        rep: [42, 2022, 1451, 8317, 213, 7607, 4978, 1516, 2335, 3366]
+  # 4-3-preliminary-experiments:
+  #   title: "Preliminary Experiments"
+  #   ylim: [0,400]
+  #   data:
+  #     exp-1:
+  #       label: "1, 11, 4"
+  #       color: "orange"
+  #       linestyle: "-"
+  #       rep: [1,2,3,4,5]

@@ -72,7 +72,8 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
                 evaluator,
                 log_dir=search_log_dir,
                 liar_strategy=liar_strategy,
-                random_state=random_state
+                random_state=random_state,
+                sync_communication=sync
             )
             logging.info("Creation of the search done")
 

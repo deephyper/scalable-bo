@@ -60,7 +60,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         hp_problem,
         run,
         log_dir=log_dir,
-        n_jobs=4,
+        n_jobs=4, # TODO: to be given according to the number of available hardware threads
         lazy_socket_allocation=False,
         sync_communication=sync,
     ) # sampling boltzmann!
@@ -69,9 +69,9 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
     results = None
     logging.info("Starting the search...")
     if rank == 0:
-        results = search.search(timeout=60*timeout)
+        results = search.search(timeout=timeout)
     else:
-        search.search(timeout=60*timeout)
+        search.search(timeout=timeout)
     logging.info("Search is done")
 
     
@@ -81,7 +81,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         if rank == 0:
             pathlib.Path("results").mkdir(parents=False, exist_ok=True)
             pathlib.Path(results_path).mkdir(parents=False, exist_ok=True)
-            os.system(f"mv {"log_dir/*"} {results_path}")
+            os.system(f"mv {'log_dir/*'} {results_path}")
             pathlib.Path(logs_path).mkdir(parents=False, exist_ok=True)
             os.system(f"mv {results_path}/deephyper.*.log {logs_path}")
 

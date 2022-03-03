@@ -5,3 +5,17 @@
 ```console
 pip install -e src/scalbo
 ```
+
+```console
+mkdir build
+cd build/
+../install.sh
+```
+
+```console
+build/
+    deephyper/
+    dhenv/
+    scikit-optimize/
+    setup-env.sh
+```

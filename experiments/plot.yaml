@@ -4,60 +4,71 @@ experiments:
   test-ambs-liar-strategy:
     title: "A-CMBS: cl_min vs boltzmann vs topk"
     data:
-      ackley-amsb-async-cl_max-1-8-10-42:
+      ackley-ambs-async-cl_max-1-8-10-42:
           label: "cl_min"
           color: "orange"
           linestyle: "-"
-      ackley-amsb-async-boltzmann-1-8-10-42:
+      ackley-ambs-async-boltzmann-1-8-10-42:
         label: "boltzmann"
         color: "cyan" 
         linestyle: "-"
-      ackley-amsb-async-topk-1-8-10-42:
+      ackley-ambs-async-topk-1-8-10-42:
         label: "topk"
         color: "lime" 
         linestyle: "-"
   test-ambs-sync-vs-async:
     title: "S-CMBS vs A-CMBS"
     data:
-      ackley-amsb-async-boltzmann-1-8-10-42:
+      ackley-ambs-async-boltzmann-1-8-10-42:
           label: "A-CMBS"
           color: "orange"
           linestyle: "-"
-      ackley-amsb-sync-boltzmann-1-8-10-42:
+      ackley-ambs-sync-boltzmann-1-8-10-42:
         label: "S-CMBS"
         color: "cyan" 
         linestyle: "-"
   test-dmbs-liar-strategy:
     title: "A-DMBS: cl_min vs boltzmann vs topk"
     data:
-      ackley-dmsb-async-cl_max-1-8-10-42:
+      ackley-dmbs-async-cl_max-1-8-10-42:
           label: "cl_min"
           color: "orange"
           linestyle: "-"
-      ackley-dmsb-async-boltzmann-1-8-10-42:
+      ackley-dmbs-async-boltzmann-1-8-10-42:
         label: "boltzmann"
         color: "cyan" 
         linestyle: "-"
-      ackley-dmsb-async-topk-1-8-10-42:
+      ackley-dmbs-async-topk-1-8-10-42:
         label: "topk"
         color: "lime" 
         linestyle: "-"
   test-dmbs-sync-vs-async:
     title: "S-DMBS vs A-DMBS"
     data:
-      ackley-dmsb-async-boltzmann-1-8-10-42:
+      ackley-dmbs-async-boltzmann-1-8-10-42:
+          label: "A-DMBS"
+          color: "orange"
+          linestyle: "-"
+      ackley-dmbs-sync-boltzmann-1-8-10-42:
+        label: "S-DMBS"
+        color: "cyan" 
+        linestyle: "-"
+  test-ambs-vs-dmbs:
+    title: "A-CMBS vs A-DMBS"
+    data:
+      ackley-ambs-async-boltzmann-1-8-10-42:
           label: "A-CMBS"
           color: "orange"
           linestyle: "-"
-      ackley-dmsb-sync-boltzmann-1-8-10-42:
-        label: "S-CMBS"
+      ackley-dmbs-async-boltzmann-1-8-10-42:
+        label: "A-DMBS"
         color: "cyan" 
         linestyle: "-"
   # 1:
-  #   title: "ackley-amsb-async-cl_max-1-8-5"
+  #   title: "ackley-ambs-async-cl_max-1-8-5"
   #   # ylim: [0,400]
   #   data:
-  #     ackley-amsb-async-cl_max-1-8-5:
+  #     ackley-ambs-async-cl_max-1-8-5:
   #       label: ""
   #       color: "orange"
   #       linestyle: "-"

@@ -5,6 +5,7 @@
 # export PROBLEMS=("ackley") 
 export LIAR_STRATEGIES=("cl_max" "boltzmann" "topk")
 
+
 export timeout=10
 export RANDOM_STATES=(42)
 export PROBLEMS=("ackley") 
@@ -14,21 +15,23 @@ export PROBLEMS=("ackley")
 for liar_strategy in ${LIAR_STRATEGIES[@]}; do
     for random_state in ${RANDOM_STATES[@]}; do
         for problem in ${PROBLEMS[@]}; do
-            export log_dir="output/$problem-amsb-async-$liar_strategy-1-8-$timeout-$random_state";
+            export log_dir="output/$problem-dmsb-sync-$liar_strategy-1-8-$timeout-$random_state";
             echo "Running: mpirun -np 8 python -m scalbo.exp --problem $problem \
-            --search AMBS \
+            --search DMBS \
             --timeout $timeout \
             --liar-strategy $liar_strategy \
             --random-state $random_state \
             --log-dir $log_dir \
-            --verbose 1";
+            --verbose 1 \
+            --sync True";
             mpirun -np 8 python -m scalbo.exp --problem $problem \
-                --search AMBS \
+                --search DMBS \
                 --timeout $timeout \
                 --liar-strategy $liar_strategy \
                 --random-state $random_state \
                 --log-dir $log_dir \
-                --verbose 1 
+                --verbose 1 \
+                --sync True 
         done
     done
 done

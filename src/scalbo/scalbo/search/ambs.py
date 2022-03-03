@@ -34,7 +34,8 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         timeout (int): duration in seconds of the search.
         max_evals (int): maximum number of evaluations for the search.
         random_state (int): random state/seed of the search.
-        log_dir_spec (str): path of the logging directory (i.e., where to store results).
+        log_dir (str): path of the logging directory (i.e., where to store results).
+        cache_dir (str): ...
     """
     hp_problem = problem.hp_problem
     run = problem.run

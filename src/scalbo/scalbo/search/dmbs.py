@@ -53,10 +53,11 @@ def execute(
     search = DMBSMPI(
         hp_problem,
         run,
-        log_dir=search_log_dir,
+        sync_communication=sync,
         n_jobs=8,  # TODO: to be given according to the number of available hardware threads
         lazy_socket_allocation=False,
-        sync_communication=sync,
+        log_dir=search_log_dir,
+        random_state=random_state,
     )  # sampling boltzmann!
     logging.info("Creation of the search done")
 

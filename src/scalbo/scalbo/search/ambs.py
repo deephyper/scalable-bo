@@ -79,12 +79,11 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
             search = AMBS(
                 hp_problem,
                 evaluator,
-                log_dir=search_log_dir,
-                liar_strategy=liar_strategy,
-                random_state=random_state,
                 sync_communication=sync,
+                liar_strategy=liar_strategy,
                 n_jobs=8,
-                random_state=random_state
+                log_dir=search_log_dir,
+                random_state=random_state,
             )
             logging.info("Creation of the search done")
 

@@ -28,12 +28,15 @@ size = comm.Get_size()
 def execute(
     problem, sync, liar_strategy, timeout, max_evals, random_state, log_dir, cache_dir
 ):
+    print(f"Starting the execution : {time.time()}")
     hp_problem = problem.hp_problem
     run = problem.run
 
     # define where the outputs are saved live (in cache-dir if possible)
     if cache_dir is not None and os.path.exists(cache_dir):
-        search_log_dir = cache_dir
+        search_cache_dir = os.path.join(cache_dir, "search")
+        pathlib.Path(search_cache_dir).mkdir(parents=False, exist_ok=True)
+        search_log_dir = search_cache_dir
     else:
         search_log_dir = log_dir
 
@@ -50,8 +53,8 @@ def execute(
     search = DMBSMPI(
         hp_problem,
         run,
-        log_dir=log_dir,
-        n_jobs=1,  # TODO: to be given according to the number of available hardware threads
+        log_dir=search_log_dir,
+        n_jobs=8,  # TODO: to be given according to the number of available hardware threads
         lazy_socket_allocation=False,
         sync_communication=sync,
     )  # sampling boltzmann!
@@ -59,19 +62,21 @@ def execute(
 
     results = None
     logging.info("Starting the search...")
+    print(f"Starting the search : {time.time()}")
     if rank == 0:
         results = search.search(timeout=timeout)
     else:
         search.search(timeout=timeout)
     logging.info("Search is done")
 
+    print(f"Starting the report : {time.time()}")
     if rank == 0:
         results.to_csv(os.path.join(search_log_dir, f"results.csv"))
 
     if log_dir != search_log_dir:
 
         if rank == 0:
-            os.system(f"mv {search_log_dir} {log_dir}")
+            os.system(f"mv {search_log_dir}/results.csv {log_dir}")
         comm.Barrier()
 
         if os.path.exists(search_log_dir):

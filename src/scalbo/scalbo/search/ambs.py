@@ -42,7 +42,9 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
 
     # define where the outputs are saved live (in cache-dir if possible)
     if cache_dir is not None and os.path.exists(cache_dir):
-        search_log_dir = cache_dir
+        search_cache_dir = os.path.join(cache_dir, "search")
+        pathlib.Path(search_cache_dir).mkdir(parents=False, exist_ok=True)
+        search_log_dir = search_cache_dir
     else:
         search_log_dir = log_dir
 
@@ -80,7 +82,9 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
                 log_dir=search_log_dir,
                 liar_strategy=liar_strategy,
                 random_state=random_state,
-                sync_communication=sync
+                sync_communication=sync,
+                n_jobs=8,
+                random_state=random_state
             )
             logging.info("Creation of the search done")
 
@@ -91,4 +95,4 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
             results.to_csv(os.path.join(search_log_dir, f"results.csv"))
 
             if log_dir != search_log_dir: # means the cache was used
-                os.system(f"mv {search_log_dir} {log_dir}")
+                os.system(f"mv {search_log_dir}/* {log_dir}")

@@ -12,6 +12,7 @@ mpi4py.rc.thread_level = "multiple"
 
 from deephyper.evaluator import Evaluator
 from deephyper.search.hps import AMBS
+from deephyper.evaluator.callback import ProfilingCallback
 
 from mpi4py import MPI
 
@@ -56,9 +57,14 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         # Evaluator creation
         logging.info("Creation of the Evaluator...")
 
+    profiler = ProfilingCallback()
+
     with Evaluator.create(
         run,
         method="mpicomm",
+        method_kwargs={
+            "callbacks": [profiler],
+        },
     ) as evaluator:
         if evaluator is not None:
             logging.info(

@@ -14,7 +14,7 @@ export PROBLEMS=("ackley")
 for liar_strategy in ${LIAR_STRATEGIES[@]}; do
     for random_state in ${RANDOM_STATES[@]}; do
         for problem in ${PROBLEMS[@]}; do
-            export log_dir="output/$problem-amsb-sync-$liar_strategy-1-8-$timeout-$random_state";
+            export log_dir="output/$problem-ambs-sync-$liar_strategy-1-8-$timeout-$random_state";
             echo "Running: mpirun -np 8 python -m scalbo.exp --problem $problem \
             --search AMBS \
             --timeout $timeout \

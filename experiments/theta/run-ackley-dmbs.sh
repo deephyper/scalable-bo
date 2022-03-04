@@ -13,11 +13,11 @@ export RANKS_PER_NODE=4
 
 export LIAR_STRATEGIES=("boltzmann")
 
-export timeout=20
-export RANDOM_STATES=(42 2022 1451 8317 213 7607 4978 1516 2335 3366)
+export timeout=50
+export RANDOM_STATES=(42) # 2022 1451 8317 213 7607 4978 1516 2335 3366)
 export PROBLEMS=("ackley")
 declare -A COMMUNICATION
-COMMUNICATION["sync"]=1
+# COMMUNICATION["sync"]=1
 COMMUNICATION["async"]=0
 export cache_dir="/dev/shm"
 

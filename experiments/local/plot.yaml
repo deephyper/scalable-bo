@@ -1,4 +1,6 @@
-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output
+data-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output
+figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/figures
+show: False
 show: False
 experiments:
   test-ambs-liar-strategy:

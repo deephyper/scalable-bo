@@ -38,8 +38,8 @@ def create_parser():
     )
     parser.add_argument(
         "--sync",
-        type=bool,
-        default=False,
+        type=int,
+        default=0,
         help="If the search workers must be syncronized or not.",
     )
     parser.add_argument(
@@ -94,12 +94,13 @@ def main(args):
 
     problem = PROBLEMS.get(args.problem)
     search = SEARCHES.get(args.search)
+    sync = bool(args.sync)
 
     pathlib.Path(args.log_dir).mkdir(parents=True, exist_ok=True)
 
     search.execute(
         problem,
-        args.sync,
+        sync,
         args.liar_strategy,
         args.timeout,
         args.max_evals,

@@ -55,6 +55,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
             filename=path_log_file,
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
+            force=True,
         )
 
         # Evaluator creation

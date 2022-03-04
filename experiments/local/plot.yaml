@@ -1,10 +1,9 @@
 data-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output
 figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/figures
 show: False
-show: False
 experiments:
   test-ambs-liar-strategy:
-    title: "A-CMBS: cl_min vs boltzmann vs topk"
+    title: "A-CMBS: cl_min vs boltzmann"
     data:
       ackley-ambs-async-cl_max-1-8-10-42:
           label: "cl_min"
@@ -13,10 +12,6 @@ experiments:
       ackley-ambs-async-boltzmann-1-8-10-42:
         label: "boltzmann"
         color: "cyan" 
-        linestyle: "-"
-      ackley-ambs-async-topk-1-8-10-42:
-        label: "topk"
-        color: "lime" 
         linestyle: "-"
   test-ambs-sync-vs-async:
     title: "S-CMBS vs A-CMBS"
@@ -29,21 +24,17 @@ experiments:
         label: "S-CMBS"
         color: "cyan" 
         linestyle: "-"
-  test-dmbs-liar-strategy:
-    title: "A-DMBS: cl_min vs boltzmann vs topk"
-    data:
-      ackley-dmbs-async-cl_max-1-8-10-42:
-          label: "cl_min"
-          color: "orange"
-          linestyle: "-"
-      ackley-dmbs-async-boltzmann-1-8-10-42:
-        label: "boltzmann"
-        color: "cyan" 
-        linestyle: "-"
-      ackley-dmbs-async-topk-1-8-10-42:
-        label: "topk"
-        color: "lime" 
-        linestyle: "-"
+  # test-dmbs-liar-strategy:
+  #   title: "A-DMBS: cl_min vs boltzmann"
+  #   data:
+  #     ackley-dmbs-async-cl_max-1-8-10-42:
+  #         label: "cl_min"
+  #         color: "orange"
+  #         linestyle: "-"
+  #     ackley-dmbs-async-boltzmann-1-8-10-42:
+  #       label: "boltzmann"
+  #       color: "cyan" 
+  #       linestyle: "-"
   test-dmbs-sync-vs-async:
     title: "S-DMBS vs A-DMBS"
     data:

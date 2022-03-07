@@ -96,3 +96,5 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
 
             if log_dir != search_log_dir: # means the cache was used
                 os.system(f"mv {search_log_dir}/* {log_dir}")
+                print((f"ls {search_log_dir}"))
+                os.system(f"ls {search_log_dir}")

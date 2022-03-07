@@ -1,7 +1,7 @@
 #!/bin/bash
-#COBALT -n 2
-#COBALT -t 30
-#COBALT -q debug-flat-quad
+#COBALT -n 128
+#COBALT -t 100
+#COBALT -q default
 #COBALT -A datascience
 
 PROJECT=~/projects/grand/deephyper/search_quality
@@ -9,15 +9,15 @@ INIT_SCRIPT=$PROJECT/scripts/init_dh-mpi.sh
 
 source $INIT_SCRIPT
 
-export RANKS_PER_NODE=4
+export RANKS_PER_NODE=1
 
 export LIAR_STRATEGIES=("boltzmann")
 
-export timeout=50
-export RANDOM_STATES=(42) # 2022 1451 8317 213 7607 4978 1516 2335 3366)
+export timeout=30
+export RANDOM_STATES=(42 2022 1451 8317 213) # 7607 4978 1516 2335 3366)
 export PROBLEMS=("ackley")
 declare -A COMMUNICATION
-# COMMUNICATION["sync"]=1
+COMMUNICATION["sync"]=1
 COMMUNICATION["async"]=0
 export cache_dir="/dev/shm"
 

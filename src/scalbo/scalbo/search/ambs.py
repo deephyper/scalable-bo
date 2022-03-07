@@ -82,7 +82,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
                 evaluator,
                 sync_communication=sync,
                 liar_strategy=liar_strategy,
-                n_jobs=8,
+                n_jobs=4,
                 log_dir=search_log_dir,
                 random_state=random_state,
             )

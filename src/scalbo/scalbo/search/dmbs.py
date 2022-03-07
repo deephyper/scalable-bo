@@ -51,7 +51,7 @@ def execute(
         hp_problem,
         run,
         sync_communication=sync,
-        n_jobs=8,  # TODO: to be given according to the number of available hardware threads
+        n_jobs=4,  # TODO: to be given according to the number of available hardware threads
         lazy_socket_allocation=False,
         log_dir=search_log_dir,
         random_state=random_state,

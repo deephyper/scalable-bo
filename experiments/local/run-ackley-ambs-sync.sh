@@ -3,7 +3,7 @@
 # export timeout=5
 # export RANDOM_STATES=(42 2022 1451 8317 213 7607 4978 1516 2335 3366)
 # export PROBLEMS=("ackley") 
-export LIAR_STRATEGIES=("cl_max" "boltzmann" "topk")
+export LIAR_STRATEGIES=("cl_max" "boltzmann")
 
 export timeout=10
 export RANDOM_STATES=(42)
@@ -22,7 +22,7 @@ for liar_strategy in ${LIAR_STRATEGIES[@]}; do
             --random-state $random_state \
             --log-dir $log_dir \
             --verbose 1 \
-            --sync True";
+            --sync 0";
             mpirun -np 8 python -m scalbo.exp --problem $problem \
                 --search AMBS \
                 --timeout $timeout \
@@ -30,7 +30,7 @@ for liar_strategy in ${LIAR_STRATEGIES[@]}; do
                 --random-state $random_state \
                 --log-dir $log_dir \
                 --verbose 1 \
-                --sync True
+                --sync 0
         done
     done
 done

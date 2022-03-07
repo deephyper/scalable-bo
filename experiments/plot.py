@@ -1,3 +1,4 @@
+import argparse
 import os
 import pathlib
 
@@ -64,11 +65,11 @@ def load_results(exp_root: str, exp_config: dict) -> dict:
 
 @ticker.FuncFormatter
 def hour_major_formatter(x, pos):
-    x = float(f"{x/3600:.1f}")
+    x = float(f"{x/3600:.2f}")
     if x % 1 == 0:
         x = str(int(x))
     else:
-        x = f"{x:.1f}"
+        x = f"{x:.2f}"
     return x
 
 
@@ -103,8 +104,8 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
                         s=10)
 
     ax = plt.gca()
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
-    ax.xaxis.set_major_formatter(hour_major_formatter)
+    # ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
+    # ax.xaxis.set_major_formatter(hour_major_formatter)
 
     if exp_config.get("title"):
         plt.title(exp_config.get("title"))
@@ -194,8 +195,8 @@ def plot_objective_multi(df, exp_config, output_dir, show):
                          "linestyle", "-"))
 
     ax = plt.gca()
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
-    ax.xaxis.set_major_formatter(hour_major_formatter)
+    # ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
+    # ax.xaxis.set_major_formatter(hour_major_formatter)
 
     if exp_config.get("title"):
         plt.title(exp_config.get("title"))
@@ -343,8 +344,8 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
                          "linestyle", "-"))
 
     ax = plt.gca()
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
-    ax.xaxis.set_major_formatter(hour_major_formatter)
+    # ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
+    # ax.xaxis.set_major_formatter(hour_major_formatter)
 
     if exp_config.get("title"):
         plt.title(exp_config.get("title"))
@@ -383,9 +384,9 @@ def write_infos(df, exp_config, output_dir):
 
 def generate_figures(config):
 
-    exp_root = config["root"]
+    exp_root = config["data-root"]
+    figures_dir = config.get("figures-root", "figures")
     show = config.get("show", False)
-    figures_dir = os.path.join(HERE, "figures")
 
     for exp_num, exp_config in config["experiments"].items():
         exp_dirname = str(exp_num)
@@ -409,8 +410,25 @@ def generate_figures(config):
             plot_func(df, exp_config, output_dir, show)
 
 
+def create_parser():
+    parser = argparse.ArgumentParser(description="Command line to plot experiments results.")
+
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="plot.yaml",
+        help="Plotter configuration YAML file.",
+    )
+
+    return parser
+
 if __name__ == "__main__":
-    yaml_path = os.path.join(HERE, "plot.yaml")
+    parser = create_parser()
+
+    args = parser.parse_args()
+
+    # yaml_path = os.path.join(HERE, "plot.yaml")
+    yaml_path = args.config
     config = yaml_load(yaml_path)
     generate_figures(config)
     print("Done!")

@@ -3,7 +3,7 @@
 # export timeout=5
 # export RANDOM_STATES=(42 2022 1451 8317 213 7607 4978 1516 2335 3366)
 # export PROBLEMS=("ackley") 
-export LIAR_STRATEGIES=("cl_max" "boltzmann" "topk")
+export LIAR_STRATEGIES=("cl_max" "boltzmann")
 
 export timeout=10
 export RANDOM_STATES=(42)

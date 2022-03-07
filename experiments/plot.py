@@ -9,6 +9,7 @@ import yaml
 import pandas as pd
 import inspect
 from scipy import stats
+from scipy.interpolate import interp1d   
 import numpy as np
 
 try:
@@ -111,14 +112,16 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
         plt.title(exp_config.get("title"))
 
     plt.legend()
-    plt.ylabel("Instance run time (sec)")
-    plt.xlabel("Search time (hour)")
+    plt.ylabel("Objective")
+    plt.xlabel("Search time (sec.)")
 
     if exp_config.get("ylim"):
         plt.ylim(*exp_config.get("ylim"))
 
     if exp_config.get("xlim"):
         plt.xlim(*exp_config.get("xlim"))
+    else:
+        plt.xlim(0, exp_config["t_max"])
 
     plt.grid()
     plt.tight_layout()
@@ -132,7 +135,7 @@ def only_min(values):
     res = [values[0]]
     for value in values[1:]:
         res.append(min(res[-1], value))
-    return np.array(res)
+    return res
 
 
 def plot_objective_multi(df, exp_config, output_dir, show):
@@ -150,7 +153,7 @@ def plot_objective_multi(df, exp_config, output_dir, show):
             times = np.unique(
                 np.concatenate([df.timestamp_end.to_numpy() for df in exp_dfs],
                                axis=0))
-            times = np.concatenate([[0], times, [3600]])
+            times = np.concatenate([[0], times, [exp_config["t_max"]]])
 
             series = []
             for exp_df in exp_dfs:
@@ -166,9 +169,11 @@ def plot_objective_multi(df, exp_config, output_dir, show):
 
             array = np.array([s.to_numpy() for s in series])
             loc = np.nanmean(array, axis=0)
-            # scale = np.nanstd(array, axis=0)
-            loc_max = np.nanmax(array, axis=0)
-            loc_min = np.nanmin(array, axis=0)
+            scale = np.nanstd(array, axis=0)
+            loc_max = loc + scale
+            loc_min = loc - scale
+            # loc_max = np.nanmax(array, axis=0)
+            # loc_min = np.nanmin(array, axis=0)
 
             plt.plot(
                 times,
@@ -202,14 +207,16 @@ def plot_objective_multi(df, exp_config, output_dir, show):
         plt.title(exp_config.get("title"))
 
     plt.legend()
-    plt.ylabel("Instance run time (sec)")
-    plt.xlabel("Search time (hour)")
+    plt.ylabel("Objective")
+    plt.xlabel("Search time (sec.)")
 
     if exp_config.get("ylim"):
         plt.ylim(*exp_config.get("ylim"))
 
     if exp_config.get("xlim"):
         plt.xlim(*exp_config.get("xlim"))
+    else:
+        plt.xlim(0, exp_config["t_max"])
 
     plt.grid()
     plt.tight_layout()
@@ -229,23 +236,36 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
 
         if "rep" in exp_config["data"][exp_name]:
             exp_dfs = exp_df
+            max_n_iters = 0
+            y_list = []
             for i, exp_df in enumerate(exp_dfs):
                 exp_df = exp_df.sort_values("timestamp_end")
                 x, y = list(range(1,
                                   len(exp_df.timestamp_end.to_list()) +
                                   1)), (-exp_df.objective).to_list()
+                max_n_iters = max(len(x), max_n_iters)
 
                 y = only_min(y)
+                y_list.append(y)
 
-                plt_kwargs = dict(color=exp_config["data"][exp_name]["color"],
-                                  linestyle=exp_config["data"][exp_name].get(
-                                      "linestyle", "-"))
+            for i, y in enumerate(y_list):
+                y = y + [y[-1]] * (max_n_iters - len(y))
+                y_list[i] = y
 
-                if i == 0:
-                    plt_kwargs["label"] = label = exp_config["data"][exp_name][
-                        "label"]
+            y_list = np.asarray(y_list)
+            y_mean = y_list.mean(axis=0)
+            y_std = y_list.std(axis=0)
 
-                plt.plot(x, y, **plt_kwargs)
+            plt_kwargs = dict(color=exp_config["data"][exp_name]["color"],
+                                linestyle=exp_config["data"][exp_name].get(
+                                    "linestyle", "-"))
+
+            plt_kwargs["label"] = exp_config["data"][exp_name][
+                    "label"]
+
+            x = np.arange(max_n_iters)
+            plt.plot(x, y_mean, **plt_kwargs)
+            plt.fill_between(x, y_mean - y_std, y_mean + y_std, alpha=0.25, color=exp_config["data"][exp_name]["color"])
         else:
             exp_df = exp_df.sort_values("timestamp_end")
             x, y = list(range(1,
@@ -268,11 +288,16 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
         plt.title(exp_config.get("title"))
 
     plt.legend()
-    plt.ylabel("Experiment Duration (sec.)")
+    plt.ylabel("Objective")
     plt.xlabel("#Evaluation")
 
     if exp_config.get("ylim"):
         plt.ylim(*exp_config.get("ylim"))
+
+    if exp_config.get("xlim"):
+        plt.xlim(*exp_config.get("xlim"))
+    else:
+        plt.xlim(0, exp_config["t_max"])
 
     plt.grid()
     plt.tight_layout()
@@ -285,16 +310,14 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
 def compile_profile(df):
     history = []
 
-    df = df.sort_values("timestamp_end")
-
     for _, row in df.iterrows():
         history.append((row['timestamp_start'], 1))
         history.append((row['timestamp_end'], -1))
 
-    # history = sorted(history, key=lambda v: v[0])
+    history = sorted(history, key=lambda v: v[0])
     nb_workers = 0
-    timestamp = []
-    n_jobs_running = []
+    timestamp = [0]
+    n_jobs_running = [0]
     for time, incr in history:
         nb_workers += incr
         timestamp.append(time)
@@ -312,32 +335,34 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
     for exp_name, exp_df in df.items():
 
         if "rep" in exp_config["data"][exp_name]:
-            ...
-            # exp_dfs = exp_df
-            # for i, exp_df in enumerate(exp_dfs):
-            #     exp_df = exp_df.sort_values("timestamp_end")
-            #     x, y = list(range(1,
-            #                       len(exp_df.timestamp_end.to_list()) +
-            #                       1)), (-exp_df.objective).to_list()
+            exp_dfs = exp_df
+            T = np.linspace(0, exp_config["t_max"], 1000)
+            y_list = []
+            for i, exp_df in enumerate(exp_dfs):
+                x, y = compile_profile(exp_df)
+                f = interp1d(x, y, kind="previous", fill_value="extrapolate")
+                y = f(T)
+                y_list.append(y)
 
-            #     y = only_min(y)
+            y_list = np.asarray(y_list)
+            y_mean = y_list.mean(axis=0)
+            y_std = y_list.std(axis=0)
 
-            #     plt_kwargs = dict(color=exp_config["data"][exp_name]["color"],
-            #                       linestyle=exp_config["data"][exp_name].get(
-            #                           "linestyle", "-"))
+            plt_kwargs = dict(color=exp_config["data"][exp_name]["color"],
+                                linestyle=exp_config["data"][exp_name].get(
+                                    "linestyle", "-"))
 
-            #     if i == 0:
-            #         plt_kwargs["label"] = label = exp_config["data"][exp_name][
-            #             "label"]
+            plt_kwargs["label"] = exp_config["data"][exp_name][
+                    "label"]
 
-            #     plt.plot(x, y, **plt_kwargs)
+            plt.plot(T, y_mean, **plt_kwargs)
+            plt.fill_between(T, y_mean - y_std, y_mean + y_std, alpha=0.25, color=exp_config["data"][exp_name]["color"])
         else:
-            # exp_df = exp_df.sort_values("timestamp_end")
             x, y = compile_profile(exp_df)
 
             plt.step(x,
                      y,
-                     where="pre",
+                     where="post",
                      label=exp_config["data"][exp_name]["label"],
                      color=exp_config["data"][exp_name]["color"],
                      linestyle=exp_config["data"][exp_name].get(
@@ -352,10 +377,15 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
 
     plt.legend()
     plt.ylabel("Worker Utilization")
-    plt.xlabel("Time (sec.)")
+    plt.xlabel("Search time (sec.)")
 
     if exp_config.get("xlim"):
         plt.xlim(*exp_config.get("xlim"))
+
+    if exp_config.get("xlim"):
+        plt.xlim(*exp_config.get("xlim"))
+    else:
+        plt.xlim(0, exp_config["t_max"])
     
     plt.grid()
     plt.tight_layout()

@@ -1,68 +1,52 @@
 data-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output
-figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/figures
+figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/local/output/figures
 show: False
 experiments:
-  test-ambs-liar-strategy:
-    title: "A-CMBS: cl_min vs boltzmann"
+  test-plot:
+    title: "Asynchronous Centralized"
+    t_max: 30
     data:
-      ackley-ambs-async-cl_max-1-8-10-42:
-          label: "cl_min"
-          color: "orange"
+      ackley-ambs-async-boltzmann-1-8-30-42:
+          label: "boltzman"
+          color: "cyan"
           linestyle: "-"
-      ackley-ambs-async-boltzmann-1-8-10-42:
-        label: "boltzmann"
-        color: "cyan" 
+      ackley-ambs-async-cl_max-1-8-30-42:
+        label: "cl_min"
+        color: "orange" 
         linestyle: "-"
-  test-ambs-sync-vs-async:
-    title: "S-CMBS vs A-CMBS"
-    data:
-      ackley-ambs-async-boltzmann-1-8-10-42:
-          label: "A-CMBS"
-          color: "orange"
-          linestyle: "-"
-      ackley-ambs-sync-boltzmann-1-8-10-42:
-        label: "S-CMBS"
-        color: "cyan" 
-        linestyle: "-"
-  # test-dmbs-liar-strategy:
-  #   title: "A-DMBS: cl_min vs boltzmann"
+  # 1-synchronous-vs-asynchronous-dmbs:
+  #   title: "Synchronous VS Asynchronous"
+  #   t_max: 10
   #   data:
-  #     ackley-dmbs-async-cl_max-1-8-10-42:
-  #         label: "cl_min"
-  #         color: "orange"
+  #     ackley-dmbs-sync-boltzmann-1-8-10-42:
+  #         label: "sync"
+  #         color: "cyan"
   #         linestyle: "-"
   #     ackley-dmbs-async-boltzmann-1-8-10-42:
-  #       label: "boltzmann"
-  #       color: "cyan" 
+  #       label: "async"
+  #       color: "orange" 
   #       linestyle: "-"
-  test-dmbs-sync-vs-async:
-    title: "S-DMBS vs A-DMBS"
-    data:
-      ackley-dmbs-async-boltzmann-1-8-10-42:
-          label: "A-DMBS"
-          color: "orange"
-          linestyle: "-"
-      ackley-dmbs-sync-boltzmann-1-8-10-42:
-        label: "S-DMBS"
-        color: "cyan" 
-        linestyle: "-"
-  test-ambs-vs-dmbs:
-    title: "A-CMBS vs A-DMBS"
-    data:
-      ackley-ambs-async-boltzmann-1-8-10-42:
-          label: "A-CMBS"
-          color: "orange"
-          linestyle: "-"
-      ackley-dmbs-async-boltzmann-1-8-10-42:
-        label: "A-DMBS"
-        color: "cyan" 
-        linestyle: "-"
-  # 1:
-  #   title: "ackley-ambs-async-cl_max-1-8-5"
-  #   # ylim: [0,400]
+  # 2-centralized-vs-fully-distributed:
+  #   title: "Centralized VS Fully Distributed"
+  #   t_max: 10
   #   data:
-  #     ackley-ambs-async-cl_max-1-8-5:
-  #       label: ""
+  #     ackley-ambs-async-boltzmann-1-8-10-42:
+  #       label: "centralized"
+  #       color: "cyan"
+  #       linestyle: "-"
+  #     ackley-dmbs-async-boltzmann-1-8-10-42:
+  #       label: "fully distributed"
   #       color: "orange"
   #       linestyle: "-"
-  #       rep: [42, 2022, 1451, 8317, 213, 7607, 4978, 1516, 2335, 3366]
+  # 4-centralized-liar-strategy-vs-boltzmann:
+  #   title: "Liar Strategy VS Boltzmann Policy"
+  #   t_max: 10
+  #   data:
+  #     ackley-ambs-async-cl_max-1-8-10-42:
+  #       label: "liar strategy"
+  #       color: "cyan"
+  #       linestyle: "-"
+  #     ackley-ambs-async-boltzmann-1-8-10-42:
+  #       label: "boltzmann"
+  #       color: "orange"
+  #       linestyle: "-"

@@ -8,12 +8,14 @@ conda create -p dhenv -y
 conda activate dhenv
 
 # Clone DeepHyper (develop)
-git clone https://github.com/deephyper/deephyper.git
+git clone -b develop https://github.com/deephyper/deephyper.git
+
 
 # Clone DeepHyper/Scikit-Optimize (master)
 git clone https://github.com/deephyper/scikit-optimize.git
 
 # Install DeepHyper
+pip install ConfigSpace
 pip install -e scikit-optimize/
 pip install -e deephyper/
 
@@ -26,7 +28,7 @@ CC=cc CXX=CC python setup.py build
 CC=cc CXX=CC python setup.py install
 
 # Install Scalable-BO
-pip install -e ../src/scalable-bo/
+pip install -e ../src/scalbo/
 
 # Copy activation of environment file
-cp ../src/install/env/theta.sh activate-dhenv.sh
+cp ../install/env/theta.sh activate-dhenv.sh

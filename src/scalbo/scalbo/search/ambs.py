@@ -2,13 +2,17 @@ import logging
 import pathlib
 import os
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import mpi4py
 
 mpi4py.rc.initialize = False
 mpi4py.rc.threads = True
 mpi4py.rc.thread_level = "multiple"
+
+import numpy as np
+from deephyper.evaluator import profile
+from scalbo.utils import sleep
 
 from deephyper.evaluator import Evaluator
 from deephyper.search.hps import AMBS
@@ -37,8 +41,11 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
         log_dir (str): path of the logging directory (i.e., where to store results).
         cache_dir (str): ...
     """
+    rs = np.random.RandomState(random_state)
+    rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
+
     hp_problem = problem.hp_problem
-    run = problem.run
+    run = profile(sleep(mu=60, std=20, random_state=rank_seed)(problem.run))
 
     # define where the outputs are saved live (in cache-dir if possible)
     if cache_dir is not None and os.path.exists(cache_dir):
@@ -84,7 +91,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
                 liar_strategy=liar_strategy,
                 n_jobs=4,
                 log_dir=search_log_dir,
-                random_state=random_state,
+                random_state=rank_seed,
             )
             logging.info("Creation of the search done")
 

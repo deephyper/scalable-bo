@@ -1,0 +1,101 @@
+data-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/theta/jobs/output
+figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/theta/jobs/output/figures
+show: False
+experiments:
+  # ackley
+  1-centralized-async-liar-vs-boltzmann:
+    title: "Centralized Async - Liar VS Async"
+    t_max: 1800
+    data:
+      ackley-AMBS-async-cl_max-128-1-1800-42:
+        label: "liar"
+        color: "cyan"
+        linestyle: "-"
+      ackley-AMBS-async-boltzmann-128-1-1800-42:
+        label: "boltzmann"
+        color: "orange"
+        linestyle: "-"
+  3-1-distributed-boltzmann-ambs-async:
+    title: "Scaling Centralized Async"
+    t_max: 1800
+    data:
+      ackley-AMBS-async-boltzmann-128-1-1800-42:
+        label: "128"
+        color: "navy"
+        linestyle: "-"
+      # ackley-AMBS-async-boltzmann-128-2-1800-42:
+      #   label: "256"
+      #   color: "blue"
+      #   linestyle: "-"
+      # ackley-AMBS-async-boltzmann-128-4-1800-42:
+      #   label: "512"
+      #   color: "cyan"
+      #   linestyle: "-"
+      ackley-AMBS-async-boltzmann-128-8-1800-42:
+        label: "1024"
+        color: "violet"
+        linestyle: "-"
+      ackley-AMBS-async-boltzmann-128-16-1800-42:
+        label: "2048"
+        color: "fuchsia"
+        linestyle: "-"
+      ackley-AMBS-async-boltzmann-128-32-1800-42:
+        label: "4096"
+        color: "purple"
+        linestyle: "-"
+  3-2-distributed-boltzmann-dmbs-sync:
+    title: "Scaling Distributed Sync"
+    t_max: 1800
+    data:
+      ackley-DMBS-sync-boltzmann-128-1-1800-42:
+        label: "128"
+        color: "navy"
+        linestyle: "-"
+      ackley-DMBS-sync-boltzmann-128-2-1800-42:
+        label: "256"
+        color: "blue"
+        linestyle: "-"
+      ackley-DMBS-sync-boltzmann-128-4-1800-42:
+        label: "512"
+        color: "cyan"
+        linestyle: "-"
+      ackley-DMBS-sync-boltzmann-128-8-1800-42:
+        label: "1024"
+        color: "violet"
+        linestyle: "-"
+      ackley-DMBS-sync-boltzmann-128-16-1800-42:
+        label: "2048"
+        color: "fuchsia"
+        linestyle: "-"
+      ackley-DMBS-sync-boltzmann-128-32-1800-42:
+        label: "4096"
+        color: "purple"
+        linestyle: "-"
+  3-3-distributed-boltzmann-dmbs-async:
+    title: "Scaling Distributed Async"
+    t_max: 1800
+    data:
+      ackley-DMBS-async-boltzmann-128-1-1800-42:
+        label: "128"
+        color: "navy"
+        linestyle: "-"
+      ackley-DMBS-async-boltzmann-128-2-1800-42:
+        label: "256"
+        color: "blue"
+        linestyle: "-"
+      ackley-DMBS-async-boltzmann-128-4-1800-42:
+        label: "512"
+        color: "cyan"
+        linestyle: "-"
+      ackley-DMBS-async-boltzmann-128-8-1800-42:
+        label: "1024"
+        color: "violet"
+        linestyle: "-"
+      ackley-DMBS-async-boltzmann-128-16-1800-42:
+        label: "2048"
+        color: "fuchsia"
+        linestyle: "-"
+      ackley-DMBS-async-boltzmann-128-32-1800-42:
+        label: "4096"
+        color: "purple"
+        linestyle: "-"

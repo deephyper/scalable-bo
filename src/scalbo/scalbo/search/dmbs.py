@@ -10,6 +10,9 @@ mpi4py.rc.initialize = False
 mpi4py.rc.threads = True
 mpi4py.rc.thread_level = "multiple"
 
+import numpy as np
+from deephyper.evaluator import profile
+from scalbo.utils import sleep
 from deephyper.search.hps import DMBSMPI
 
 from mpi4py import MPI
@@ -42,8 +45,11 @@ def execute(
         force=True,
     )
 
+    rs = np.random.RandomState(random_state)
+    rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
+
     hp_problem = problem.hp_problem
-    run = problem.run
+    run = profile(sleep(mu=60, std=20, random_state=rank_seed)(problem.run))
 
     logging.info("Creation of the search instance...")
 
@@ -54,7 +60,7 @@ def execute(
         n_jobs=4,  # TODO: to be given according to the number of available hardware threads
         lazy_socket_allocation=False,
         log_dir=search_log_dir,
-        random_state=random_state,
+        random_state=rank_seed,
     )  # sampling boltzmann!
     logging.info("Creation of the search done")
 

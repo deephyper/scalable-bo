@@ -1,7 +1,5 @@
 import numpy as np
 from deephyper.problem import HpProblem
-from deephyper.evaluator import profile
-from scalbo.utils import sleep
 
 nb_dim = 5
 domain = (-32.768, 32.768)
@@ -18,8 +16,7 @@ def ackley(x, a=20, b=0.2, c=2*np.pi):
     y = term1 + term2 + a + np.exp(1)
     return y
 
-@profile
-@sleep(mu=60, std=20, random_state=42)
+
 def run(config):
     x = np.array([config[k] for k in config if "x" in k])
     x = np.asarray_chkfinite(x)  # ValueError if any NaN or Inf

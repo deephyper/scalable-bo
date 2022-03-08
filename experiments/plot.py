@@ -274,6 +274,8 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
 
             y = only_min(y)
 
+            max_n_iters = len(x)
+
             plt.plot(x,
                      y,
                      label=exp_config["data"][exp_name]["label"],
@@ -294,10 +296,7 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
     if exp_config.get("ylim"):
         plt.ylim(*exp_config.get("ylim"))
 
-    if exp_config.get("xlim"):
-        plt.xlim(*exp_config.get("xlim"))
-    else:
-        plt.xlim(0, exp_config["t_max"])
+    plt.xlim(0, max_n_iters)
 
     plt.grid()
     plt.tight_layout()

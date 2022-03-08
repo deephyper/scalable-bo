@@ -4,7 +4,7 @@ module load miniconda-3
 module load gcc/8.3.0
 module load cray-mpich
 
-conda create -p dhenv -y
+conda create -p dhenv --clone base -y
 conda activate dhenv
 
 # Clone DeepHyper (develop)
@@ -26,6 +26,7 @@ sed -i "s/## mpicc .*/mpicc = cc/g" mpi.cfg
 sed -i "s/## mpicxx .*/mpicxx = CC/g" mpi.cfg
 CC=cc CXX=CC python setup.py build
 CC=cc CXX=CC python setup.py install
+cd ..
 
 # Install Scalable-BO
 pip install -e ../src/scalbo/

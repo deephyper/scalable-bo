@@ -78,7 +78,3 @@ def execute(
         os.system(
             f"mv {path_log_file} {log_dir}"
         )
-        comm.Barrier()
-        if rank == 0:
-            print(f"ls {search_log_dir}")
-            os.system(f"ls {search_log_dir}")

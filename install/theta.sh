@@ -32,3 +32,4 @@ pip install -e ../src/scalbo/
 
 # Copy activation of environment file
 cp ../install/env/theta.sh activate-dhenv.sh
+echo "conda activate $PWD/dhenv/" >> activate-dhenv.sh

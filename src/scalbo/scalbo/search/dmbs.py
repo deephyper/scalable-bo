@@ -49,7 +49,7 @@ def execute(
     rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
 
     hp_problem = problem.hp_problem
-    run = profile(sleep(mu=60, std=20, random_state=rank_seed)(problem.run))
+    run = problem.run
 
     logging.info("Creation of the search instance...")
 

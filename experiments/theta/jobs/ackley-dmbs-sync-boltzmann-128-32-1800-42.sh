@@ -4,10 +4,7 @@
 #COBALT -q default
 #COBALT -A datascience
 
-PROJECT=/grand/projects/datascience/jgouneau/deephyper/search_quality
-INIT_SCRIPT=$PROJECT/scripts/init_dh-mpi.sh
-
-source $INIT_SCRIPT
+source ../../../build/activate-dhenv.sh
 
 export RANKS_PER_NODE=32
 export liar_strategy="boltzmann"

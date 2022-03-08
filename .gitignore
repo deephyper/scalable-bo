@@ -134,3 +134,7 @@ dmypy.json
 .vscode/
 figures/
 .DS_Store
+*.cobaltlog
+*.error
+*.output
+core

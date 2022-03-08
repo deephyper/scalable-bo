@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 4
 #COBALT -t 20
-#COBALT -q default
+#COBALT -q debug-cache-quad
 #COBALT -A datascience
 
 source ../../../build/activate-dhenv.sh

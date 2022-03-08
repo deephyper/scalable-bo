@@ -5,7 +5,7 @@
 # export PROBLEMS=("ackley") 
 export LIAR_STRATEGIES=("cl_max" "boltzmann")
 
-export timeout=10
+export timeout=30
 export RANDOM_STATES=(42)
 export PROBLEMS=("ackley") 
 # export LIAR_STRATEGIES=("topk")

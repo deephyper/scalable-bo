@@ -4,12 +4,11 @@ module load miniconda-3
 module load gcc/8.3.0
 module load cray-mpich
 
-conda create -p dhenv --clone base -y
-conda activate dhenv
+conda create -p dhenv python=3.8 -y
+conda activate dhenv/
 
 # Clone DeepHyper (develop)
 git clone -b develop https://github.com/deephyper/deephyper.git
-
 
 # Clone DeepHyper/Scikit-Optimize (master)
 git clone https://github.com/deephyper/scikit-optimize.git

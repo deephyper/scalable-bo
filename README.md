@@ -19,3 +19,10 @@ build/
     scikit-optimize/
     setup-env.sh
 ```
+
+For Theta:
+```
+mkdir build
+cd build
+../install/theta.sh
+```

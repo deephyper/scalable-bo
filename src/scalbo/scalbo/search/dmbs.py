@@ -75,7 +75,6 @@ def execute(
 
     if rank == 0:
         results.to_csv(os.path.join(search_log_dir, "results.csv"))
-    comm.Barrier()
 
     if log_dir != search_log_dir:
 
@@ -83,5 +82,4 @@ def execute(
             os.system(f"mv {search_log_dir}/results.csv {log_dir}")
 
             os.system(f"mv {path_log_file} {log_dir}")
-            
-        comm.Barrier()
+

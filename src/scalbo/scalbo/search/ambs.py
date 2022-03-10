@@ -49,10 +49,11 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
     # define where the outputs are saved live (in cache-dir if possible)
     if cache_dir is not None and os.path.exists(cache_dir):
         search_cache_dir = os.path.join(cache_dir, "search")
-        pathlib.Path(search_cache_dir).mkdir(parents=False, exist_ok=True)
         search_log_dir = search_cache_dir
     else:
         search_log_dir = log_dir
+
+    pathlib.Path(search_log_dir).mkdir(parents=False, exist_ok=True)
 
     if rank == 0:
         

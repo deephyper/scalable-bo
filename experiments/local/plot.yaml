@@ -35,14 +35,14 @@ experiments:
         label: "8"
         color: "navy"
         linestyle: "-"
-  3-2-distributed-boltzmann-ambs-sync:
-    title: "Scaling Centralized Sync"
-    t_max: 30
-    data:
-      ackley-ambs-sync-boltzmann-1-8-30-42:
-        label: "8"
-        color: "navy"
-        linestyle: "-"
+  # 3-2-distributed-boltzmann-ambs-sync:
+  #   title: "Scaling Centralized Sync"
+  #   t_max: 30
+  #   data:
+  #     ackley-ambs-sync-boltzmann-1-8-30-42:
+  #       label: "8"
+  #       color: "navy"
+  #       linestyle: "-"
   3-3-distributed-boltzmann-dmbs-sync:
     title: "Scaling Distributed Sync"
     t_max: 30

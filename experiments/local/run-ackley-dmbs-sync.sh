@@ -3,7 +3,7 @@
 # export timeout=5
 # export RANDOM_STATES=(42 2022 1451 8317 213 7607 4978 1516 2335 3366)
 # export PROBLEMS=("ackley") 
-export LIAR_STRATEGIES=("cl_max" "boltzmann")
+export LIAR_STRATEGIES=("boltzmann")
 
 export timeout=30
 export RANDOM_STATES=(42)
@@ -29,6 +29,7 @@ for liar_strategy in ${LIAR_STRATEGIES[@]}; do
                 --liar-strategy $liar_strategy \
                 --random-state $random_state \
                 --log-dir $log_dir \
+                --cache-dir output/cache \
                 --verbose 1 \
                 --sync 1
         done

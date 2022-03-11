@@ -7,11 +7,15 @@ import pathlib
 
 
 import scalbo.benchmark.ackley
+import scalbo.benchmark.hartmann6D
 
 import scalbo.search.ambs
 import scalbo.search.dmbs
 
-PROBLEMS = {"ackley": scalbo.benchmark.ackley}
+PROBLEMS = {
+    "ackley": scalbo.benchmark.ackley,
+    "hartmann6D": scalbo.benchmark.hartmann6D,
+}
 
 SEARCHES = {
     "AMBS": scalbo.search.ambs,  # Centralized Model-Based Search (Master-Worker)
@@ -77,7 +81,7 @@ def create_parser():
         "--cache-dir",
         type=str,
         default=None,
-        help="Path to use to cache logged outputs (e.g., /dev/shm/)."
+        help="Path to use to cache logged outputs (e.g., /dev/shm/).",
     )
     parser.add_argument(
         "-v",
@@ -106,7 +110,7 @@ def main(args):
         args.max_evals,
         args.random_state,
         args.log_dir,
-        args.cache_dir
+        args.cache_dir,
     )
 
 

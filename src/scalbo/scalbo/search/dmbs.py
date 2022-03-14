@@ -37,13 +37,14 @@ def execute(
 
     pathlib.Path(search_log_dir).mkdir(parents=False, exist_ok=True)
 
-    path_log_file = os.path.join(search_log_dir, f"deephyper.{rank}.log")
-    logging.basicConfig(
-        filename=path_log_file,
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
-        force=True,
-    )
+    if rank == 0:
+        path_log_file = os.path.join(search_log_dir, f"deephyper.{rank}.log")
+        logging.basicConfig(
+            filename=path_log_file,
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
+            force=True,
+        )
 
     rs = np.random.RandomState(random_state)
     rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
@@ -73,8 +74,8 @@ def execute(
         search.search(timeout=timeout)
     logging.info("Search is done")
 
-    if rank == 0:
-        results.to_csv(os.path.join(search_log_dir, "results.csv"))
+    # if rank == 0:
+    #     results.to_csv(os.path.join(search_log_dir, "results.csv"))
 
     if log_dir != search_log_dir:
 

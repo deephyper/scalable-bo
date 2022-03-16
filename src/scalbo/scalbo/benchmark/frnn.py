@@ -1,10 +1,11 @@
 import plasma.global_vars as g
 import os.path
 
+from pprint import pprint
+
 g.init_MPI()
 
 g.conf_file = None
-
 
 from plasma.conf_parser import parameters
 from plasma.models.mpi_runner import (
@@ -30,24 +31,40 @@ from deephyper.evaluator import profile
 
 
 hp_problem = HpProblem()
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "pred_length")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "pred_batch_size")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "length")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "rnn_size")
-hp_problem.add_hyperparameter((1, 4), "rnn_layers")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "num_conv_filters")
-hp_problem.add_hyperparameter((1, 4), "num_conv_layers")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "dense_size")
-hp_problem.add_hyperparameter((0.0, 1.0), "regularization")
-hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization")
-hp_problem.add_hyperparameter((5e-7, 1e-4), "lr")
-hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
-hp_problem.add_hyperparameter((0.0, 1.0), "dropout_prob")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "pred_length")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "pred_batch_size")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "length")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "rnn_size")
+# hp_problem.add_hyperparameter((1, 4), "rnn_layers")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "num_conv_filters")
+# hp_problem.add_hyperparameter((1, 4), "num_conv_layers")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "dense_size")
+# hp_problem.add_hyperparameter((0.0, 1.0), "regularization")
+# hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization")
+# hp_problem.add_hyperparameter((5e-7, 1e-4), "lr")
+# hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
+# hp_problem.add_hyperparameter((0.0, 1.0), "dropout_prob")
+# hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
+
+hp_problem.add_hyperparameter((200, 201, "log-uniform"), "pred_length")
+hp_problem.add_hyperparameter((128, 129, "log-uniform"), "pred_batch_size")
+hp_problem.add_hyperparameter((200, 201, "log-uniform"), "length")
+hp_problem.add_hyperparameter((200, 201, "log-uniform"), "rnn_size")
+hp_problem.add_hyperparameter((2, 3), "rnn_layers")
+hp_problem.add_hyperparameter((128, 129, "log-uniform"), "num_conv_filters")
+hp_problem.add_hyperparameter((3, 4), "num_conv_layers")
+hp_problem.add_hyperparameter((128, 129, "log-uniform"), "dense_size")
+hp_problem.add_hyperparameter((0.001, 0.0011), "regularization")
+hp_problem.add_hyperparameter((0.001, 0.0011), "dense_regularization")
+hp_problem.add_hyperparameter((5e-5, 6e-5), "lr")
+hp_problem.add_hyperparameter((0.97, 0.971), "lr_decay")
+hp_problem.add_hyperparameter((0.1, 0.11), "dropout_prob")
+hp_problem.add_hyperparameter((256, 257, "log-uniform"), "batch_size")
 
 @profile
 def run(config):
     conf = parameters(config)
+    pprint(conf)
     if conf['model']['shallow']:
         print("Shallow learning using MPI is not supported yet. ",
             "Set conf['model']['shallow'] to False.")
@@ -83,14 +100,14 @@ def run(config):
     if g.task_index == 0:
         # make sure preprocessing has been run, and results are saved to files
         # if not, only master MPI rank spawns thread pool to perform preprocessing
-        (shot_list_train, shot_list_validate,
+        (shot_list_train, shot_list_valid,
         shot_list_test) = guarantee_preprocessed(conf)
         # similarly, train normalizer (if necessary) w/ master MPI rank only
         normalizer.train()  # verbose=False only suppresses if purely loading
     g.comm.Barrier()
     g.print_unique("begin preprocessor+normalization (all MPI ranks)...")
     # second call has ALL MPI ranks load preprocessed shots from .npz files
-    (shot_list_train, shot_list_validate,
+    (shot_list_train, shot_list_valid,
     shot_list_test) = guarantee_preprocessed(conf, verbose=True)
     # second call to normalizer training
     normalizer.conf['data']['recompute_normalization'] = False
@@ -116,7 +133,7 @@ def run(config):
 
     # reminder: ensure training has a separate random seed for every worker
     if not only_predict:
-        mpi_train(conf, shot_list_train, shot_list_validate, loader,
+        mpi_train(conf, shot_list_train, shot_list_valid, loader,
                 shot_list_test=shot_list_test)
     g.flush_all_inorder()
 
@@ -140,6 +157,9 @@ def run(config):
     (y_prime_train, y_gold_train, disruptive_train, roc_train,
     loss_train) = mpi_make_predictions_and_evaluate(conf, shot_list_train,
                                                     loader, custom_path)
+    (y_prime_valid, y_gold_valid, disruptive_valid, roc_valid,
+    loss_valid) = mpi_make_predictions_and_evaluate(conf, shot_list_valid,
+                                                    loader, custom_path)
     (y_prime_test, y_gold_test, disruptive_test, roc_test,
     loss_test) = mpi_make_predictions_and_evaluate(conf, shot_list_test,
                                                     loader, custom_path)
@@ -147,33 +167,35 @@ def run(config):
     g.print_unique('=========Summary========')
     g.print_unique('Train Loss: {:.3e}'.format(loss_train))
     g.print_unique('Train ROC: {:.4f}'.format(roc_train))
+    g.print_unique('Valid Loss: {:.3e}'.format(loss_valid))
+    g.print_unique('Valid ROC: {:.4f}'.format(roc_valid))
     g.print_unique('Test Loss: {:.3e}'.format(loss_test))
     g.print_unique('Test ROC: {:.4f}'.format(roc_test))
 
-    if g.task_index == 0:
-        disruptive_train = np.array(disruptive_train)
-        disruptive_test = np.array(disruptive_test)
+    # if g.task_index == 0:
+    #     disruptive_train = np.array(disruptive_train)
+    #     disruptive_test = np.array(disruptive_test)
 
-        y_gold = y_gold_train + y_gold_test
-        y_prime = y_prime_train + y_prime_test
-        disruptive = np.concatenate((disruptive_train, disruptive_test))
+    #     y_gold = y_gold_train + y_gold_test
+    #     y_prime = y_prime_train + y_prime_test
+    #     disruptive = np.concatenate((disruptive_train, disruptive_test))
 
-        shot_list_test.make_light()
-        shot_list_train.make_light()
+    #     shot_list_test.make_light()
+    #     shot_list_train.make_light()
 
-        save_str = 'results_' + datetime.datetime.now().strftime(
-            "%Y-%m-%d-%H-%M-%S")
-        result_base_path = conf['paths']['results_prepath']
-        if not os.path.exists(result_base_path):
-            os.makedirs(result_base_path)
+    #     save_str = 'results_' + datetime.datetime.now().strftime(
+    #         "%Y-%m-%d-%H-%M-%S")
+    #     result_base_path = conf['paths']['results_prepath']
+    #     if not os.path.exists(result_base_path):
+    #         os.makedirs(result_base_path)
 
-        np.savez(result_base_path+save_str, y_gold=y_gold,
-                y_gold_train=y_gold_train, y_gold_test=y_gold_test,
-                y_prime=y_prime, y_prime_train=y_prime_train,
-                y_prime_test=y_prime_test, disruptive=disruptive,
-                disruptive_train=disruptive_train,
-                disruptive_test=disruptive_test, shot_list_train=shot_list_train,
-                shot_list_test=shot_list_test, conf=conf)
+    #     np.savez(result_base_path+save_str, y_gold=y_gold,
+    #             y_gold_train=y_gold_train, y_gold_test=y_gold_test,
+    #             y_prime=y_prime, y_prime_train=y_prime_train,
+    #             y_prime_test=y_prime_test, disruptive=disruptive,
+    #             disruptive_train=disruptive_train,
+    #             disruptive_test=disruptive_test, shot_list_train=shot_list_train,
+    #             shot_list_test=shot_list_test, conf=conf)
 
         # TODO(KGF): Intel NumPy fork
         # https://conda.anaconda.org/intel/linux-64/numpy-1.16.2-py36h7b7c402_0.tar.bz2
@@ -182,4 +204,4 @@ def run(config):
 
     sys.stdout.flush()
     g.print_unique('finished.')
-    return 1
+    return roc_valid

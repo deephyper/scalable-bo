@@ -1,9 +1,0 @@
-problems: [ackley]
-searches: [ambs, dmbs]
-syncs: [sync, async]
-liar-strategies: [boltzmann, topk, cl_max]
-timeouts: [30]
-max-evals: [-1]
-random-states: [42]
-log-dir: output/
-cache-dir: /dev/smh/

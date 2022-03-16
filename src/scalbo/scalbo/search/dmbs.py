@@ -26,7 +26,14 @@ size = comm.Get_size()
 
 
 def execute(
-    problem, sync, liar_strategy, timeout, max_evals, random_state, log_dir, cache_dir,
+    problem,
+    sync,
+    liar_strategy,
+    timeout,
+    max_evals,
+    random_state,
+    log_dir,
+    cache_dir,
 ):
 
     # define where the outputs are saved live (in cache-dir if possible)
@@ -63,7 +70,7 @@ def execute(
         lazy_socket_allocation=False,
         log_dir=search_log_dir,
         random_state=rank_seed,
-        acq_func="qUCB",
+        acq_func=acq_func,
     )  # sampling boltzmann!
     logging.info("Creation of the search done")
 
@@ -84,4 +91,3 @@ def execute(
             os.system(f"mv {search_log_dir}/results.csv {log_dir}")
 
             os.system(f"mv {path_log_file} {log_dir}")
-

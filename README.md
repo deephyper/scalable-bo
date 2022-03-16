@@ -2,27 +2,18 @@
 
 ## Installations
 
-```console
-pip install -e src/scalbo
-```
+### For Theta
 
 ```console
-mkdir build
-cd build/
-../install.sh
-```
-
-```console
-build/
-    deephyper/
-    dhenv/
-    scikit-optimize/
-    setup-env.sh
-```
-
-For Theta:
-```
 mkdir build
 cd build
 ../install/theta.sh
+```
+
+### For ThetaGPU
+
+```console
+mkdir build
+cd build
+../install/thetagpu.sh
 ```

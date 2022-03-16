@@ -32,7 +32,6 @@ echo "Running: aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_N
 --liar-strategy $liar_strategy \
 --random-state $random_state \
 --log-dir $log_dir \
---cache-dir $cache_dir \
 --verbose 1";
 
 aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -cc depth -e OMP_NUM_THREADS=8 python -m scalbo.exp --problem $problem \
@@ -42,5 +41,4 @@ aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -
     --liar-strategy $liar_strategy \
     --random-state $random_state \
     --log-dir $log_dir \
-    --cache-dir $cache_dir \
     --verbose 1 

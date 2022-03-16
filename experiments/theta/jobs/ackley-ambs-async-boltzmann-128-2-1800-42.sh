@@ -4,10 +4,7 @@
 #COBALT -q default
 #COBALT -A datascience
 
-PROJECT=/grand/projects/datascience/jgouneau/deephyper/search_quality
-INIT_SCRIPT=$PROJECT/scripts/init_dh-mpi.sh
-
-source $INIT_SCRIPT
+source ../../../build/activate-dhenv.sh
 
 export RANKS_PER_NODE=2
 export liar_strategy="boltzmann"
@@ -45,5 +42,4 @@ aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -
     --liar-strategy $liar_strategy \
     --random-state $random_state \
     --log-dir $log_dir \
-    --cache-dir $cache_dir \
     --verbose 1 

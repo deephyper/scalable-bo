@@ -33,7 +33,6 @@ echo "Running: aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_N
 --liar-strategy $liar_strategy \
 --random-state $random_state \
 --log-dir $log_dir \
---cache-dir $cache_dir \
 --verbose 1 \
 --acq-func $acq_func";
 

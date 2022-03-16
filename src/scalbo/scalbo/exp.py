@@ -4,19 +4,16 @@ warnings.simplefilter("ignore")
 
 import argparse
 import pathlib
-
-import scalbo.benchmark.ackley
-import scalbo.benchmark.hartmann6D
-import scalbo.benchmark.frnn
+import importlib
 
 import scalbo.search.ambs
 import scalbo.search.dmbs
 
 
 PROBLEMS = {
-    "ackley": scalbo.benchmark.ackley,
-    "hartmann6D": scalbo.benchmark.hartmann6D,
-    "frnn": scalbo.benchmark.frnn,
+    "ackley": "scalbo.benchmark.ackley",
+    "hartmann6D": "scalbo.benchmark.hartmann6D",
+    "frnn": "scalbo.benchmark.frnn",
 }
 
 SEARCHES = {
@@ -103,7 +100,9 @@ def create_parser():
 
 
 def main(args):
-    problem = PROBLEMS.get(args.problem)
+
+    # load the problem
+    problem = importlib.import_module(PROBLEMS.get(args.problem))
     search = SEARCHES.get(args.search)
     sync = bool(args.sync)
 

@@ -45,4 +45,4 @@ aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -
     --random-state $random_state \
     --log-dir $log_dir \
     --verbose 1 \
-    --acq_func $acq_func
+    --acq-func $acq_func

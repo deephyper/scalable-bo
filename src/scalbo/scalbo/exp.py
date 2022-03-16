@@ -90,6 +90,12 @@ def create_parser():
         default=False,
         help="Wether to activate or not the verbose mode.",
     )
+    parser.add_argument(
+        "--acq-func",
+        type=str,
+        default="UCB",
+        help="Acquisition funciton to use.",
+    )
 
     return parser
 
@@ -111,6 +117,7 @@ def main(args):
         args.random_state,
         args.log_dir,
         args.cache_dir,
+        args.acq_func
     )
 
 

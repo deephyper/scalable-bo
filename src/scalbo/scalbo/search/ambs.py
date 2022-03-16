@@ -2,7 +2,7 @@ import logging
 import pathlib
 import os
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import mpi4py
 
@@ -21,13 +21,23 @@ from mpi4py import MPI
 
 if not MPI.Is_initialized():
     MPI.Init_thread()
-    
+
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
 
-def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_dir, cache_dir):
+def execute(
+    problem,
+    sync,
+    liar_strategy,
+    timeout,
+    max_evals,
+    random_state,
+    log_dir,
+    cache_dir,
+    acq_func,
+):
     """Execute the AMBS algorithm.
 
     Args:
@@ -56,7 +66,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
     pathlib.Path(search_log_dir).mkdir(parents=False, exist_ok=True)
 
     if rank == 0:
-        
+
         path_log_file = os.path.join(search_log_dir, "deephyper.log")
         logging.basicConfig(
             filename=path_log_file,
@@ -92,6 +102,7 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
                 n_jobs=4,
                 log_dir=search_log_dir,
                 random_state=rank_seed,
+                acq_func=acq_func,
             )
             logging.info("Creation of the search done")
 
@@ -101,5 +112,5 @@ def execute(problem, sync, liar_strategy, timeout, max_evals, random_state, log_
 
             results.to_csv(os.path.join(search_log_dir, f"results.csv"))
 
-            if log_dir != search_log_dir: # means the cache was used
+            if log_dir != search_log_dir:  # means the cache was used
                 os.system(f"mv {search_log_dir}/* {log_dir}")

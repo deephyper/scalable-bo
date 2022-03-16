@@ -34,11 +34,7 @@ def execute(
     random_state,
     log_dir,
     cache_dir,
-<<<<<<< HEAD
-    acq_func,
-=======
-    acq_func
->>>>>>> a8ee67232f99f60d736eb23330f342707b74f68b
+    acq_funcs
 ):
 
     # define where the outputs are saved live (in cache-dir if possible)

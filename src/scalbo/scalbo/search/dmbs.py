@@ -34,6 +34,7 @@ def execute(
     random_state,
     log_dir,
     cache_dir,
+    acq_func
 ):
 
     # define where the outputs are saved live (in cache-dir if possible)
@@ -54,7 +55,7 @@ def execute(
         )
 
     rs = np.random.RandomState(random_state)
-    rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
+    # rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
 
     hp_problem = problem.hp_problem
     run = problem.run
@@ -69,7 +70,7 @@ def execute(
         n_jobs=4,  # TODO: to be given according to the number of available hardware threads
         lazy_socket_allocation=False,
         log_dir=search_log_dir,
-        random_state=rank_seed,
+        random_state=rs,
         acq_func=acq_func,
     )  # sampling boltzmann!
     logging.info("Creation of the search done")

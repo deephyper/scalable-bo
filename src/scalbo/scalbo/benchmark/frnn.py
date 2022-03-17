@@ -1,7 +1,12 @@
+import os
+from mpi4py import MPI
+os.environ["CUDA_VISILBE_DEVICES"] = str(MPI.COMM_WORLD.Get_rank())
+
 import plasma.global_vars as g
 import os.path
 
 from pprint import pprint
+
 
 g.init_MPI()
 
@@ -15,7 +20,6 @@ from plasma.models.mpi_runner import (
 from plasma.preprocessor.preprocess import guarantee_preprocessed
 from plasma.models.loader import Loader
 
-import os
 import sys
 import datetime
 import random

@@ -28,13 +28,12 @@ size = comm.Get_size()
 def execute(
     problem,
     sync,
-    liar_strategy,
+    acq_func,
+    strategy,
     timeout,
-    max_evals,
     random_state,
     log_dir,
     cache_dir,
-    acq_func
 ):
 
     # define where the outputs are saved live (in cache-dir if possible)

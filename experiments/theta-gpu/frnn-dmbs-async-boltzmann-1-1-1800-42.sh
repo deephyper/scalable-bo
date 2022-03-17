@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 20
-#COBALT -q single-gpu
+#COBALT -q full-node
 #COBALT -A datascience
 
 PROJECT=/grand/projects/datascience/jgouneau/deephyper/frnn
@@ -9,7 +9,7 @@ INIT_SCRIPT=$PROJECT/scripts/init_dh-gpu.sh
 
 source $INIT_SCRIPT
 
-export RANKS_PER_NODE=1
+export RANKS_PER_NODE=4
 export COBALT_JOBSIZE=1
 export PYTHONPATH=$FRNN_ROOT/venv/dh-gpu/lib/python3.8/site-packages/:$PYTHONPATH
 

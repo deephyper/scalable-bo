@@ -30,20 +30,19 @@ size = comm.Get_size()
 def execute(
     problem,
     sync,
-    liar_strategy,
+    acq_func,
+    strategy,
     timeout,
-    max_evals,
     random_state,
     log_dir,
     cache_dir,
-    acq_func,
 ):
     """Execute the AMBS algorithm.
 
     Args:
         problem (HpProblem): problem (search space) definition.
         sync (bool): Boolean to execute the search in "synchronous" (``True``) or "asynchronous" (``False``) communication.
-        liar_strategy (str): strategy to use to generate batches of samples.
+        strategy (str): strategy to use to generate batches of samples.
         timeout (int): duration in seconds of the search.
         max_evals (int): maximum number of evaluations for the search.
         random_state (int): random state/seed of the search.
@@ -98,7 +97,7 @@ def execute(
                 hp_problem,
                 evaluator,
                 sync_communication=sync,
-                liar_strategy=liar_strategy,
+                liar_strategy=strategy,
                 n_jobs=4,
                 log_dir=search_log_dir,
                 random_state=rank_seed,
@@ -107,7 +106,7 @@ def execute(
             logging.info("Creation of the search done")
 
             logging.info("Starting the search...")
-            results = search.search(timeout=timeout, max_evals=max_evals)
+            results = search.search(timeout=timeout)
             logging.info("Search is done")
 
             results.to_csv(os.path.join(search_log_dir, f"results.csv"))

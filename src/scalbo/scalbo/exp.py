@@ -46,11 +46,17 @@ def create_parser():
         help="If the search workers must be syncronized or not.",
     )
     parser.add_argument(
-        "--liar-strategy",
+        "--acq-func",
+        type=str,
+        default="UCB",
+        help="Acquisition funciton to use.",
+    )
+    parser.add_argument(
+        "--strategy",
         type=str,
         default="boltzmann",
-        choices=["cl_max", "topk", "boltzmann"],
-        help="The liar strategy the optimizer must use.",
+        choices=["cl_max", "topk", "boltzmann", "qUCB"],
+        help="The strategy for multi-point acquisition.",
     )
     parser.add_argument(
         "--timeout",
@@ -89,12 +95,6 @@ def create_parser():
         default=False,
         help="Wether to activate or not the verbose mode.",
     )
-    parser.add_argument(
-        "--acq-func",
-        type=str,
-        default="UCB",
-        help="Acquisition funciton to use.",
-    )
 
     return parser
 
@@ -111,13 +111,12 @@ def main(args):
     search.execute(
         problem,
         sync,
-        args.liar_strategy,
+        args.acq_func,
+        args.strategy,
         args.timeout,
-        args.max_evals,
         args.random_state,
         args.log_dir,
         args.cache_dir,
-        args.acq_func
     )
 
 

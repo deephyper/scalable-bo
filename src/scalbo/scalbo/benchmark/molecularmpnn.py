@@ -13,6 +13,7 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 gpu_local_idx = rank % size
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 os.environ["CUDA_VISILBE_DEVICES"] = str(gpu_local_idx)
 print(f"CUDA_VISIBLE_DEVICES={gpu_local_idx}")
 

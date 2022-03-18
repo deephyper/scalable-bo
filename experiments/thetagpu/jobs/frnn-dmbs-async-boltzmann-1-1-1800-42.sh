@@ -4,14 +4,11 @@
 #COBALT -q full-node
 #COBALT -A datascience
 
-PROJECT=/grand/projects/datascience/jgouneau/deephyper/frnn
-INIT_SCRIPT=$PROJECT/scripts/init_dh-gpu.sh
-
-source $INIT_SCRIPT
+source ../../../build/activate-dhenv.sh
 
 export RANKS_PER_NODE=4
 export COBALT_JOBSIZE=1
-export PYTHONPATH=$FRNN_ROOT/venv/dh-gpu/lib/python3.8/site-packages/:$PYTHONPATH
+export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
 
 
 export liar_strategy="boltzmann"
@@ -36,7 +33,7 @@ echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * 
 --search $search \
 --sync $sync_val \
 --timeout $timeout \
---liar-strategy $liar_strategy \
+--strategy $liar_strategy \
 --random-state $random_state \
 --log-dir $log_dir \
 --cache-dir $cache_dir \
@@ -46,7 +43,7 @@ mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * $RANKS
     --search $search \
     --sync $sync_val \
     --timeout $timeout \
-    --liar-strategy $liar_strategy \
+    --strategy $liar_strategy \
     --random-state $random_state \
     --log-dir $log_dir \
     --cache-dir $cache_dir \

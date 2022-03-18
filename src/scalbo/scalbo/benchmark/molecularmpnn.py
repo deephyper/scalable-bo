@@ -21,8 +21,8 @@ import tensorflow as tf
 gpus = tf.config.experimental.list_physical_devices('GPU')
 try:
     # Currently, memory growth needs to be the same across GPUs
-    gpu = gpus[gpu_local_idx]
-    tf.config.experimental.set_memory_growth(gpu, True)
+    for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
 except RuntimeError as e:
     # Memory growth must be set before GPUs have been initialized
     print(e)

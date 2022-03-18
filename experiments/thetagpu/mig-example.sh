@@ -2,8 +2,8 @@
 #COBALT -n 1
 #COBALT -t 10
 #COBALT -q full-node
-#COBALT -A datascience
 #COBALT --attrs mig-mode=True
+#COBALT -A datascience
 
 touch nvidia-smi-mig-lgip.txt
 nvidia-smi mig -lgip > nvidia-smi-mig-lgip.txt
@@ -19,7 +19,7 @@ for device_id in ${DEVICES[@]}; do
 
     # Creates Compute instances (CI)
     nvidia-smi mig -i $device_id -gi 1 -cci 0 &&
-    nvidia-smi mig -i $device_id -gi 2 -cci 0 &&
+    nvidia-smi mig -i $device_id -gi 2 -cci 0
 done
 
 touch nvidia-smi-L.txt

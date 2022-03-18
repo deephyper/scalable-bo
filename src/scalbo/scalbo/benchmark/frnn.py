@@ -1,6 +1,30 @@
+import numpy as np
+from deephyper.problem import HpProblem
+from deephyper.evaluator import profile
+
 import os
+
+# Temporary suppress tf logs
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
 from mpi4py import MPI
-os.environ["CUDA_VISILBE_DEVICES"] = str(MPI.COMM_WORLD.Get_rank())
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+gpu_local_idx = rank % size
+
+import tensorflow as tf
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+  # Restrict TensorFlow to only use the first GPU
+  try:
+    tf.config.set_visible_devices(gpus[gpu_local_idx], 'GPU')
+    tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
+  except RuntimeError as e:
+    # Visible devices must be set before GPUs have been initialized
+    print(e)
 
 import plasma.global_vars as g
 import os.path

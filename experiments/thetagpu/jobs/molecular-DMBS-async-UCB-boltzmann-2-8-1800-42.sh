@@ -6,7 +6,7 @@
 
 source ../../../build/activate-dhenv.sh
 
-export RANKS_PER_NODE=16
+export RANKS_PER_NODE=8
 export COBALT_JOBSIZE=2
 export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
 

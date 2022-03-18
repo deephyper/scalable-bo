@@ -8,23 +8,25 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 from mpi4py import MPI
+
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 gpu_local_idx = rank % size
 
 import tensorflow as tf
-gpus = tf.config.list_physical_devices('GPU')
+
+gpus = tf.config.list_physical_devices("GPU")
 if gpus:
-  # Restrict TensorFlow to only use the first GPU
-  try:
-    tf.config.set_visible_devices(gpus[gpu_local_idx], 'GPU')
-    tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
-    logical_gpus = tf.config.list_logical_devices('GPU')
-    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
-  except RuntimeError as e:
-    # Visible devices must be set before GPUs have been initialized
-    print(e)
+    # Restrict TensorFlow to only use the first GPU
+    try:
+        tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
+        tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
+        logical_gpus = tf.config.list_logical_devices("GPU")
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
+    except RuntimeError as e:
+        # Visible devices must be set before GPUs have been initialized
+        print(e)
 
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -41,16 +43,16 @@ from rdkit.Chem.Draw import MolsToGridImage
 warnings.filterwarnings("ignore")
 RDLogger.DisableLog("rdApp.*")
 
-np.random.seed(42)
-tf.random.set_seed(42)
-
 hp_problem = HpProblem()
-hp_problem.add_hyperparameter((1e-4, 1e-2), "learning_rate")
-hp_problem.add_hyperparameter((16,256), "batch_size")
-# hp_problem.add_hyperparameter((16,128), "message_units")
-hp_problem.add_hyperparameter((2,10), "message_steps")
-# hp_problem.add_hyperparameter([4,8,16], "num_attention_heads")
-# hp_problem.add_hyperparameter((32,1024), "dense_units")
+hp_problem.add_hyperparameter((1e-4, 1e-2, "log-uniform"), "learning_rate")
+hp_problem.add_hyperparameter((16, 256), "batch_size")
+hp_problem.add_hyperparameter([32, 64], "message_units")
+hp_problem.add_hyperparameter((2, 10), "message_steps")
+hp_problem.add_hyperparameter([6,8,10], "num_attention_heads")
+hp_problem.add_hyperparameter([256,512], "dense_units")
+hp_problem.add_hyperparameter((32, 1024, "log-uniform"), "dense_units_output")
+hp_problem.add_hyperparameter(["relu", "swish", "sigmoid", "tanh", "selu", "elu"])
+
 
 class Featurizer:
     def __init__(self, allowable_sets):
@@ -124,6 +126,7 @@ bond_featurizer = BondFeaturizer(
     }
 )
 
+
 def molecule_from_smiles(smiles):
     # MolFromSmiles(m, sanitize=True) should be equivalent to
     # MolFromSmiles(m, sanitize=False) -> SanitizeMol(m) -> AssignStereochemistry(m, ...)
@@ -183,8 +186,7 @@ def graphs_from_smiles(smiles_list):
 
 
 def prepare_batch(x_batch, y_batch):
-    """Merges (sub)graphs of batch into a single global (disconnected) graph
-    """
+    """Merges (sub)graphs of batch into a single global (disconnected) graph"""
 
     atom_features, bond_features, pair_indices = x_batch
 
@@ -216,6 +218,7 @@ def MPNNDataset(X, y, batch_size=32, shuffle=False):
         dataset = dataset.shuffle(1024)
     return dataset.batch(batch_size).map(prepare_batch, -1).prefetch(-1)
 
+
 class EdgeNetwork(layers.Layer):
     def build(self, input_shape):
         self.atom_dim = input_shape[0][-1]
@@ -226,7 +229,9 @@ class EdgeNetwork(layers.Layer):
             name="kernel",
         )
         self.bias = self.add_weight(
-            shape=(self.atom_dim * self.atom_dim), initializer="zeros", name="bias",
+            shape=(self.atom_dim * self.atom_dim),
+            initializer="zeros",
+            name="bias",
         )
         self.built = True
 
@@ -287,6 +292,7 @@ class MessagePassing(layers.Layer):
             )
         return atom_features_updated
 
+
 class PartitionPadding(layers.Layer):
     def __init__(self, batch_size, **kwargs):
         super().__init__(**kwargs)
@@ -327,7 +333,10 @@ class TransformerEncoderReadout(layers.Layer):
         self.partition_padding = PartitionPadding(batch_size)
         self.attention = layers.MultiHeadAttention(num_heads, embed_dim)
         self.dense_proj = keras.Sequential(
-            [layers.Dense(dense_dim, activation="relu"), layers.Dense(embed_dim),]
+            [
+                layers.Dense(dense_dim, activation="relu"),
+                layers.Dense(embed_dim),
+            ]
         )
         self.layernorm_1 = layers.LayerNormalization()
         self.layernorm_2 = layers.LayerNormalization()
@@ -342,6 +351,7 @@ class TransformerEncoderReadout(layers.Layer):
         proj_output = self.layernorm_2(proj_input + self.dense_proj(proj_input))
         return self.average_pooling(proj_output)
 
+
 def MPNNModel(
     atom_dim,
     bond_dim,
@@ -350,6 +360,8 @@ def MPNNModel(
     message_steps=4,
     num_attention_heads=8,
     dense_units=512,
+    dense_units_output=512,
+    activation_output="relu"
 ):
 
     atom_features = layers.Input((atom_dim), dtype="float32", name="atom_features")
@@ -365,7 +377,7 @@ def MPNNModel(
         num_attention_heads, message_units, dense_units, batch_size
     )([x, molecule_indicator])
 
-    x = layers.Dense(dense_units, activation="relu")(x)
+    x = layers.Dense(dense_units_output, activation=activation_output)(x)
     x = layers.Dense(1, activation="sigmoid")(x)
 
     model = keras.Model(
@@ -373,6 +385,7 @@ def MPNNModel(
         outputs=[x],
     )
     return model
+
 
 @profile
 def run(config):
@@ -401,18 +414,27 @@ def run(config):
     # x_test = graphs_from_smiles(df.iloc[test_index].smiles)
     # y_test = df.iloc[test_index].p_np
 
-    mpnn = MPNNModel(
-        atom_dim=x_train[0][0][0].shape[0], bond_dim=x_train[1][0][0].shape[0],
-        batch_size=config["batch_size"],
-        # message_units=config["message_units"],
-        message_steps=config["message_steps"],
-        # num_attention_heads=config["num_attention_heads"],
-        # dense_units=config["num_attention_heads"]*64
-    )
+    try:
+        mpnn = MPNNModel(
+            atom_dim=x_train[0][0][0].shape[0],
+            bond_dim=x_train[1][0][0].shape[0],
+            batch_size=config["batch_size"],
+            message_units=config["message_units"],
+            message_steps=config["message_steps"],
+            num_attention_heads=config["num_attention_heads"],
+            dense_units=config["dense_units"],
+            dense_units_output=config["dense_units_output"],
+        )
+    except:
+        return 0
+
+    mpnn.summary()
 
     mpnn.compile(
         loss=keras.losses.BinaryCrossentropy(),
-        optimizer=keras.optimizers.Adam(learning_rate=config["learning_rate"]), # default 5e-4
+        optimizer=keras.optimizers.Adam(
+            learning_rate=config["learning_rate"]
+        ),  # default 5e-4
         metrics=[keras.metrics.AUC(name="AUC")],
     )
 
@@ -420,17 +442,34 @@ def run(config):
     valid_dataset = MPNNDataset(x_valid, y_valid, batch_size=config["batch_size"])
     # test_dataset = MPNNDataset(x_test, y_test)
 
+    early_stopping = tf.keras.callbacks.EarlyStopping(
+        monitor="val_AUC",
+        patience=5,
+        verbose=0,
+        mode="max",
+    )
+
     history = mpnn.fit(
         train_dataset,
         validation_data=valid_dataset,
-        epochs=10, # default 40
-        verbose=0,
+        epochs=40,  # default 40
+        verbose=1,
         class_weight={0: 2.0, 1: 0.5},
+        callbacks=[early_stopping],
     )
-
 
     return history.history["val_AUC"][-1]
 
 
 if __name__ == "__main__":
-    run({})
+    default_config = {
+        "batch_size": 32,
+        "learning_rate": 5e-4,
+        "message_steps": 4,
+        "message_units": 32,
+        "num_attention_heads": 10,
+        "dense_units": 256,
+        "dense_units_output": 100,
+        "activation_output": "swish"
+    }
+    run(default_config)

@@ -36,7 +36,6 @@ echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * 
 --strategy $liar_strategy \
 --random-state $random_state \
 --log-dir $log_dir \
---cache-dir $cache_dir \
 --verbose 1";
 
 mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -npernode $RANKS_PER_NODE --hostfile $COBALT_NODEFILE python -m scalbo.exp --problem $problem \
@@ -46,5 +45,4 @@ mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * $RANKS
     --strategy $liar_strategy \
     --random-state $random_state \
     --log-dir $log_dir \
-    --cache-dir $cache_dir \
     --verbose 1 

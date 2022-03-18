@@ -3,6 +3,7 @@
 . /etc/profile
 
 module load conda/2021-11-30
+module load openmpi/openmpi-4.0.5
 
 conda create -p dhenv --clone base -y
 conda activate dhenv/
@@ -25,7 +26,10 @@ pip install -e plasma-python/
 pip install -e ../src/scalbo/
 
 # Install mpi4py
-env MPICC=/lus/theta-fs0/software/thetagpu/openmpi/openmpi-4.1.1_ucx-1.11.2_gcc-9.3.0/bin/mpicc pip install -I mpi4py --no-cache-dir
+git clone https://github.com/mpi4py/mpi4py.git
+cd mpi4py/
+MPICC=mpicc python setup.py install
+cd ..
 
 # Copy activation of environment file
 cp ../install/env/thetagpu.sh activate-dhenv.sh

@@ -1,4 +1,3 @@
-import time
 import numpy as np
 from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
@@ -45,11 +44,9 @@ RDLogger.DisableLog("rdApp.*")
 np.random.seed(42)
 tf.random.set_seed(42)
 
-nb_dim = 5
-domain = (-32.768, 32.768)
 hp_problem = HpProblem()
-for i in range(nb_dim):
-    hp_problem.add_hyperparameter(domain, f"x{i}")
+hp_problem.add_hyperparameter((1e-4, 1e-2), "learning_rate")
+hp_problem.add_hyperparameter((16,256), "batch_size")
 
 
 class Featurizer:
@@ -407,18 +404,18 @@ def run(config):
 
     mpnn.compile(
         loss=keras.losses.BinaryCrossentropy(),
-        optimizer=keras.optimizers.Adam(learning_rate=5e-4),
+        optimizer=keras.optimizers.Adam(learning_rate=config["learning_rate"]), # default 5e-4
         metrics=[keras.metrics.AUC(name="AUC")],
     )
 
-    train_dataset = MPNNDataset(x_train, y_train)
+    train_dataset = MPNNDataset(x_train, y_train, batch_size=config["batch_size"])
     valid_dataset = MPNNDataset(x_valid, y_valid)
     # test_dataset = MPNNDataset(x_test, y_test)
 
     history = mpnn.fit(
         train_dataset,
         validation_data=valid_dataset,
-        epochs=40,
+        epochs=10, # default 40
         verbose=0,
         class_weight={0: 2.0, 1: 0.5},
     )

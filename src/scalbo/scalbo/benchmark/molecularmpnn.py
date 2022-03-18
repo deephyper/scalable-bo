@@ -13,18 +13,29 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 gpu_local_idx = rank % size
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISILBE_DEVICES"] = str(gpu_local_idx)
-print(f"CUDA_VISIBLE_DEVICES={gpu_local_idx}")
+# os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+# os.environ["CUDA_VISILBE_DEVICES"] = str(gpu_local_idx)
+# print(f"CUDA_VISIBLE_DEVICES={gpu_local_idx}")
 
 import tensorflow as tf
-gpus = tf.config.experimental.list_physical_devices('GPU')
-try:
-    # Currently, memory growth needs to be the same across GPUs
-    for gpu in gpus:
-        tf.config.experimental.set_memory_growth(gpu, True)
-except RuntimeError as e:
-    # Memory growth must be set before GPUs have been initialized
+# gpus = tf.config.experimental.list_physical_devices('GPU')
+# try:
+#     # Currently, memory growth needs to be the same across GPUs
+#     for gpu in gpus:
+#         tf.config.experimental.set_memory_growth(gpu, True)
+# except RuntimeError as e:
+#     # Memory growth must be set before GPUs have been initialized
+#     print(e)
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+  # Restrict TensorFlow to only use the first GPU
+  try:
+    tf.config.set_visible_devices(gpus[gpu_local_idx], 'GPU')
+    tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
+  except RuntimeError as e:
+    # Visible devices must be set before GPUs have been initialized
     print(e)
 
 from tensorflow import keras

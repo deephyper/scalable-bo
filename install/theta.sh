@@ -30,6 +30,9 @@ cd ..
 # Install Scalable-BO
 pip install -e ../src/scalbo/
 
+# Install rdkit
+pip install rdkit-pypi
+
 # Copy activation of environment file
 cp ../install/env/theta.sh activate-dhenv.sh
 echo "conda activate $PWD/dhenv/" >> activate-dhenv.sh

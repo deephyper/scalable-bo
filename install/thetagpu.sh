@@ -31,6 +31,9 @@ cd mpi4py/
 MPICC=mpicc python setup.py install
 cd ..
 
+# Install rdkit
+pip install rdkit-pypi
+
 # Copy activation of environment file
 cp ../install/env/thetagpu.sh activate-dhenv.sh
 echo "conda activate $PWD/dhenv/" >> activate-dhenv.sh

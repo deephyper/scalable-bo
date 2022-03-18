@@ -14,6 +14,7 @@ PROBLEMS = {
     "ackley": "scalbo.benchmark.ackley",
     "hartmann6D": "scalbo.benchmark.hartmann6D",
     "frnn": "scalbo.benchmark.frnn",
+    "molecular": "scalbo.benchmark.molecularmpnn"
 }
 
 SEARCHES = {

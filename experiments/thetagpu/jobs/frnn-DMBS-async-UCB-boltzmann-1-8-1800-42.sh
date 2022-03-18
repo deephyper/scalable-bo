@@ -1,12 +1,12 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 20
-#COBALT -q single-gpu
+#COBALT -q full-node
 #COBALT -A datascience
 
 source ../../../build/activate-dhenv.sh
 
-export RANKS_PER_NODE=1
+export RANKS_PER_NODE=8
 export COBALT_JOBSIZE=1
 export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
 

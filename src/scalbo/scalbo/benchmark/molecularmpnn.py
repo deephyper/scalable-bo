@@ -47,7 +47,7 @@ tf.random.set_seed(42)
 hp_problem = HpProblem()
 hp_problem.add_hyperparameter((1e-4, 1e-2), "learning_rate")
 hp_problem.add_hyperparameter((16,256), "batch_size")
-hp_problem.add_hyperparameter((16,128), "message_units")
+# hp_problem.add_hyperparameter((16,128), "message_units")
 hp_problem.add_hyperparameter((2,10), "message_steps")
 # hp_problem.add_hyperparameter([4,8,16], "num_attention_heads")
 # hp_problem.add_hyperparameter((32,1024), "dense_units")
@@ -404,7 +404,7 @@ def run(config):
     mpnn = MPNNModel(
         atom_dim=x_train[0][0][0].shape[0], bond_dim=x_train[1][0][0].shape[0],
         batch_size=config["batch_size"],
-        message_units=config["message_units"],
+        # message_units=config["message_units"],
         message_steps=config["message_steps"],
         # num_attention_heads=config["num_attention_heads"],
         # dense_units=config["num_attention_heads"]*64

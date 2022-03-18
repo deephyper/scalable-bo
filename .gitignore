@@ -139,3 +139,4 @@ figures/
 *.output
 core
 *.tar.gz
+paper/

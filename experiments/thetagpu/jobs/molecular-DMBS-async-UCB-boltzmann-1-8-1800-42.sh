@@ -10,8 +10,8 @@ export RANKS_PER_NODE=8
 export COBALT_JOBSIZE=1
 export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
 
-
-export liar_strategy="boltzmann"
+export acq_func="UCB"
+export strategy="boltzmann"
 export timeout=1800
 export random_state=42 
 export problem="molecular"
@@ -27,13 +27,14 @@ else
 fi
 
 # AMBS
-export log_dir="output/$problem-$search-$sync_str-$liar_strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
+export log_dir="output/$problem-$search-$sync_str-$acq_func-$strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) --hostfile $COBALT_NODEFILE python -m scalbo.exp --problem $problem \
 --search $search \
 --sync $sync_val \
 --timeout $timeout \
---strategy $liar_strategy \
+--acq-func $acq_func \
+--strategy $strategy \
 --random-state $random_state \
 --log-dir $log_dir \
 --verbose 1";
@@ -42,7 +43,8 @@ mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * $RANKS
     --search $search \
     --sync $sync_val \
     --timeout $timeout \
-    --strategy $liar_strategy \
+    --acq-func $acq_func \
+    --strategy $strategy \
     --random-state $random_state \
     --log-dir $log_dir \
     --verbose 1 

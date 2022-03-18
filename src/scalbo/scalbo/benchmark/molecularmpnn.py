@@ -49,8 +49,8 @@ hp_problem.add_hyperparameter((1e-4, 1e-2), "learning_rate")
 hp_problem.add_hyperparameter((16,256), "batch_size")
 hp_problem.add_hyperparameter((16,128), "message_units")
 hp_problem.add_hyperparameter((2,10), "message_steps")
-hp_problem.add_hyperparameter((2,16), "num_attention_heads")
-hp_problem.add_hyperparameter((32,1024), "dense_units")
+hp_problem.add_hyperparameter([4,8,16], "num_attention_heads")
+# hp_problem.add_hyperparameter((32,1024), "dense_units")
 
 class Featurizer:
     def __init__(self, allowable_sets):
@@ -407,7 +407,7 @@ def run(config):
         message_units=config["message_units"],
         message_steps=config["message_steps"],
         num_attention_heads=config["num_attention_heads"],
-        dense_units=config["dense_units"]
+        dense_units=config["num_attention_heads"]*64
     )
 
     mpnn.compile(

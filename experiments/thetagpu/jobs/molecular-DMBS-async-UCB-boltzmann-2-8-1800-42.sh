@@ -1,20 +1,20 @@
 #!/bin/bash
-#COBALT -n 1
+#COBALT -n 2
 #COBALT -t 20
-#COBALT -q single-gpu
+#COBALT -q full-node
 #COBALT -A datascience
 
 source ../../../build/activate-dhenv.sh
 
-export RANKS_PER_NODE=1
-export COBALT_JOBSIZE=1
+export RANKS_PER_NODE=8
+export COBALT_JOBSIZE=2
 export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
 
 
 export liar_strategy="boltzmann"
-export timeout=1000
+export timeout=1800
 export random_state=42 
-export problem="frnn"
+export problem="molecular"
 export cache_dir="/dev/shm"
 export sync_val=0
 export search="DMBS"

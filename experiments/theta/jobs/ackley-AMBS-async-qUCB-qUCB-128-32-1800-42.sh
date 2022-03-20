@@ -6,7 +6,7 @@
 
 source ../../../build/activate-dhenv.sh
 
-export RANKS_PER_NODE=16
+export RANKS_PER_NODE=32
 export acq_func="qUCB"
 export strategy="qUCB"
 export timeout=1800

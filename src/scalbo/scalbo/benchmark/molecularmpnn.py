@@ -12,7 +12,7 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
-gpu_local_idx = rank % size
+gpu_local_idx = rank % 8
 
 import tensorflow as tf
 

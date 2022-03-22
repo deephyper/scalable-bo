@@ -6,11 +6,12 @@
 
 source ../../../build/activate-dhenv.sh
 
+export RANKS_PER_NODE=16
+export COBALT_JOBSIZE=1
+
 # start MPS daemon on each node
 ./launch-mps-service.sh
 
-export RANKS_PER_NODE=16
-export COBALT_JOBSIZE=1
 export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
 
 export acq_func="qUCB"

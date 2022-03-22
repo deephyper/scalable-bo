@@ -1,18 +1,18 @@
-import numpy as np
-from deephyper.problem import HpProblem
-from deephyper.evaluator import profile
-
 import os
+import logging
+import warnings
 
-# Temporary suppress tf logs
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
 
 from mpi4py import MPI
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
-gpu_local_idx = rank % size
+gpu_local_idx = rank % 8
+
+# Temporary suppress tf logs
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import tensorflow as tf
 
@@ -23,21 +23,21 @@ if gpus:
         tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
         tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
         logical_gpus = tf.config.list_logical_devices("GPU")
-        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
+        logging.info(f"[r={rank}]: {len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU")
     except RuntimeError as e:
         # Visible devices must be set before GPUs have been initialized
-        print(e)
+        logging.info(f"{e}")
 
 from tensorflow import keras
 from tensorflow.keras import layers
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import warnings
+
+from deephyper.problem import HpProblem
+from deephyper.evaluator import profile
 from rdkit import Chem
 from rdkit import RDLogger
-from rdkit.Chem.Draw import IPythonConsole
-from rdkit.Chem.Draw import MolsToGridImage
 
 # Temporary suppress warnings and RDKit logs
 warnings.filterwarnings("ignore")
@@ -51,7 +51,7 @@ hp_problem.add_hyperparameter((2, 10), "message_steps")
 hp_problem.add_hyperparameter([6,8,10], "num_attention_heads")
 hp_problem.add_hyperparameter([256,512], "dense_units")
 hp_problem.add_hyperparameter((32, 1024, "log-uniform"), "dense_units_output")
-hp_problem.add_hyperparameter(["relu", "swish", "sigmoid", "tanh", "selu", "elu"])
+hp_problem.add_hyperparameter(["relu", "swish", "sigmoid", "tanh", "selu", "elu"], "activation_output")
 
 
 class Featurizer:
@@ -428,7 +428,7 @@ def run(config):
     except:
         return 0
 
-    mpnn.summary()
+    # mpnn.summary()
 
     mpnn.compile(
         loss=keras.losses.BinaryCrossentropy(),
@@ -453,7 +453,7 @@ def run(config):
         train_dataset,
         validation_data=valid_dataset,
         epochs=40,  # default 40
-        verbose=1,
+        verbose=0,
         class_weight={0: 2.0, 1: 0.5},
         callbacks=[early_stopping],
     )

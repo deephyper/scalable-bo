@@ -447,14 +447,17 @@ def run(config):
         mode="max",
     )
 
-    history = mpnn.fit(
-        train_dataset,
-        validation_data=valid_dataset,
-        epochs=40,  # default 40
-        verbose=0,
-        class_weight={0: 2.0, 1: 0.5},
-        callbacks=[early_stopping],
-    )
+    try:
+        history = mpnn.fit(
+            train_dataset,
+            validation_data=valid_dataset,
+            epochs=40,  # default 40
+            verbose=0,
+            class_weight={0: 2.0, 1: 0.5},
+            callbacks=[early_stopping],
+        )
+    except:
+        return 0
 
     return history.history["val_AUC"][-1]
 

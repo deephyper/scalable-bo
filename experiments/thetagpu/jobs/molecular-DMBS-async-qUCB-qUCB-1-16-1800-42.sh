@@ -6,7 +6,8 @@
 
 source ../../../build/activate-dhenv.sh
 
-
+# start MPS daemon on each node
+./launch-mps-service.sh
 
 export RANKS_PER_NODE=16
 export COBALT_JOBSIZE=1

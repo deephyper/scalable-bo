@@ -114,8 +114,6 @@ def main(args):
 
     data_pipeline_model = data_pipeline.fit(real_df_cut_r)
 
-    
-
     preprocessed_data = data_pipeline_model.transform(real_df_cut_r)
 
     X_train, X_test, y_train, y_test = train_test_split(

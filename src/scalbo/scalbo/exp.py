@@ -16,7 +16,8 @@ PROBLEMS = {
     "hartmann6D": "scalbo.benchmark.hartmann6D",
     "frnn": "scalbo.benchmark.frnn",
     "molecular": "scalbo.benchmark.molecularmpnn",
-    "candle_attn": "scalbo.benchmark.candle_attn"
+    "candle_attn": "scalbo.benchmark.candle_attn",
+    "candle_attn_sim": "scalbo.benchmark.candle_attn_sim"
 }
 
 SEARCHES = {

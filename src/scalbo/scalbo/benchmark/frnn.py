@@ -58,6 +58,7 @@ hp_problem.add_hyperparameter((0.0, 1.0), "regularization")
 hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization")
 hp_problem.add_hyperparameter((1e-7, 1e-3, "log-uniform"), "lr")
 hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
+hp_problem.add_hyperparameter((0.9, 1.0), "momentum")
 hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob")
 hp_problem.add_hyperparameter((32, 512, "log-uniform"), "batch_size")
 

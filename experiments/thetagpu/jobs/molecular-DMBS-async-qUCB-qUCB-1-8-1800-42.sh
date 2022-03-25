@@ -1,15 +1,12 @@
 #!/bin/bash
 #COBALT -n 1
 #COBALT -t 45
-#COBALT -q bigmem
+#COBALT -q full-node
 #COBALT -A datascience
 
-source ../../../build/activate-dhenv.sh
-
+#!!! CONFIGURATION - START
 export RANKS_PER_NODE=8
 export COBALT_JOBSIZE=1
-export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
-
 export acq_func="qUCB"
 export strategy="qUCB"
 export timeout=1800
@@ -17,6 +14,18 @@ export random_state=42
 export problem="molecular"
 export sync_val=0
 export search="DMBS"
+#!!! CONFIGURATION - END
+
+# activate Python environment
+source ../../../build/activate-dhenv.sh
+export PYTHONPATH=../../../build/dhenv/lib/python3.8/site-packages/:$PYTHONPATH
+
+# start MPS daemon on each node
+./launch-mps-service.sh
+
+# For MPS Client Application
+export CUDA_MPS_PIPE_DIRECTORY=/tmp/nvidia-mps 
+export CUDA_MPS_LOG_DIRECTORY=/tmp/nvidia-log
 
 if [[ "$sync_val" -eq 0 ]];
 then

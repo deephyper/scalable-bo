@@ -5,6 +5,7 @@ warnings.simplefilter("ignore")
 import argparse
 import pathlib
 import importlib
+import sys
 
 import scalbo.search.ambs
 import scalbo.search.dmbs
@@ -14,7 +15,9 @@ PROBLEMS = {
     "ackley": "scalbo.benchmark.ackley",
     "hartmann6D": "scalbo.benchmark.hartmann6D",
     "frnn": "scalbo.benchmark.frnn",
-    "molecular": "scalbo.benchmark.molecularmpnn"
+    "molecular": "scalbo.benchmark.molecularmpnn",
+    "candle_attn": "scalbo.benchmark.candle_attn",
+    "candle_attn_sim": "scalbo.benchmark.candle_attn_sim"
 }
 
 SEARCHES = {
@@ -125,5 +128,8 @@ if __name__ == "__main__":
     parser = create_parser()
 
     args = parser.parse_args()
+
+    # delete arguments to avoid conflicts
+    sys.argv = [sys.argv[0]]
 
     main(args)

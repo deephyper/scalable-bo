@@ -1,6 +1,7 @@
 import argparse
 import os
 import pathlib
+from sre_constants import NEGATE
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -18,22 +19,26 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 
-width = 8
+width = 5
 height = width / 1.618
 
 matplotlib.rcParams.update({
-    'font.size': 21,
+    'font.size': 12,
     'figure.figsize': (width, height),
     'figure.facecolor': 'white',
     'savefig.dpi': 72,
     'figure.subplot.bottom': 0.125,
     'figure.edgecolor': 'white',
-    'xtick.labelsize': 21,
-    'ytick.labelsize': 21
+    'xtick.labelsize': 12,
+    'ytick.labelsize': 12,
+    'legend.fontsize': 12
 })
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FILE_EXTENSION = "pdf"
+PRINT_TITLE = False
+NEGATIVE = True
+MODE = "max"
 
 
 def yaml_load(path):
@@ -52,14 +57,19 @@ def load_results(exp_root: str, exp_config: dict) -> dict:
         if "rep" in exp_config["data"][exp_prefix]:
             dfs = []
             for rep in exp_config["data"][exp_prefix].get("rep"):
-                exp_results_path = os.path.join(exp_root,
-                                                f"{exp_prefix}-{rep}/results.csv")
+                exp_results_path = os.path.join(exp_root,f"{exp_prefix}-{rep}/results.csv")
                 df = pd.read_csv(exp_results_path)
+
+                if NEGATIVE:
+                    df.objective = -df.objective
+
                 dfs.append(df)
                 data[exp_prefix] = dfs
         else:
             exp_results_path = os.path.join(exp_root, f"{exp_prefix}/results.csv")
             df = pd.read_csv(exp_results_path)
+            if NEGATIVE:
+                df.objective = -df.objective
             data[exp_prefix] = df
     return data
 
@@ -67,6 +77,15 @@ def load_results(exp_root: str, exp_config: dict) -> dict:
 @ticker.FuncFormatter
 def hour_major_formatter(x, pos):
     x = float(f"{x/3600:.2f}")
+    if x % 1 == 0:
+        x = str(int(x))
+    else:
+        x = f"{x:.2f}"
+    return x
+
+@ticker.FuncFormatter
+def minute_major_formatter(x, pos):
+    x = float(f"{x/60:.2f}")
     if x % 1 == 0:
         x = str(int(x))
     else:
@@ -105,15 +124,15 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
                         s=10)
 
     ax = plt.gca()
-    # ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
-    # ax.xaxis.set_major_formatter(hour_major_formatter)
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(360))
+    ax.xaxis.set_major_formatter(minute_major_formatter)
 
-    if exp_config.get("title"):
+    if exp_config.get("title") and PRINT_TITLE:
         plt.title(exp_config.get("title"))
 
     plt.legend()
     plt.ylabel("Objective")
-    plt.xlabel("Search time (sec.)")
+    plt.xlabel("Search time (min.)")
 
     if exp_config.get("ylim"):
         plt.ylim(*exp_config.get("ylim"))
@@ -131,10 +150,16 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
     plt.close()
 
 
-def only_min(values):
+def best_objective(values):
+
+    if MODE == "max":
+        f = max
+    else:
+        f = min
+
     res = [values[0]]
     for value in values[1:]:
-        res.append(min(res[-1], value))
+        res.append(f(res[-1], value))
     return res
 
 
@@ -160,8 +185,8 @@ def plot_objective_multi(df, exp_config, output_dir, show):
 
                 exp_df = exp_df.sort_values("timestamp_end")
                 x, y = exp_df.timestamp_end.to_numpy(
-                ), -exp_df.objective.to_numpy()
-                y = only_min(y)
+                ), exp_df.objective.to_numpy()
+                y = best_objective(y)
 
                 s = pd.Series(data=y, index=x)
                 s = s.reindex(times).fillna(method="ffill").fillna(method="bfill")
@@ -172,8 +197,6 @@ def plot_objective_multi(df, exp_config, output_dir, show):
             scale = np.nanstd(array, axis=0)
             loc_max = loc + scale
             loc_min = loc - scale
-            # loc_max = np.nanmax(array, axis=0)
-            # loc_min = np.nanmin(array, axis=0)
 
             plt.plot(
                 times,
@@ -189,8 +212,8 @@ def plot_objective_multi(df, exp_config, output_dir, show):
                              alpha=0.3)
         else:
             exp_df = exp_df.sort_values("timestamp_end")
-            x, y = exp_df.timestamp_end.to_numpy(), -exp_df.objective.to_numpy()
-            y = only_min(y)
+            x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
+            y = best_objective(y)
 
             plt.plot(x,
                      y,
@@ -200,15 +223,20 @@ def plot_objective_multi(df, exp_config, output_dir, show):
                          "linestyle", "-"))
 
     ax = plt.gca()
-    # ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
-    # ax.xaxis.set_major_formatter(hour_major_formatter)
+    ticker_freq = exp_config["t_max"] / 5
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(ticker_freq))
+    ax.xaxis.set_major_formatter(minute_major_formatter)
 
-    if exp_config.get("title"):
+    if exp_config.get("title") and PRINT_TITLE:
         plt.title(exp_config.get("title"))
 
-    plt.legend()
+    if MODE == "min":
+        plt.legend(loc="upper right")
+    else:
+        plt.legend(loc="lower right")
+
     plt.ylabel("Objective")
-    plt.xlabel("Search time (sec.)")
+    plt.xlabel("Search time (min.)")
 
     if exp_config.get("ylim"):
         plt.ylim(*exp_config.get("ylim"))
@@ -245,7 +273,7 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
                                   1)), (-exp_df.objective).to_list()
                 max_n_iters = max(len(x), max_n_iters)
 
-                y = only_min(y)
+                y = best_objective(y)
                 y_list.append(y)
 
             for i, y in enumerate(y_list):
@@ -272,7 +300,7 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
                               len(exp_df.timestamp_end.to_list()) +
                               1)), (-exp_df.objective).to_list()
 
-            y = only_min(y)
+            y = best_objective(y)
 
             max_n_iters = len(x)
 
@@ -284,9 +312,10 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
                          "linestyle", "-"))
 
     ax = plt.gca()
-    # ax.xaxis.set_major_locator(ticker.MultipleLocator(50))
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(360))
+    ax.xaxis.set_major_formatter(minute_major_formatter)
 
-    if exp_config.get("title"):
+    if exp_config.get("title") and PRINT_TITLE:
         plt.title(exp_config.get("title"))
 
     plt.legend()
@@ -325,6 +354,17 @@ def compile_profile(df):
     return timestamp, n_jobs_running
 
 
+def compute_num_workers(exp_name):
+    exp_name = exp_name.split("-")
+    alg_name = exp_name[1]
+    num_nodes = int(exp_name[5])
+    num_ranks_per_node = int(exp_name[6])
+    
+    if alg_name == "ambs":
+        return num_nodes * num_ranks_per_node - 1
+    else:
+        return num_nodes * num_ranks_per_node
+
 def plot_utilization_multi_iter(df, exp_config, output_dir, show):
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
     output_path = os.path.join(output_dir, output_file_name)
@@ -359,6 +399,9 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
         else:
             x, y = compile_profile(exp_df)
 
+            num_workers = compute_num_workers(exp_name)
+            y = np.asarray(y) / num_workers
+
             plt.step(x,
                      y,
                      where="post",
@@ -368,18 +411,16 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
                          "linestyle", "-"))
 
     ax = plt.gca()
-    # ax.xaxis.set_major_locator(ticker.MultipleLocator(900))
-    # ax.xaxis.set_major_formatter(hour_major_formatter)
+    ticker_freq = exp_config["t_max"] / 5
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(ticker_freq))
+    ax.xaxis.set_major_formatter(minute_major_formatter)
 
-    if exp_config.get("title"):
+    if exp_config.get("title") and PRINT_TITLE:
         plt.title(exp_config.get("title"))
 
-    plt.legend()
+    plt.legend(loc="lower left")
     plt.ylabel("Worker Utilization")
-    plt.xlabel("Search time (sec.)")
-
-    if exp_config.get("xlim"):
-        plt.xlim(*exp_config.get("xlim"))
+    plt.xlabel("Search time (min.)")
 
     if exp_config.get("xlim"):
         plt.xlim(*exp_config.get("xlim"))
@@ -392,6 +433,67 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
     if show:
         plt.show()
     plt.close()
+
+# def plot_strong_scaling(df, exp_config, output_dir, show):
+#     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
+#     output_path = os.path.join(output_dir, output_file_name)
+
+#     infos = {}
+#     base_exp_name = None
+
+#     plt.figure()
+
+#     for exp_name, exp_df in df.items():
+
+#         if "rep" in exp_config["data"][exp_name]:
+#             exp_dfs = exp_df
+#         else:
+#             infos[exp_name] = {}
+
+#             infos[exp_name]["num_evaluations"] = len(exp_df)
+
+#             num_workers = compute_num_workers(exp_name)
+#             infos[exp_name]["num_workers"] = num_workers
+
+#             # available compute time
+#             T_avail = exp_config["t_max"] * num_workers
+#             T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
+#             infos[exp_name]["utilization"] = T_eff/T_avail
+
+#             if exp_config.get("baseline", False):
+#                 base_exp_name = exp_name
+
+#     # baseline 
+#     base_num_workers = infos[base_exp_name]["num_workers"]
+#     base_num_evaluations = infos[base_exp_name]["num_evaluations"] / base_num_workers
+#     num_workers = [2**i for i in range(13)]
+#     linear_scaling = [base_num_evaluations*w for w in num_workers]
+
+#     plt.plot(num_workers, linear_scaling, linestyle="--", color="black", label="baseline")
+
+#     for exp_name, exp_infos in df.items():
+
+#             infos[exp_name] = {}
+
+#             infos[exp_name]["num_evaluations"] = len(exp_df)
+
+#             num_workers = compute_num_workers(exp_name)
+#             infos[exp_name]["num_workers"] = num_workers
+
+#             # available compute time
+#             T_avail = exp_config["t_max"] * num_workers
+#             T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
+#             infos[exp_name]["utilization"] = T_eff/T_avail
+
+#             if exp_config.get("baseline", False):
+#                 base_exp = exp_name
+    
+#     plt.grid()
+#     plt.tight_layout()
+#     plt.savefig(output_path)
+#     if show:
+#         plt.show()
+#     plt.close()
 
 
 def write_infos(df, exp_config, output_dir):
@@ -406,16 +508,37 @@ def write_infos(df, exp_config, output_dir):
             exp_dfs = exp_df
         else:
             infos[exp_name] = {}
+
             infos[exp_name]["num_evaluations"] = len(exp_df)
+
+            num_workers = compute_num_workers(exp_name)
+            infos[exp_name]["num_workers"] = num_workers
+
+            # available compute time
+            T_avail = exp_config["t_max"] * num_workers
+            T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
+            infos[exp_name]["utilization"] = T_eff/T_avail
             
-            yaml_dump(output_path, infos)
+    #         if exp_config.get("baseline", False):
+    #             base_exp_name = exp_name
+
+    # # baseline 
+    # base_num_workers = infos[base_exp_name]["num_workers"]
+    # base_num_evaluations = infos[base_exp_name]["num_evaluations"] / base_num_workers
+    # num_workers = [2**i for i in range(13)]
+    # linear_scaling = [base_num_evaluations*w for w in num_workers]
+
+    yaml_dump(output_path, infos)
 
 
 def generate_figures(config):
+    global NEGATIVE, MODE
 
     exp_root = config["data-root"]
     figures_dir = config.get("figures-root", "figures")
     show = config.get("show", False)
+    NEGATIVE = config.get("negative", True)
+    MODE = config.get("mode", "min")
 
     for exp_num, exp_config in config["experiments"].items():
         exp_dirname = str(exp_num)
@@ -428,9 +551,9 @@ def generate_figures(config):
         write_infos(df, exp_config, output_dir)
 
         plot_functions = [
-            plot_scatter_multi,
+            # plot_scatter_multi,
             plot_objective_multi,
-            plot_objective_multi_iter,
+            # plot_objective_multi_iter,
             plot_utilization_multi_iter,
 
         ]
@@ -456,7 +579,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # yaml_path = os.path.join(HERE, "plot.yaml")
     yaml_path = args.config
     config = yaml_load(yaml_path)
     generate_figures(config)

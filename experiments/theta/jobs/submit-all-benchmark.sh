@@ -1,5 +1,8 @@
 #!/bin/bash
 
+qsub ackley-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
+qsub ackley-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
+
 qsub hartmann6D-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
 qsub hartmann6D-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
 

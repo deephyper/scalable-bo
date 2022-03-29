@@ -3,7 +3,7 @@ import numpy as np
 from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
-nb_dim = 5
+nb_dim = 10
 domain = (-600.0, 600.0)
 hp_problem = HpProblem()
 for i in range(nb_dim):

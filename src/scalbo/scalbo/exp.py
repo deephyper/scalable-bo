@@ -14,6 +14,9 @@ import scalbo.search.dmbs
 PROBLEMS = {
     "ackley": "scalbo.benchmark.ackley",
     "hartmann6D": "scalbo.benchmark.hartmann6D",
+    "levy": "scalbo.benchmark.levy",
+    "griewank": "scalbo.benchmark.griewank",
+    "schwefel": "scalbo.benchmark.schwefel",
     "frnn": "scalbo.benchmark.frnn",
     "molecular": "scalbo.benchmark.molecularmpnn",
     "candle_attn": "scalbo.benchmark.candle_attn",

@@ -4,19 +4,18 @@ from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
 nb_dim = 10
-domain = (-32.768, 32.768)
+domain = (-10.0, 10.0)
 hp_problem = HpProblem()
 for i in range(nb_dim):
     hp_problem.add_hyperparameter(domain, f"x{i}")
 
-def ackley(x, a=20, b=0.2, c=2*np.pi):
-    d = len(x)
-    s1 = np.sum(x ** 2)
-    s2 = np.sum(np.cos(c * x))
-    term1 = -a * np.exp(-b * np.sqrt(s1 / d))
-    term2 = -np.exp(s2 / d)
-    y = term1 + term2 + a + np.exp(1)
-    return y
+def levy(x):
+    z = 1 + (x - 1) / 4
+    return (
+        np.sin(np.pi * z[0]) ** 2
+        + np.sum((z[:-1] - 1) ** 2 * (1 + 10 * np.sin(np.pi * z[:-1] + 1) ** 2))
+        + (z[-1] - 1) ** 2 * (1 + np.sin(2 * np.pi * z[-1]) ** 2)
+    )
 
 @profile
 def run(config):
@@ -25,15 +24,10 @@ def run(config):
     time.sleep(t_sleep)
     x = np.array([config[k] for k in config if "x" in k])
     x = np.asarray_chkfinite(x)  # ValueError if any NaN or Inf
-    return -ackley(x)
+    return -levy(x)
 
 
 if __name__ == "__main__":
-    from scalbo.benchmark.ackley import run
-
-    config = {f"x{i}": 0 for i in range(5)}
+    config = {f"x{i}": 1 for i in range(5)}
     obj = run(config)
-    print(obj["timestamp_end"] - obj["timestamp_start"])
-
-    obj = run(config)
-    print(obj["timestamp_end"] - obj["timestamp_start"])
+    print(f"{obj=}")

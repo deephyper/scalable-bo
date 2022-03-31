@@ -12,7 +12,11 @@ import scalbo.search.dmbs
 
 
 PROBLEMS = {
-    "ackley": "scalbo.benchmark.ackley",
+    "ackley_5": "scalbo.benchmark.ackley_5",
+    "ackley_10": "scalbo.benchmark.ackley_10",
+    "ackley_30": "scalbo.benchmark.ackley_30",
+    "ackley_50": "scalbo.benchmark.ackley_50",
+    "ackley_100": "scalbo.benchmark.ackley_100",
     "hartmann6D": "scalbo.benchmark.hartmann6D",
     "levy": "scalbo.benchmark.levy",
     "griewank": "scalbo.benchmark.griewank",

@@ -3,7 +3,7 @@ import numpy as np
 from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
-nb_dim = 10
+nb_dim = 30
 domain = (-32.768, 32.768)
 hp_problem = HpProblem()
 for i in range(nb_dim):
@@ -29,7 +29,7 @@ def run(config):
 
 
 if __name__ == "__main__":
-    from scalbo.benchmark.ackley import run
+    from scalbo.benchmark.ackley_10 import run
 
     config = {f"x{i}": 0 for i in range(5)}
     obj = run(config)

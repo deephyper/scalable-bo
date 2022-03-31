@@ -29,11 +29,6 @@ def run(config):
 
 
 if __name__ == "__main__":
-    from scalbo.benchmark.ackley_10 import run
 
     config = {f"x{i}": 0 for i in range(5)}
     obj = run(config)
-    print(obj["timestamp_end"] - obj["timestamp_start"])
-
-    obj = run(config)
-    print(obj["timestamp_end"] - obj["timestamp_start"])

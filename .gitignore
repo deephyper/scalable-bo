@@ -140,5 +140,6 @@ figures/
 core
 *.tar.gz
 paper/
-output/
+output*/
 gpustat.txt
+*.pdf

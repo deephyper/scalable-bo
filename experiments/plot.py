@@ -1,7 +1,6 @@
 import argparse
 import os
 import pathlib
-from sre_constants import NEGATE
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -21,6 +20,7 @@ except ImportError:
 
 width = 5
 height = width / 1.618
+# height = width * 0.5
 
 matplotlib.rcParams.update({
     'font.size': 12,
@@ -115,13 +115,16 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
 
                 plt.scatter(x, y, **plt_kwargs)
         else:
-            x, y = exp_df.timestamp_end.to_numpy(), -exp_df.objective.to_numpy()
+            x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
+
+            if NEGATIVE:
+                y = -y
 
             plt.scatter(x,
                         y,
                         color=exp_config["data"][exp_name]["color"],
                         label=exp_config["data"][exp_name]["label"],
-                        s=10)
+                        s=1, alpha=0.5)
 
     ax = plt.gca()
     ax.xaxis.set_major_locator(ticker.MultipleLocator(360))
@@ -160,6 +163,24 @@ def best_objective(values):
     res = [values[0]]
     for value in values[1:]:
         res.append(f(res[-1], value))
+    return res
+
+def count_better(values, baseline_perf):
+
+    count = 0
+    res = []
+
+    if MODE == "max":
+        for value in values:
+            if value > baseline_perf:
+                count += 1
+            res.append(count)
+    else:
+        for value in values:
+            if value < baseline_perf:
+                count += 1
+            res.append(count)
+
     return res
 
 
@@ -213,12 +234,16 @@ def plot_objective_multi(df, exp_config, output_dir, show):
         else:
             exp_df = exp_df.sort_values("timestamp_end")
             x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
+            if "hartmann6D" in exp_name:
+                y = y+3.32237 # hartmann6D
             y = best_objective(y)
 
             plt.plot(x,
                      y,
                      label=exp_config["data"][exp_name]["label"],
                      color=exp_config["data"][exp_name]["color"],
+                     marker=exp_config["data"][exp_name].get("marker", None),
+                     markevery=len(x)//5,
                      linestyle=exp_config["data"][exp_name].get(
                          "linestyle", "-"))
 
@@ -232,6 +257,7 @@ def plot_objective_multi(df, exp_config, output_dir, show):
 
     if MODE == "min":
         plt.legend(loc="upper right")
+        # plt.legend(loc="lower left")
     else:
         plt.legend(loc="lower right")
 
@@ -245,6 +271,8 @@ def plot_objective_multi(df, exp_config, output_dir, show):
         plt.xlim(*exp_config.get("xlim"))
     else:
         plt.xlim(0, exp_config["t_max"])
+
+    # plt.yscale("log")
 
     plt.grid()
     plt.tight_layout()
@@ -360,7 +388,7 @@ def compute_num_workers(exp_name):
     num_nodes = int(exp_name[5])
     num_ranks_per_node = int(exp_name[6])
     
-    if alg_name == "ambs":
+    if alg_name == "AMBS":
         return num_nodes * num_ranks_per_node - 1
     else:
         return num_nodes * num_ranks_per_node
@@ -400,13 +428,15 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
             x, y = compile_profile(exp_df)
 
             num_workers = compute_num_workers(exp_name)
-            y = np.asarray(y) / num_workers
+            y = np.asarray(y) / num_workers * 100
 
             plt.step(x,
                      y,
                      where="post",
                      label=exp_config["data"][exp_name]["label"],
                      color=exp_config["data"][exp_name]["color"],
+                     marker=exp_config["data"][exp_name].get("marker", None),
+                     markevery=len(x)//5,
                      linestyle=exp_config["data"][exp_name].get(
                          "linestyle", "-"))
 
@@ -419,13 +449,15 @@ def plot_utilization_multi_iter(df, exp_config, output_dir, show):
         plt.title(exp_config.get("title"))
 
     plt.legend(loc="lower left")
-    plt.ylabel("Worker Utilization")
+    plt.ylabel("Workers Evaluating $f(x)$ (%)")
     plt.xlabel("Search time (min.)")
 
     if exp_config.get("xlim"):
         plt.xlim(*exp_config.get("xlim"))
     else:
         plt.xlim(0, exp_config["t_max"])
+    
+    plt.ylim(0,100)
     
     plt.grid()
     plt.tight_layout()
@@ -508,6 +540,7 @@ def write_infos(df, exp_config, output_dir):
             exp_dfs = exp_df
         else:
             infos[exp_name] = {}
+            exp_df = exp_df[exp_df.timestamp_end < exp_config["t_max"]]
 
             infos[exp_name]["num_evaluations"] = len(exp_df)
 
@@ -518,6 +551,18 @@ def write_infos(df, exp_config, output_dir):
             T_avail = exp_config["t_max"] * num_workers
             T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
             infos[exp_name]["utilization"] = T_eff/T_avail
+
+            # compute best objective found
+            if MODE == "max":
+                idx_best = exp_df.objective.argmax()
+            else:
+                idx_best = exp_df.objective.argmin()
+
+            obj_best = exp_df.objective.iloc[idx_best]
+            obj_best_timestamp = exp_df.timestamp_end.iloc[idx_best]
+
+            infos[exp_name]["best_objective"] = float(obj_best)
+            infos[exp_name]["best_objective_timestamp"] = float(obj_best_timestamp)
             
     #         if exp_config.get("baseline", False):
     #             base_exp_name = exp_name
@@ -529,6 +574,58 @@ def write_infos(df, exp_config, output_dir):
     # linear_scaling = [base_num_evaluations*w for w in num_workers]
 
     yaml_dump(output_path, infos)
+
+def plot_count_better_than_best(df, exp_config, output_dir):
+    output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
+    output_path = os.path.join(output_dir, output_file_name)
+
+    plt.figure()
+
+    for exp_name, exp_df in df.items():
+
+        if "rep" in exp_config["data"][exp_name]:
+
+            exp_dfs = exp_df
+            ...
+
+        else:
+            exp_df = exp_df.sort_values("timestamp_end")
+
+
+            x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
+            y = count_better(y, exp_config["baseline_best"])
+
+            plt.plot(x,
+                     y,
+                     label=exp_config["data"][exp_name]["label"],
+                     color=exp_config["data"][exp_name]["color"],
+                     marker=exp_config["data"][exp_name].get("marker", None),
+                     markevery=len(x)//5,
+                     linestyle=exp_config["data"][exp_name].get(
+                         "linestyle", "-"))
+
+    ax = plt.gca()
+    ticker_freq = exp_config["t_max"] / 5
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(ticker_freq))
+    ax.xaxis.set_major_formatter(minute_major_formatter)
+
+    if exp_config.get("title") and PRINT_TITLE:
+        plt.title(exp_config.get("title"))
+
+    plt.legend(loc="upper left")
+
+    plt.ylabel("Models $>$ Baseline")
+    plt.xlabel("Search time (min.)")
+
+    if exp_config.get("xlim"):
+        plt.xlim(*exp_config.get("xlim"))
+    else:
+        plt.xlim(0, exp_config["t_max"])
+
+    plt.grid()
+    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
 
 
 def generate_figures(config):
@@ -560,6 +657,9 @@ def generate_figures(config):
 
         for plot_func in plot_functions:
             plot_func(df, exp_config, output_dir, show)
+
+        if "baseline_best" in exp_config:
+            plot_count_better_than_best(df, exp_config, output_dir)
 
 
 def create_parser():

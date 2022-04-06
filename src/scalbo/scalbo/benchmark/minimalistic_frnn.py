@@ -1,5 +1,57 @@
-import tensorflow as tf
+import os
+import logging
+import pathlib
+import numpy as np
 import time
+import pprint
+import itertools
+from functools import partial
+import json
+
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+gpu_per_node = 8
+gpu_local_idx = rank % gpu_per_node
+node = int(rank / gpu_per_node)
+
+# dataset_path = "/lus/theta-fs0/projects/fusiondl_aesp/felker"
+# sub_dirs = [
+#     "normalization",
+#     "processed_shotlists",
+#     "processed_shots",
+#     "shot_lists",
+# ]
+# sub_files = [
+#     "normalization_signal_group_274046652389426782036862662489435313687-old.npz",
+# ]
+# if gpu_local_idx == 0:
+#     pathlib.Path(f"/dev/shm/{node}").mkdir(parents=True, exist_ok=True)
+#     for sub_dir in sub_dirs:
+#         os.system(f"cp -r {dataset_path}/{sub_dir} /dev/shm/{node}/{sub_dir}")
+#     for sub_file in sub_files:
+#         os.system(f"cp {dataset_path}/{sub_file} /dev/shm/{node}/{sub_file}")
+
+# Temporary suppress tf logs
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+import tensorflow as tf
+from tensorflow.keras.backend import clear_session
+
+
+gpus = tf.config.list_physical_devices("GPU")
+if gpus:
+    # Restrict TensorFlow to only use the first GPU
+    try:
+        tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
+        tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
+        logical_gpus = tf.config.list_logical_devices("GPU")
+        logging.info(f"[r={rank}]: {len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU")
+    except RuntimeError as e:
+        # Visible devices must be set before GPUs have been initialized
+        logging.info(f"{e}")
 
 from tensorflow.keras.layers import (
     Input,
@@ -14,10 +66,7 @@ CuDNNLSTM = LSTM
 from tensorflow.keras.optimizers import (SGD, Adam, RMSprop, Nadam)
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.regularizers import l2  # l1, l1_l2
-
-import numpy as np
-from functools import partial
-import itertools
+from tensorflow.keras.metrics import AUC
 
 # from plasma.models.tcn import TCN
 from plasma.conf_parser import parameters
@@ -30,9 +79,26 @@ from plasma.utils.evaluation import get_loss_from_list
 import plasma.global_vars as g
 g.init_MPI()
 
-from mpi4py import MPI
 
-import pprint
+from deephyper.problem import HpProblem
+from deephyper.evaluator import profile
+
+
+hp_problem = HpProblem()
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "pred_batch_size")
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "length")
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "rnn_size")
+hp_problem.add_hyperparameter((1, 4), "rnn_layers")
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "num_conv_filters")
+hp_problem.add_hyperparameter((1, 4), "num_conv_layers")
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "dense_size")
+hp_problem.add_hyperparameter((0.0, 1.0), "regularization")
+hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization")
+hp_problem.add_hyperparameter((1e-7, 1e-3, "log-uniform"), "lr")
+hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
+hp_problem.add_hyperparameter((0.9, 1.0), "momentum")
+hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob")
+hp_problem.add_hyperparameter((32, 512, "log-uniform"), "batch_size")
 
 
 class ResetStatesCallback(Callback):
@@ -80,7 +146,6 @@ class ModelBuilder(object):
 
         dropout_prob = model_conf['dropout_prob']
         length = model_conf['length']
-        pred_length = model_conf['pred_length']
         stateful = model_conf['stateful']
         return_sequences = model_conf['return_sequences']
         output_activation = conf['data']['target'].activation
@@ -418,8 +483,12 @@ class ModelEvaluator(object):
         return roc_area, loss
 
 
+@profile
 def run(config: None):
 
+    clear_session()
+
+    # config['fs_path'] = f"/dev/shm/{node}"
     conf = parameters(config)
 
     pp = pprint.PrettyPrinter(indent=1)
@@ -447,7 +516,7 @@ def run(config: None):
     validation_steps = loader.get_steps_per_epoch(shot_list_valid)
     
     # train it
-    model.fit(
+    history = model.fit(
         train_dataset,
         batch_size=conf['training']['batch_size'],
         epochs=conf['training']['num_epochs'],
@@ -457,22 +526,28 @@ def run(config: None):
         # callbacks=ResetStatesCallback(),
     )
 
+    with open('/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/outputs/history.json', 'w') as file:
+        json.dump(history.history, file)
+
     # evaluate it
     evaluator = ModelEvaluator(model, loader, conf)
     train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
+    valid_roc, valid_loss = evaluator.make_predictions_and_evaluate(shot_list_valid)
     test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
 
     # print results
     print('======== RESULTS =======')
     print('Train Loss: {:.3e}'.format(train_loss))
     print('Train ROC: {:.4f}'.format(train_roc))
+    print('Valid Loss: {:.3e}'.format(valid_loss))
+    print('Valid ROC: {:.4f}'.format(valid_roc))
     print('Test Loss: {:.3e}'.format(test_loss))
     print('Test ROC: {:.4f}'.format(test_roc))
 
+    return valid_roc
 
 if __name__ == '__main__':
     conf = {
-        'pred_length': 128,
         'pred_batch_size': 128,
         'length': 128,
         'rnn_size': 200,

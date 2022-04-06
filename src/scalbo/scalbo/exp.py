@@ -22,6 +22,7 @@ PROBLEMS = {
     "griewank": "scalbo.benchmark.griewank",
     "schwefel": "scalbo.benchmark.schwefel",
     "frnn": "scalbo.benchmark.frnn",
+    "minimalistic-frnn": "scalbo.benchmark.minimalistic_frnn",
     "molecular": "scalbo.benchmark.molecularmpnn",
     "candle_attn": "scalbo.benchmark.candle_attn",
     "candle_attn_sim": "scalbo.benchmark.candle_attn_sim"

@@ -360,7 +360,6 @@ class DataHandler(object):
         )
         return dataset
 
-
 class ModelEvaluator(object):
     def __init__(self, model, loader, conf) -> None:
         self.model = model
@@ -482,6 +481,12 @@ class ModelEvaluator(object):
         loss = get_loss_from_list(y_prime, y_gold, conf['data']['target'])
         return roc_area, loss
 
+class CustomAUC(tf.keras.metrics.AUC):
+
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        y_true = tf.clip_by_value(y_true, 0, 1)
+        y_pred = tf.math.sigmoid(y_pred)
+        return super().update_state(y_true, y_pred, sample_weight)
 
 @profile
 def run(config: None):
@@ -510,7 +515,7 @@ def run(config: None):
 
     loss = conf['data']['target'].loss
     optimizer = builder.build_optimizer()
-    model.compile(optimizer=optimizer, loss=loss)
+    model.compile(optimizer=optimizer, loss=loss, metrics=[CustomAUC(name="auc")])
 
     steps_per_epoch = loader.get_steps_per_epoch(shot_list_train)
     validation_steps = loader.get_steps_per_epoch(shot_list_valid)
@@ -526,8 +531,8 @@ def run(config: None):
         # callbacks=ResetStatesCallback(),
     )
 
-    with open('/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/outputs/history.json', 'w') as file:
-        json.dump(history.history, file)
+    # with open('/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/outputs/history.json', 'w') as file:
+    #     json.dump(history.history, file)
 
     # evaluate it
     evaluator = ModelEvaluator(model, loader, conf)

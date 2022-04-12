@@ -20,8 +20,8 @@ SHELL ["conda", "run", "-n", "dhenv", "/bin/bash", "-c"]
 
 # Install OpenMPI
 RUN conda install openmpi mpi4py -y
-RUN export OMPI_ALLOW_RUN_AS_ROOT=1
-RUN export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+RUN echo "export OMPI_ALLOW_RUN_AS_ROOT=1" >> ~/.bashrc
+RUN echo "export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> ~/.bashrc
 
 # Clone & Install DeepHyper/Scikit-Optimize (develop)
 RUN git clone https://github.com/deephyper/scikit-optimize.git deephyper-scikit-optimize

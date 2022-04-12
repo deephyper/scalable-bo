@@ -1,7 +1,7 @@
 #!/bin/bash
 #COBALT -n 1
-#COBALT -t 20
-#COBALT -q single-gpu
+#COBALT -t 140
+#COBALT -q full-node
 #COBALT -A datascience
 
 source ../../../build/activate-dhenv.sh

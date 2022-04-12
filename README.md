@@ -160,7 +160,10 @@ optional arguments:
 ### Docker (Single Node)
 
 ```console
-cd experiments/local/
+cd experiments/docker/
+./fast_ackley_2-DMBS-sync-UCB-boltzmann-1-8-30-42.sh
+./fast_ackley_2-DMBS-async-qUCB-qUCB-1-8-30-42.sh
+python ../plot.py --config plot.yaml
 ```
 
 ### For Theta (ALCF)

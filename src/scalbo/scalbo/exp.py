@@ -12,6 +12,7 @@ import scalbo.search.dmbs
 
 
 PROBLEMS = {
+    "fast_ackley_2": "scalbo.benchmark.fast_ackley_2",
     "ackley_5": "scalbo.benchmark.ackley_5",
     "ackley_10": "scalbo.benchmark.ackley_10",
     "ackley_30": "scalbo.benchmark.ackley_30",

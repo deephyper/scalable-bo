@@ -1,0 +1,20 @@
+data-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/docker/output
+figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/docker/output/figures
+show: False
+negative: True
+mode: min
+experiments:
+  # ackley
+  1-fast-ackley:
+    title: "Fast Ackley"
+    t_max: 30 
+    ylim: [0, 25]
+    data:
+      fast_ackley_2-DMBS-async-qUCB-qUCB-1-8-30-42:
+        label: "ADBO+qUCB"
+        color: "magenta"
+        linestyle: "-"
+      fast_ackley_2-DMBS-sync-UCB-boltzmann-1-8-30-42:
+        label: "SDBO+bUCB"
+        color: "cyan"
+        linestyle: "-"

@@ -1,5 +1,8 @@
 # Scaling Bayesian Optimization
 
+[![DOI](https://zenodo.org/badge/464852027.svg)](https://zenodo.org/badge/latestdoi/464852027)
+
+
 The code is available at [Scalable-BO GitHub repo](https://github.com/deephyper/scalable-bo).
 
 This project is used to experiment the *Asynchronous Distributed Bayesian optimization* (ADBO) algorithm at HPC scale. ADBO advantages are:
@@ -95,17 +98,22 @@ From the `scalable-bo/build` folder, execute the following commands:
 
 ## Organization of the repository
 
-...
+The repository is organized as follows:
+
+```console
+experiments/    # bash scripts for experiments and plotting tools
+install/        # installation scripts 
+notebooks/      # notebooks for complementary analysis
+src/scalbo/     # Python package to manage experiments
+test/           # test scripts to verify installation
+```
 
 ## Experiments
 
-- [ ] explain how the experiments are executed (python entry point, scripts)
-- [ ] explain how results are presented
-
-In general experiments are launched with an MPI executable and the `src/scalbo/exp.py` script with a command such as:
+In general experiments are launched with MPI and the `src/scalbo/exp.py` script with a command such as:
 
 ```console
-mpirun -np 8 python -m scalbo.exp --problem ackley \
+$ mpirun -np 8 python -m scalbo.exp --problem ackley \
     --search DMBS \
     --timeout 20 \
     --acq-func qUCB \
@@ -117,7 +125,39 @@ mpirun -np 8 python -m scalbo.exp --problem ackley \
 
 where we execute the Ackley benchmark (`problem`) with the distributed search (`DMBS`) for 20 seconds (`timeout`) with the qUCB acquisition function strategy (`acq-func` and `strategy`) with random state 42 (`random-state`), verbose mode active (`verbose`) and results are saved in the `output` (`log-dir`) directory.
 
-### Single Node
+Complementary information about the `python -m scalbo.exp` command can be found by using the `--help` argument:
+
+```console
+$ python -m scalbo.exp --help
+usage: exp.py [-h] --problem
+              {ackley_5,ackley_10,ackley_30,ackley_50,ackley_100,hartmann6D,levy,griewank,schwefel,frnn,minimalistic-frnn,molecular,candle_attn,candle_attn_sim}
+              --search {AMBS,DMBS} [--sync SYNC] [--acq-func ACQ_FUNC] [--strategy {cl_max,topk,boltzmann,qUCB}] [--timeout TIMEOUT]
+              [--max-evals MAX_EVALS] [--random-state RANDOM_STATE] [--log-dir LOG_DIR] [--cache-dir CACHE_DIR] [-v VERBOSE]
+
+Command line to run experiments.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --problem {ackley_5,ackley_10,ackley_30,ackley_50,ackley_100,hartmann6D,levy,griewank,schwefel,frnn,minimalistic-frnn,molecular,candle_attn,candle_attn_sim}
+                        Problem on which to experiment.
+  --search {AMBS,DMBS}  Search the experiment must be done with.
+  --sync SYNC           If the search workers must be syncronized or not.
+  --acq-func ACQ_FUNC   Acquisition funciton to use.
+  --strategy {cl_max,topk,boltzmann,qUCB}
+                        The strategy for multi-point acquisition.
+  --timeout TIMEOUT     Search maximum duration (in min.) for each optimization.
+  --max-evals MAX_EVALS
+                        Number of iterations to run for each optimization.
+  --random-state RANDOM_STATE
+                        Control the random-state of the algorithm.
+  --log-dir LOG_DIR     Logging directory to store produced outputs.
+  --cache-dir CACHE_DIR
+                        Path to use to cache logged outputs (e.g., /dev/shm/).
+  -v VERBOSE, --verbose VERBOSE
+                        Wether to activate or not the verbose mode.
+```
+
+### Docker (Single Node)
 
 ```console
 cd experiments/local/

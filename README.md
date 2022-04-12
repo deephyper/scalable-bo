@@ -159,10 +159,39 @@ optional arguments:
 
 ### Docker (Single Node)
 
+Experiments are challenging to reproduce at large scale, therefore we provide a Docker image to reproduce similar results on a single machine with multiple cores. We assume that Docker is already installed. If it is not the case please check [how to install Docker](https://docs.docker.com/get-docker/).
+
+Pull the docker image at:
+```console
+docker pull romainegele/scalable-bo
+```
+
+Start a Docker container with this image:
+```console
+docker run --platform linux/amd64 -ti romainegele/scalable-bo /bin/bash
+```
+
+Then go to the experimental folder for Docker:
 ```console
 cd experiments/docker/
+```
+
+Execute the synchronous distributed BO with UCB and Boltzmann policy (SDBO+bUCB):
+```console
 ./fast_ackley_2-DMBS-sync-UCB-boltzmann-1-8-30-42.sh
+```
+
+Execute the asynchronous distributed BO with qUCB (ADBO+qUCB):
+```console
 ./fast_ackley_2-DMBS-async-qUCB-qUCB-1-8-30-42.sh
+```
+
+The results should no be in `experiments/docker/output/`. Each experiment's output will contain an:
+* a `results.csv` file containing the evaluated configurations with the corresponding objectives and some more information about when the function was evaluated.
+* a `deephyper*.log` file containing logging information from the algorithm on the rank 0 generally.
+
+Then you can plot figures with the following command:
+```console
 python ../plot.py --config plot.yaml
 ```
 

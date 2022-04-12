@@ -9,6 +9,8 @@ This project is used to experiment the *Asynchronous Distributed Bayesian optimi
 * asynchronous communication between agents
 * no congestion in the optimization queue
 
+The implementation of ADBO is directly available in the DeepHyper project (https://github.com/deephyper/deephyper/blob/develop/deephyper/search/hps/_dmbs_mpi.py).
+
 ## Environment information
 
 The experiments were executed on the [Theta/ThetaGPU](https://www.alcf.anl.gov/alcf-resources/theta) supercomputers at the Argonne Leadership Computing Facility (ALCF). The environment used is based on available MPI implementations at the facility and a Conda environment for Python packages. The main Python dependencies of this project are `deephyper/deephyper` and `deephyper/scikit-optimize` with the following commits:

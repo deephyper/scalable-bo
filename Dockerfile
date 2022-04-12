@@ -9,7 +9,7 @@ COPY . .
 WORKDIR /app/build
 
 # Install base requirements
-RUN apt-get update -y
+# RUN apt-get update -y
 # RUN apt-get build-essential -y
 
 # Create new conda environment

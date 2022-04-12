@@ -1,0 +1,12 @@
+fast_ackley_2-DMBS-async-qUCB-qUCB-1-8-30-42:
+  best_objective: 1.680165143059725
+  best_objective_timestamp: 18.06866192817688
+  num_evaluations: 107
+  num_workers: 8
+  utilization: 0.8856709788242976
+fast_ackley_2-DMBS-sync-UCB-boltzmann-1-8-30-42:
+  best_objective: 12.519505415844238
+  best_objective_timestamp: 27.537014722824097
+  num_evaluations: 80
+  num_workers: 8
+  utilization: 0.6836596469084422

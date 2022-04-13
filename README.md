@@ -18,7 +18,7 @@ The implementation of ADBO is directly available in the DeepHyper project (https
 
 The experiments were executed on the [Theta/ThetaGPU](https://www.alcf.anl.gov/alcf-resources/theta) supercomputers at the Argonne Leadership Computing Facility (ALCF). The environment used is based on available MPI implementations at the facility and a Conda environment for Python packages. The main Python dependencies of this project are `deephyper/deephyper` and `deephyper/scikit-optimize` with the following commits:
 
-* `deephyper/deephyper`: `(7c677e99aea0c6d906dc5f2f24a3fac913119b7a)`
+* `deephyper/deephyper`: `(7a2d553227bc62aa5ba7a307375cf729fc6178ca)`
 * `deephyper-scikit-optimize`: `(4cdc150f74bb066d07a7e57986ceeaa336204e26)`
 
 ## Installations

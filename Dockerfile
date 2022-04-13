@@ -30,7 +30,7 @@ RUN pip install -e deephyper-scikit-optimize/
 
 # Clone & Install DeepHyper (develop)
 RUN git clone https://github.com/deephyper/deephyper.git
-RUN cd deephyper/ && git checkout 7c677e99aea0c6d906dc5f2f24a3fac913119b7a && cd ..
+RUN cd deephyper/ && git checkout 7a2d553227bc62aa5ba7a307375cf729fc6178ca && cd ..
 RUN pip install -e deephyper/
 
 # Install Scalable-BO

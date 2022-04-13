@@ -25,12 +25,12 @@ RUN echo "export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> ~/.bashrc
 
 # Clone & Install DeepHyper/Scikit-Optimize (develop)
 RUN git clone https://github.com/deephyper/scikit-optimize.git deephyper-scikit-optimize
-RUN cd deephyper-scikit-optimize/ && git checkout c272896c4e3f75ebd3b09b092180f5ef5b12692e && cd ..
+RUN cd deephyper-scikit-optimize/ && git checkout 4cdc150f74bb066d07a7e57986ceeaa336204e26 && cd ..
 RUN pip install -e deephyper-scikit-optimize/
 
 # Clone & Install DeepHyper (develop)
 RUN git clone https://github.com/deephyper/deephyper.git
-RUN cd deephyper/ && git checkout b027148046d811e466c65cfc969bfdf85eeb7c49 && cd ..
+RUN cd deephyper/ && git checkout 7c677e99aea0c6d906dc5f2f24a3fac913119b7a && cd ..
 RUN pip install -e deephyper/
 
 # Install Scalable-BO

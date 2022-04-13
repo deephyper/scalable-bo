@@ -1,5 +1,5 @@
-data-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/docker/output
-figures-root: /Users/romainegele/Documents/Argonne/scalable-bo/experiments/docker/output/figures
+data-root: output
+figures-root: output/figures
 show: False
 negative: True
 mode: min

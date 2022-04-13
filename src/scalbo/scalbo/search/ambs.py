@@ -36,6 +36,7 @@ def execute(
     random_state,
     log_dir,
     cache_dir,
+    n_jobs,
 ):
     """Execute the AMBS algorithm.
 
@@ -98,7 +99,7 @@ def execute(
                 evaluator,
                 sync_communication=sync,
                 liar_strategy=strategy,
-                n_jobs=4,
+                n_jobs=n_jobs,
                 log_dir=search_log_dir,
                 random_state=rank_seed,
                 acq_func=acq_func,

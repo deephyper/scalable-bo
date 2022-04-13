@@ -108,6 +108,12 @@ def create_parser():
         default=False,
         help="Wether to activate or not the verbose mode.",
     )
+    parser.add_argument(
+        "--n-jobs",
+        type=int,
+        default=4,
+        help="The number of parallel processes to use to fit the surrogate model.",
+    )
 
     return parser
 
@@ -130,6 +136,7 @@ def main(args):
         args.random_state,
         args.log_dir,
         args.cache_dir,
+        args.n_jobs,
     )
 
 

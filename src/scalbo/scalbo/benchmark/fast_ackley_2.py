@@ -20,7 +20,7 @@ def ackley(x, a=20, b=0.2, c=2*np.pi):
 
 @profile
 def run(config):
-    t_sleep = np.random.normal(loc=2, scale=0.5)
+    t_sleep = np.random.normal(loc=5, scale=2)
     t_sleep = max(t_sleep, 0)
     time.sleep(t_sleep)
     x = np.array([config[k] for k in config if "x" in k])

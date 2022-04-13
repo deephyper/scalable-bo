@@ -34,6 +34,7 @@ def execute(
     random_state,
     log_dir,
     cache_dir,
+    n_jobs,
 ):
 
     # define where the outputs are saved live (in cache-dir if possible)
@@ -66,8 +67,7 @@ def execute(
         run,
         sync_communication=sync,
         sync_communication_freq=1,
-        n_jobs=4,  # TODO: to be given according to the number of available hardware threads
-        lazy_socket_allocation=False,
+        n_jobs=n_jobs,
         log_dir=search_log_dir,
         random_state=rs,
         acq_func=acq_func,

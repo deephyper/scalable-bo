@@ -2,6 +2,9 @@ FROM continuumio/miniconda3
 
 WORKDIR /scalable-bo
 
+RUN apt-get update
+RUN apt-get install vim -y
+
 # Copy the repo
 COPY . .
 

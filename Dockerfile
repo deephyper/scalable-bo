@@ -1,16 +1,12 @@
 FROM continuumio/miniconda3
 
-WORKDIR /app
+WORKDIR /scalable-bo
 
 # Copy the repo
 COPY . .
 
 # Move to build
-WORKDIR /app/build
-
-# Install base requirements
-# RUN apt-get update -y
-# RUN apt-get build-essential -y
+WORKDIR /scalable-bo/build
 
 # Create new conda environment
 RUN conda update -n base -c defaults conda -y 
@@ -40,4 +36,4 @@ RUN pip install -e ../src/scalbo/
 # activate 'dh' environment by default
 RUN echo "conda activate dhenv" >> ~/.bashrc
 
-WORKDIR /app
+WORKDIR /scalable-bo

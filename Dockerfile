@@ -13,13 +13,14 @@ WORKDIR /app/build
 # RUN apt-get build-essential -y
 
 # Create new conda environment
+RUN conda update -n base -c defaults conda -y 
 RUN conda create -n dhenv python=3.8 -y --quiet
 
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "dhenv", "/bin/bash", "-c"]
 
 # Install OpenMPI
-RUN conda install openmpi mpi4py -y
+RUN conda install -c conda-forge mpi4py=3.1.3 -y
 RUN echo "export OMPI_ALLOW_RUN_AS_ROOT=1" >> ~/.bashrc
 RUN echo "export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> ~/.bashrc
 

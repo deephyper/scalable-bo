@@ -161,6 +161,8 @@ optional arguments:
 
 Experiments are challenging to reproduce at large scale, therefore we provide a Docker image to reproduce similar results on a single machine with multiple cores. We assume that Docker is already installed. If it is not the case please check [how to install Docker](https://docs.docker.com/get-docker/).
 
+**Your Docker configuration needs to use at least 8 CPUs.**
+
 Pull the docker image at:
 ```console
 docker pull romainegele/scalable-bo

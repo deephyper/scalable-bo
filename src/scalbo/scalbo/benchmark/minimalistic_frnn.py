@@ -1,15 +1,7 @@
 import os
 import logging
-import pathlib
-import numpy as np
-import time
-import pprint
-import itertools
-from functools import partial
-import json
 
 from mpi4py import MPI
-
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
@@ -17,30 +9,7 @@ gpu_per_node = 8
 gpu_local_idx = rank % gpu_per_node
 node = int(rank / gpu_per_node)
 
-# dataset_path = "/lus/theta-fs0/projects/fusiondl_aesp/felker"
-# sub_dirs = [
-#     "normalization",
-#     "processed_shotlists",
-#     "processed_shots",
-#     "shot_lists",
-# ]
-# sub_files = [
-#     "normalization_signal_group_274046652389426782036862662489435313687-old.npz",
-# ]
-# if gpu_local_idx == 0:
-#     pathlib.Path(f"/dev/shm/{node}").mkdir(parents=True, exist_ok=True)
-#     for sub_dir in sub_dirs:
-#         os.system(f"cp -r {dataset_path}/{sub_dir} /dev/shm/{node}/{sub_dir}")
-#     for sub_file in sub_files:
-#         os.system(f"cp {dataset_path}/{sub_file} /dev/shm/{node}/{sub_file}")
-
-# Temporary suppress tf logs
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
-
 import tensorflow as tf
-from tensorflow.keras.backend import clear_session
-
-
 gpus = tf.config.list_physical_devices("GPU")
 if gpus:
     # Restrict TensorFlow to only use the first GPU
@@ -53,6 +22,17 @@ if gpus:
         # Visible devices must be set before GPUs have been initialized
         logging.info(f"{e}")
 
+import pathlib
+import numpy as np
+import time
+import pprint
+from functools import partial
+import json
+
+# Temporary suppress tf logs
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
+from tensorflow.keras.backend import clear_session
 from tensorflow.keras.layers import (
     Input,
     Dense, Activation, Dropout, Lambda,
@@ -72,20 +52,14 @@ from tensorflow.keras.metrics import AUC
 from plasma.conf_parser import parameters
 from plasma.preprocessor.preprocess import guarantee_preprocessed
 from plasma.models.loader import Loader
-from plasma.utils.processing import concatenate_sublists
 from plasma.utils.performance import PerformanceAnalyzer
 from plasma.utils.evaluation import get_loss_from_list
-
-import plasma.global_vars as g
-g.init_MPI()
-
 
 from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
 
 hp_problem = HpProblem()
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "pred_batch_size")
 hp_problem.add_hyperparameter((32, 256, "log-uniform"), "length")
 hp_problem.add_hyperparameter((32, 256, "log-uniform"), "rnn_size")
 hp_problem.add_hyperparameter((1, 4), "rnn_layers")
@@ -94,34 +68,81 @@ hp_problem.add_hyperparameter((1, 4), "num_conv_layers")
 hp_problem.add_hyperparameter((32, 256, "log-uniform"), "dense_size")
 hp_problem.add_hyperparameter((0.0, 1.0), "regularization")
 hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization")
-hp_problem.add_hyperparameter((1e-7, 1e-3, "log-uniform"), "lr")
+hp_problem.add_hyperparameter((1e-7, 1e-2, "log-uniform"), "lr")
 hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
 hp_problem.add_hyperparameter((0.9, 1.0), "momentum")
 hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob")
-hp_problem.add_hyperparameter((32, 512, "log-uniform"), "batch_size")
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
 
 
-class ResetStatesCallback(Callback):
-    def on_batch_end(self, batch, logs=None):
-        self.model.reset_states()
+# dataset_path = "/lus/theta-fs0/projects/fusiondl_aesp/felker"
+# sub_dirs = [
+#     "normalization",
+#     "processed_shotlists",
+#     "processed_shots",
+#     "shot_lists",
+# ]
+# sub_files = [
+#     "normalization_signal_group_274046652389426782036862662489435313687-old.npz",
+# ]
+# if gpu_local_idx == 0:
+#     pathlib.Path(f"/dev/shm/{node}").mkdir(parents=True, exist_ok=True)
+#     for sub_dir in sub_dirs:
+#         os.system(f"cp -r {dataset_path}/{sub_dir} /dev/shm/{node}/{sub_dir}")
+#     for sub_file in sub_files:
+#         os.system(f"cp {dataset_path}/{sub_file} /dev/shm/{node}/{sub_file}")
+# comm.Barrier()
 
 
-class LayerReset(tf.keras.layers.Layer):
-    def __init__(self, layer):
-        super(LayerReset, self).__init__()
-        self._layer = layer
+class CustomModel(tf.keras.Model):
+    def train_step(self, data):
+        x, y = data
+        
+        with tf.GradientTape() as tape:
+            y_pred = self(x, training=True)  # Forward pass
+            self.reset_states()
+            # Compute the loss value
+            loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
-    def call(self, batches_to_reset):
-        def reset_states(layer, batches_to_reset):
-            for j, reset in enumerate(tf.unstack(batches_to_reset)):
-                if reset != 0:
-                    for state in layer.states:
-                        assert len(batches_to_reset) == state.shape[0]
-                        batch_states = tf.keras.backend.get_value(state)
-                        batch_states[j] = 0
-                        tf.keras.backend.set_value(state, batch_states)
-        # reset_states(self._layer, batches_to_reset)
-        return batches_to_reset
+        # Compute gradients
+        trainable_vars = self.trainable_variables
+        gradients = tape.gradient(loss, trainable_vars)
+        # Update weights
+        self.optimizer.apply_gradients(zip(gradients, trainable_vars))
+        # Update metrics (includes the metric that tracks the loss)
+        self.compiled_metrics.update_state(y, y_pred)
+    
+
+        # Return a dict mapping metric names to current value
+        return {m.name: m.result() for m in self.metrics}
+    
+    # def test_step(self, data):
+    #     x, y = data
+
+    #     y_pred = self(x, training=False)
+    #     self.reset_states()
+
+    #     # Update metrics (includes the metric that tracks the loss)
+    #     self.compiled_metrics.update_state(y, y_pred)
+    
+    #     # Return a dict mapping metric names to current value
+    #     return {m.name: m.result() for m in self.metrics}
+
+    def predict_step(self, data):
+        x = data
+
+        y_pred = self(x, training=False)
+        self.reset_states()
+
+        return y_pred
+
+
+targets = {
+    'hinge': {
+        'loss': 'hinge',
+        'activation': 'linear'
+    }
+}
 
 
 class ModelBuilder(object):
@@ -166,7 +187,7 @@ class ModelBuilder(object):
         length = model_conf['length']
         stateful = model_conf['stateful']
         return_sequences = model_conf['return_sequences']
-        output_activation = conf['data']['target'].activation
+        output_activation = targets[conf['target']]['activation']
         use_signals = conf['paths']['use_signals']
         num_signals = sum([sig.num_channels for sig in use_signals])
         num_conv_filters = model_conf['num_conv_filters']
@@ -233,7 +254,7 @@ class ModelBuilder(object):
             pre_rnn = Dense(dense_size//4, activation='relu', kernel_regularizer=l2(dense_regularization), bias_regularizer=l2(dense_regularization), activity_regularizer=l2(dense_regularization))(pre_rnn)
 
         pre_rnn_model = tf.keras.Model(inputs=pre_rnn_input, outputs=pre_rnn)
-        pre_rnn_model.summary()
+        # pre_rnn_model.summary()
         
 
         x_input = Input(batch_shape=batch_input_shape)
@@ -263,7 +284,7 @@ class ModelBuilder(object):
         if return_sequences:
             x_out = TimeDistributed(Dense(1, activation=output_activation))(x_in)
 
-        model = tf.keras.Model(inputs=x_input, outputs=x_out)
+        model = CustomModel(inputs=x_input, outputs=x_out)
         # bug with tensorflow/Keras
         # TODO(KGF): what is this bug? this is the only direct "tensorflow"
         # import outside of mpi_runner.py and runner.py
@@ -386,14 +407,11 @@ class DataHandler(object):
             batch_generator,
             output_signature=(
                 tf.TensorSpec(shape=(batch_size, length, num_signals), dtype=tf.float32),
-                # (
-                #     tf.TensorSpec(shape=(batch_size, length, num_signals), dtype=tf.float32),
-                #     tf.TensorSpec(shape=(batch_size, 1), dtype=tf.int32),
-                # ),
                 tf.TensorSpec(shape=(batch_size, length, 1), dtype=tf.float32),
             )
         )
         return dataset
+
 
 class ModelEvaluator(object):
     def __init__(self, model, loader, conf) -> None:
@@ -407,105 +425,36 @@ class ModelEvaluator(object):
         conf = self.conf
 
         loader.set_inference_mode(True)
-        np.random.seed(g.task_index)
         shot_list.sort()
 
+        model.reset_states()
+        shot_sublists = shot_list.sublists(conf['model']['pred_batch_size'], do_shuffle=False, equal_size=True)
         y_prime = []
         y_gold = []
         disruptive = []
 
-        model.reset_states()
-        shot_sublists = shot_list.sublists(conf['model']['pred_batch_size'], do_shuffle=False, equal_size=True)
-        y_prime_global = []
-        y_gold_global = []
-        disruptive_global = []
-        if g.task_index != 0:
-            loader.verbose = False
+        for shot_sublist in shot_sublists:
 
-        color = 2
-        for (i, shot_sublist) in enumerate(shot_sublists):
-            shpz = []
-            max_length = -1 # So non shot predictive workers don't have a real length
-            if i % g.num_workers == g.task_index:
-                color = 1
-                X, y, shot_lengths, disr = loader.load_as_X_y_pred(shot_sublist)
+            X, y, shot_lengths, disr = loader.load_as_X_y_pred(shot_sublist)
 
-                # load data and fit on data
-                y_p = model.predict(X, batch_size=conf['model']['pred_batch_size'])
-                model.reset_states()
-                y_p = loader.batch_output_to_array(y_p)
-                y = loader.batch_output_to_array(y)
+            # load data and fit on data
+            y_p = model.predict(X, batch_size=conf['model']['pred_batch_size'])
 
-                # cut arrays back
-                y_p = [arr[:shot_lengths[j]] for (j, arr) in enumerate(y_p)]
-                y = [arr[:shot_lengths[j]] for (j, arr) in enumerate(y)]
+            y_p = loader.batch_output_to_array(y_p)
+            y = loader.batch_output_to_array(y)
 
-                y_prime += y_p
-                y_gold += y
-                disruptive += disr
+            # cut arrays back
+            y_p = [arr[:shot_lengths[j]] for (j, arr) in enumerate(y_p)]
+            y = [arr[:shot_lengths[j]] for (j, arr) in enumerate(y)]
 
-            if (i % g.num_workers == g.num_workers - 1
-                    or i == len(shot_sublists) - 1):
-                # Create numpy block from y list which is used in MPI
-                # Pads y_prime and y_gold with zeros to maximum shot length within block being transferred
-                if color ==1:
-                    shpz = [max(y.shape) for y in y_prime]
-                    max_length = max([max(y.shape) for y in y_p])
-                max_length = g.comm.allreduce(max_length, MPI.MAX)
-                if color == 1:
-                    y_prime_numpy = np.stack([np.pad(sublist, pad_width=((0,max_length-max(sublist.shape)),(0,0))) for sublist in y_prime])
-                    y_gold_numpy = np.stack([np.pad(sublist, pad_width=((0,max_length-max(sublist.shape)),(0,0))) for sublist in y_gold])
+            y_prime += y_p
+            y_gold += y
+            disruptive += disr
 
-                temp_predictor_only_comm = MPI.Comm.Split(g.comm, color, i)
-                # Create numpy array to store all processors output, then aggregate and unpad using MPI gathered shape list
-                shpzg = g.comm.allgather(shpz)
-                shpzg = list(itertools.chain(*shpzg))
-                shpzg = [s for s in shpzg if s != []]
-                max_length = g.comm.allreduce(max_length, MPI.MAX)
-                if color == 1:
-                    num_pred = temp_predictor_only_comm.size
-                else:
-                    num_pred = g.comm.size - temp_predictor_only_comm.size
-                y_primeg = np.zeros((num_pred*conf['model']['pred_batch_size'],max_length,1), dtype=conf['data']['floatx'])
-                y_goldg  = np.zeros((num_pred*conf['model']['pred_batch_size'],max_length,1), dtype=conf['data']['floatx'])
-                y_primeg_flattend = np.zeros(y_primeg.flatten().shape)
-                y_goldg_flattend  = np.zeros(y_goldg.flatten().shape)
-                if color == 1:
-                    # Ensure that numpy arrays have correct dimensions before gathering them
-                    assert num_pred*max(y_prime_numpy.flatten().shape) == max(y_primeg_flattend.shape)
-                    assert num_pred*max(y_gold_numpy.flatten().shape) == max(y_goldg_flattend.shape)
-                    temp_predictor_only_comm.Allgather(y_prime_numpy.flatten(), y_primeg_flattend)
-                    temp_predictor_only_comm.Allgather(y_gold_numpy.flatten(), y_goldg_flattend)
-                # Process 0 broadcast y_primeg and y_goldg to all processors, including ones
-                # not involved in calculating predictions so they can each create their own
-                # y_prime_global and y_gold_global
-                g.comm.Barrier()
-                g.comm.Bcast(y_primeg_flattend, root=0)
-                g.comm.Bcast(y_goldg_flattend, root=0)
-                y_primeg_flattend = np.split(y_primeg_flattend, num_pred)
-                y_goldg_flattend = np.split(y_goldg_flattend, num_pred)
-                y_primeg = [y.reshape((conf['model']['pred_batch_size'], max_length, 1)) for y in y_primeg_flattend]
-                y_goldg = [y.reshape((conf['model']['pred_batch_size'], max_length, 1)) for y in y_goldg_flattend]
-                y_primeg = np.concatenate(y_primeg, axis=0)
-                y_goldg  = np.concatenate(y_goldg, axis=0)
-                # Unpad each shot to its true length
-                for idx, s in enumerate(shpzg):
-                    trim = lambda nparry, s: nparry[0:int(s),:]
-                    y_prime_global.append(trim(y_primeg[idx],s))
-                    y_gold_global.append(trim(y_goldg[idx], s))
-
-                disruptive_global += concatenate_sublists(
-                    g.comm.allgather(disruptive))
-                y_prime = []
-                y_gold = []
-                disruptive = []
-                color = 2
-                temp_predictor_only_comm.Free()
-
-        y_prime_global = y_prime_global[:len(shot_list)]
-        y_gold_global = y_gold_global[:len(shot_list)]
-        disruptive_global = disruptive_global[:len(shot_list)]
-        return y_prime_global, y_gold_global, disruptive_global
+        y_prime = y_prime[:len(shot_list)]
+        y_gold = y_gold[:len(shot_list)]
+        disruptive = disruptive[:len(shot_list)]
+        return y_prime, y_gold, disruptive
 
     def make_predictions_and_evaluate(self, shot_list):
         conf = self.conf
@@ -516,6 +465,7 @@ class ModelEvaluator(object):
         loss = get_loss_from_list(y_prime, y_gold, conf['data']['target'])
         return roc_area, loss
 
+
 class CustomAUC(tf.keras.metrics.AUC):
 
     def update_state(self, y_true, y_pred, sample_weight=None):
@@ -523,71 +473,81 @@ class CustomAUC(tf.keras.metrics.AUC):
         y_pred = tf.math.sigmoid(y_pred)
         return super().update_state(y_true, y_pred, sample_weight)
 
+
 @profile
 def run(config: None):
+    try:
+        clear_session()
 
-    clear_session()
+        # config['fs_path'] = f"/dev/shm/{node}"
+        # pp = pprint.PrettyPrinter(indent=1)
+        # pp.pprint(config)
 
-    # config['fs_path'] = f"/dev/shm/{node}"
-    conf = parameters(config)
+        conf = parameters(config)
 
-    pp = pprint.PrettyPrinter(indent=1)
-    pp.pprint(conf)
+        handler = DataHandler(conf)
+        builder = ModelBuilder(conf)
 
-    handler = DataHandler(conf)
-    builder = ModelBuilder(conf)
+        # load data
+        (shot_list_train, shot_list_valid, shot_list_test) = guarantee_preprocessed(conf)
+        # print(f"[{node}-{gpu_local_idx}] {len(shot_list_train)}")
 
-    # load data
-    (shot_list_train, shot_list_valid, shot_list_test) = guarantee_preprocessed(conf)
-
-    loader = handler.build_loader()
-    train_dataset = handler.load_dataset(shot_list_train, loader)
-    valid_dataset = handler.load_dataset(shot_list_valid, loader)
-
-    # build model
-    model = builder.build_model()
-    model.summary()
-
-    loss = conf['data']['target'].loss
-    optimizer = builder.build_optimizer()
-    model.compile(optimizer=optimizer, loss=loss, metrics=[CustomAUC(name="auc")])
-
-    steps_per_epoch = loader.get_steps_per_epoch(shot_list_train)
-    validation_steps = loader.get_steps_per_epoch(shot_list_valid)
+        loader = handler.build_loader()
+        train_dataset = handler.load_dataset(shot_list_train, loader)
+        valid_dataset = handler.load_dataset(shot_list_valid, loader)
     
-    # train it
-    history = model.fit(
-        train_dataset,
-        batch_size=conf['training']['batch_size'],
-        epochs=conf['training']['num_epochs'],
-        steps_per_epoch=steps_per_epoch,
-        validation_data=valid_dataset,
-        validation_steps=validation_steps,
-    )
+        # build model
+        model = builder.build_model()
+        # model.summary()
 
-    with open('/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/outputs/stateless_model.json', 'w') as file:
-        json.dump(history.history, file)
+        loss = targets[conf['target']]['loss']
+        optimizer = builder.build_optimizer()
+        model.compile(optimizer=optimizer, loss=loss) #, metrics=[CustomAUC(name="auc")])
 
-    # evaluate it
-    evaluator = ModelEvaluator(model, loader, conf)
-    train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
-    valid_roc, valid_loss = evaluator.make_predictions_and_evaluate(shot_list_valid)
-    test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
+        steps_per_epoch = loader.get_steps_per_epoch(shot_list_train)
+        validation_steps = loader.get_steps_per_epoch(shot_list_valid)
+        
+        # train it
+        history = model.fit(
+            train_dataset,
+            batch_size=conf['training']['batch_size'],
+            epochs=conf['training']['num_epochs'],
+            steps_per_epoch=steps_per_epoch,
+            validation_data=valid_dataset,
+            validation_steps=validation_steps,
+        )
 
-    # print results
-    print('======== RESULTS =======')
-    print('Train Loss: {:.3e}'.format(train_loss))
-    print('Train ROC: {:.4f}'.format(train_roc))
-    print('Valid Loss: {:.3e}'.format(valid_loss))
-    print('Valid ROC: {:.4f}'.format(valid_roc))
-    print('Test Loss: {:.3e}'.format(test_loss))
-    print('Test ROC: {:.4f}'.format(test_roc))
+        # history_file = '/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/outputs/stateless_model.json'
+        # with open(history_file, 'w') as file:
+        #     json.dump(history.history, file)
 
-    # return valid_roc
+        # evaluate it
+        evaluator = ModelEvaluator(model, loader, conf)
+        # train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
+        valid_roc, valid_loss = evaluator.make_predictions_and_evaluate(shot_list_valid)
+        # test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
+
+        # print results
+        # print('======== RESULTS =======')
+        # print('Train Loss: {:.3e}'.format(train_loss))
+        # print('Train ROC: {:.4f}'.format(train_roc))
+        print('Valid Loss: {:.3e}'.format(valid_loss))
+        print('Valid ROC: {:.4f}'.format(valid_roc))
+        # print('Test Loss: {:.3e}'.format(test_loss))
+        # print('Test ROC: {:.4f}'.format(test_roc))
+
+        objective = valid_roc
+
+        clear_session()
+    
+    except tf.errors.ResourceExhaustedError as e:
+        objective = 0
+        clear_session()
+
+    return objective
 
 if __name__ == '__main__':
-    conf = {
-        'pred_batch_size': 128,
+    baseline_conf = {
         'length': 128,
         'rnn_size': 200,
         'rnn_layers': 2,
@@ -604,7 +564,40 @@ if __name__ == '__main__':
         'dropout_prob': 0.1,
         'batch_size': 128,
     }
-    
+
+    bad_conf = {
+        'batch_size': 34,
+        'dense_regularization': 0.05550126132273836,
+        'dense_size': 213,
+        'dropout_prob': 0.35975570279338936,
+        'length': 49,
+        'lr': 1.9172364931264608e-07,
+        'lr_decay': 0.9273317327794233,
+        'momentum': 0.9952601415409505,
+        'num_conv_filters': 217,
+        'num_conv_layers': 4,
+        'regularization': 0.07208627553792757,
+        'rnn_layers': 1,
+        'rnn_size': 70,
+    }
+
+    best_conf = {
+        'batch_size': 218,
+        'dense_regularization': 0.5843257114253672,
+        'dense_size': 73,
+        'dropout_prob': 0.051445953494395236,
+        'length': 93,
+        'lr': 0.00010994350125342522,
+        'lr_decay': 0.9051882998677274,
+        'momentum': 0.9779860722898763,
+        'num_conv_filters': 189,
+        'num_conv_layers': 2,
+        'regularization': 0.01633504910661987,
+        'rnn_layers': 1,
+        'rnn_size': 200,
+    }
+
     t1 = time.time()
-    run(conf)
+    for i in range(4):
+        run(best_conf)
     print("Run duration : {:.4f}".format(time.time() - t1))

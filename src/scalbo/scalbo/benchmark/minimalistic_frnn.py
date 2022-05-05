@@ -95,12 +95,28 @@ hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
 
 
 class CustomModel(tf.keras.Model):
+    
+    @tf.function
+    def state_reset(self, batches_to_reset):
+        for j, reset in enumerate(tf.unstack(batches_to_reset)):
+            if reset != 0:
+                for layer in self.layers:
+                    if hasattr(layer, "states"):
+                        for state in layer.states:
+                            assert len(batches_to_reset) == state.shape[0]
+                            batch_states = tf.keras.backend.get_value(state)
+                            batch_states[j] = 0
+                            tf.keras.backend.set_value(state, batch_states)
+        return batches_to_reset
+        
     def train_step(self, data):
-        x, y = data
+        x, r, y = data
+
+        self.state_reset(r)
         
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)  # Forward pass
-            self.reset_states()
+            # self.reset_states()
             # Compute the loss value
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
@@ -116,25 +132,27 @@ class CustomModel(tf.keras.Model):
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
     
-    # def test_step(self, data):
-    #     x, y = data
+    def test_step(self, data):
+        x, r, y = data
+
+        self.state_reset(r)
+
+        y_pred = self(x, training=False)
+
+        # Update metrics (includes the metric that tracks the loss)
+        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+        self.compiled_metrics.update_state(y, y_pred)
+    
+        # Return a dict mapping metric names to current value
+        return {m.name: m.result() for m in self.metrics}
+
+    # def predict_step(self, data):
+    #     x, r = data
 
     #     y_pred = self(x, training=False)
     #     self.reset_states()
 
-    #     # Update metrics (includes the metric that tracks the loss)
-    #     self.compiled_metrics.update_state(y, y_pred)
-    
-    #     # Return a dict mapping metric names to current value
-    #     return {m.name: m.result() for m in self.metrics}
-
-    def predict_step(self, data):
-        x = data
-
-        y_pred = self(x, training=False)
-        self.reset_states()
-
-        return y_pred
+    #     return y_pred
 
 
 targets = {
@@ -336,34 +354,12 @@ class ModelBuilder(object):
         momentum = conf['model']["momentum"]
         clipnorm = conf['model']["clipnorm"]
         optimizers = {
-            "sgd": SGD,
-            "momentum_sgd": SGD,
             "adam": Adam,
-            "rmsprop": RMSprop,
-            "nadam": Nadam,
         }
         optimizers_kwargs = {
-            "sgd": {
-                "learning_rate": lr,
-                "clipnorm": clipnorm,
-            },
-            "momentum_sgd": {
-                "learning_rate": lr,
-                "clipnorm": clipnorm,
-                "decay": 1e-6,
-                "momentum": momentum,
-            },
             "adam": {
                 "learning_rate": lr,
-                "clipnorm": clipnorm,
-            },
-            "rmsprop": {
-                "learning_rate": lr,
-                "clipnorm": clipnorm,
-            },
-            "nadam": {
-                "learning_rate": lr,
-                "clipnorm": clipnorm,
+                "epsilon": 1e-8,
             },
         }
         
@@ -396,7 +392,8 @@ class DataHandler(object):
 
     def load_dataset(self, shot_list, loader):
         conf = self.conf
-        batch_generator = partial(loader.training_batch_generator, shot_list=shot_list)
+        # batch_generator = partial(loader.training_batch_generator, shot_list=shot_list)
+        batch_generator = partial(loader.training_batch_generator_partial_reset_bis, shot_list=shot_list)
 
         length = conf['model']['length']
         use_signals = conf['paths']['use_signals']
@@ -407,6 +404,7 @@ class DataHandler(object):
             batch_generator,
             output_signature=(
                 tf.TensorSpec(shape=(batch_size, length, num_signals), dtype=tf.float32),
+                tf.TensorSpec(shape=(batch_size), dtype=tf.int32),
                 tf.TensorSpec(shape=(batch_size, length, 1), dtype=tf.float32),
             )
         )
@@ -490,7 +488,6 @@ def run(config: None):
 
         # load data
         (shot_list_train, shot_list_valid, shot_list_test) = guarantee_preprocessed(conf)
-        # print(f"[{node}-{gpu_local_idx}] {len(shot_list_train)}")
 
         loader = handler.build_loader()
         train_dataset = handler.load_dataset(shot_list_train, loader)
@@ -504,37 +501,54 @@ def run(config: None):
         optimizer = builder.build_optimizer()
         model.compile(optimizer=optimizer, loss=loss) #, metrics=[CustomAUC(name="auc")])
 
-        steps_per_epoch = loader.get_steps_per_epoch(shot_list_train)
-        validation_steps = loader.get_steps_per_epoch(shot_list_valid)
-        
+        lr_decay = conf['model']['lr_decay']
+        def scheduler(epoch, lr):
+            return lr * lr_decay
+
+        lr_scheduler = tf.keras.callbacks.LearningRateScheduler(scheduler)
+
+        steps_per_epoch = loader.get_steps_per_epoch_bis(shot_list_train)
+        validation_steps = loader.get_steps_per_epoch_bis(shot_list_valid)
+
         # train it
+        num_epochs = conf['training']['num_epochs']
+        t = time.time()
         history = model.fit(
             train_dataset,
             batch_size=conf['training']['batch_size'],
-            epochs=conf['training']['num_epochs'],
+            epochs=num_epochs,
             steps_per_epoch=steps_per_epoch,
             validation_data=valid_dataset,
             validation_steps=validation_steps,
+            callbacks=[lr_scheduler],
         )
+        fit_duration = time.time() - t
+        print(f"[{rank}]Fit duration : {fit_duration:.2f}s. -i.e- {fit_duration/num_epochs:.2f}s./epoch")
 
-        # history_file = '/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/outputs/stateless_model.json'
+        # history_dict = history.history
+        # del history_dict['lr']
+        # history_file = '/lus/theta-fs0/projects/datascience/jgouneau/deephyper/frnn/scalable-bo/experiments/thetagpu/jobs/output/history/'
+        # if rank == 0:
+        #     history_file += 'baseline_conf.json'
+        # else:
+        #     history_file += 'best_conf.json'
         # with open(history_file, 'w') as file:
-        #     json.dump(history.history, file)
+        #     json.dump(history_dict, file)
 
         # evaluate it
         evaluator = ModelEvaluator(model, loader, conf)
-        # train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
+        train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
         valid_roc, valid_loss = evaluator.make_predictions_and_evaluate(shot_list_valid)
-        # test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
+        test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
 
         # print results
-        # print('======== RESULTS =======')
-        # print('Train Loss: {:.3e}'.format(train_loss))
-        # print('Train ROC: {:.4f}'.format(train_roc))
-        print('Valid Loss: {:.3e}'.format(valid_loss))
-        print('Valid ROC: {:.4f}'.format(valid_roc))
-        # print('Test Loss: {:.3e}'.format(test_loss))
-        # print('Test ROC: {:.4f}'.format(test_roc))
+        print(f'[{rank}]======== RESULTS =======')
+        print(f'[{rank}]Train Loss: {train_loss:.3e}')
+        print(f'[{rank}]Train ROC: {train_roc:.4f}')
+        print(f'[{rank}]Valid Loss: {valid_loss:.3e}')
+        print(f'[{rank}]Valid ROC: {valid_roc:.4f}')
+        print(f'[{rank}]Test Loss: {test_loss:.3e}')
+        print(f'[{rank}]Test ROC: {test_roc:.4f}')
 
         objective = valid_roc
 
@@ -565,39 +579,42 @@ if __name__ == '__main__':
         'batch_size': 128,
     }
 
-    bad_conf = {
-        'batch_size': 34,
-        'dense_regularization': 0.05550126132273836,
-        'dense_size': 213,
-        'dropout_prob': 0.35975570279338936,
-        'length': 49,
-        'lr': 1.9172364931264608e-07,
-        'lr_decay': 0.9273317327794233,
-        'momentum': 0.9952601415409505,
-        'num_conv_filters': 217,
-        'num_conv_layers': 4,
-        'regularization': 0.07208627553792757,
-        'rnn_layers': 1,
-        'rnn_size': 70,
-    }
-
     best_conf = {
-        'batch_size': 218,
-        'dense_regularization': 0.5843257114253672,
-        'dense_size': 73,
-        'dropout_prob': 0.051445953494395236,
-        'length': 93,
-        'lr': 0.00010994350125342522,
-        'lr_decay': 0.9051882998677274,
-        'momentum': 0.9779860722898763,
-        'num_conv_filters': 189,
-        'num_conv_layers': 2,
-        'regularization': 0.01633504910661987,
-        'rnn_layers': 1,
-        'rnn_size': 200,
+        'batch_size':193,
+        'dense_regularization':0.7116142884654129,
+        'dense_size':188,
+        'dropout_prob':0.08291023294018751,
+        'length':52,
+        'lr':5.274829167162617e-05,
+        'lr_decay':0.9232554232111658,
+        'momentum':0.9356337925457681,
+        'num_conv_filters':45,
+        'num_conv_layers':2,
+        'regularization':0.0050287564160431675,
+        'rnn_layers':1,
+        'rnn_size':69,
     }
 
-    t1 = time.time()
-    for i in range(4):
-        run(best_conf)
-    print("Run duration : {:.4f}".format(time.time() - t1))
+    best_conf_bis = {
+        'batch_size': 245,
+        'dense_regularization': 0.9743751473998066,
+        'dense_size': 71,
+        'dropout_prob': 0.04548075596695794,
+        'length': 37,
+        'lr': 7.691737528198673e-05,
+        'lr_decay': 0.9284411981081988,
+        'momentum': 0.9055619582784972,
+        'num_conv_filters': 34,
+        'num_conv_layers': 3,
+        'regularization': 0.0034724895968206715,
+        'rnn_layers': 1,
+        'rnn_size': 106,
+    }
+
+    if rank == 0:
+        conf = baseline_conf
+    else:
+        conf = best_conf_bis
+    t = time.time()
+    run(conf)
+    print(f"Run duration : {time.time() - t:.2f}s.")

@@ -71,6 +71,7 @@ def execute(
         log_dir=search_log_dir,
         random_state=rs,
         acq_func=acq_func,
+        lazy_socket_allocation=False,
     )  # sampling boltzmann!
     logging.info("Creation of the search done")
 

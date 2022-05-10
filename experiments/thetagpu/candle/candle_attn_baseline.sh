@@ -7,4 +7,4 @@
 
 source ../../../build/activate-dhenv.sh
 
-python -m scalbo.benchmark.candle_att > candle_attn_baseline.txt
+python -m scalbo.benchmark.candle_attn > candle_attn_baseline.txt

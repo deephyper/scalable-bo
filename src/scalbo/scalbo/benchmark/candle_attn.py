@@ -665,7 +665,7 @@ def run(config):
 def full_training(config):
 
     config["epochs"] = 100
-    config["timeout"] = 60*60*10 # 10 hours
+    config["timeout"] = 60*60*1 # 1 hour
     config["evaluate_model"] = True
 
     run(config)
@@ -677,4 +677,4 @@ if __name__ == "__main__":
     # default_config = {}
     default_config = hp_problem.default_configuration
     logging.info(f"{default_config=}")
-    run(default_config)
+    full_training(default_config)

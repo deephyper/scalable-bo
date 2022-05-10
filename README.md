@@ -95,6 +95,13 @@ From the `scalable-bo/build` folder, execute the following commands:
 ```console
 ../install/thetagpu.sh
 ```
+### For Summit (OLCF)
+
+From the `scalable-bo/build` folder, execute the following commands:
+
+```console
+../install/summit.sh
+```
 
 ## Organization of the repository
 
@@ -209,3 +216,9 @@ cd experiments/theta/jobs/
 cd experiments/thetagpu/jobs/
 ```
 
+
+### For Summit (OLCF)
+
+```console
+cd experiments/summit/jobs/
+```

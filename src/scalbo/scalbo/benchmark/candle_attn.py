@@ -292,6 +292,20 @@ def run_candle(params):
     seed = args.rng_seed
     candle.set_seed(seed)
 
+    # cache data
+    train_file = params['train_data']
+    cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
+    # only the first rank of each node caches the data
+    if os.path.exists(cache_train_file):
+        params["train_data"] = cache_train_file
+    else:
+        if rank % 16 == 0:
+            ret = os.system(f"cp {train_file} {cache_train_file}")
+            if ret == 0:
+                params["train_data"] = cache_train_file
+            else:
+                params["train_data"] = train_file
+
     # Construct extension to save model
     ext = attn.extension_from_parameters(params, "keras")
     candle.verify_path(params["save_path"])

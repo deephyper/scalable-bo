@@ -10,11 +10,11 @@ export COBALT_JOBSIZE=1
 export acq_func="qUCB"
 export strategy="qUCB"
 export model="RF"
-export timeout=10800
+export timeout=3600
 export random_state=42 
 export problem="candle_attn"
 export sync_val=0
-export search="DMBS"
+export search="DBO"
 #!!! CONFIGURATION - END
 
 # activate Python environment

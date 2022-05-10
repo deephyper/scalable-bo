@@ -5,7 +5,7 @@
 module load cmake
 module load open-ce/1.5.2
 
-conda create -p dhenv --clone open-ce-1.5.2-py39-0 -y
+conda create -p dhenv --clone open-ce-1.5.2-py37-0 -y
 conda activate dhenv/
 
 # Clone DeepHyper (develop)

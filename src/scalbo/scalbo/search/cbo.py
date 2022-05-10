@@ -14,7 +14,7 @@ mpi4py.rc.thread_level = "multiple"
 import numpy as np
 
 from deephyper.evaluator import Evaluator
-from deephyper.search.hps import AMBS
+from deephyper.search.hps import CBO
 from deephyper.evaluator.callback import ProfilingCallback
 
 from mpi4py import MPI
@@ -37,6 +37,7 @@ def execute(
     log_dir,
     cache_dir,
     n_jobs,
+    model,
 ):
     """Execute the AMBS algorithm.
 
@@ -94,7 +95,7 @@ def execute(
 
             # Search
             logging.info("Creation of the search instance...")
-            search = AMBS(
+            search = CBO(
                 hp_problem,
                 evaluator,
                 sync_communication=sync,
@@ -103,6 +104,7 @@ def execute(
                 log_dir=search_log_dir,
                 random_state=rank_seed,
                 acq_func=acq_func,
+                surrogate_model=model
             )
             logging.info("Creation of the search done")
 

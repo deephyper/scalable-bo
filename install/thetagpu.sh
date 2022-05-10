@@ -11,15 +11,11 @@ conda activate dhenv/
 # Clone DeepHyper (develop)
 git clone -b develop https://github.com/deephyper/deephyper.git
 
-# Clone DeepHyper/Scikit-Optimize (master)
-git clone https://github.com/deephyper/scikit-optimize.git
-
 # Clone Plasma Fork (tf2)
 git clone -b tf2 https://github.com/deephyper/plasma-python.git
 
 # Install DeepHyper
 pip install -e deephyper/
-pip install -e scikit-optimize/
 pip install -e plasma-python/
 
 # Install Scalable-BO

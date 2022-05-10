@@ -13,7 +13,7 @@ mpi4py.rc.recv_mprobe = False
 
 import numpy as np
 
-from deephyper.search.hps import DMBSMPI
+from deephyper.search.hps import DBO
 
 from mpi4py import MPI
 
@@ -35,6 +35,7 @@ def execute(
     log_dir,
     cache_dir,
     n_jobs,
+    model,
 ):
 
     # define where the outputs are saved live (in cache-dir if possible)
@@ -55,14 +56,13 @@ def execute(
         )
 
     rs = np.random.RandomState(random_state)
-    # rank_seed = rs.randint(low=0, high=2**32, size=size)[rank]
 
     hp_problem = problem.hp_problem
     run = problem.run
 
     logging.info("Creation of the search instance...")
 
-    search = DMBSMPI(
+    search = DBO(
         hp_problem,
         run,
         sync_communication=sync,
@@ -71,7 +71,7 @@ def execute(
         log_dir=search_log_dir,
         random_state=rs,
         acq_func=acq_func,
-        lazy_socket_allocation=False,
+        surrogate_model=model,
     )  # sampling boltzmann!
     logging.info("Creation of the search done")
 
@@ -82,9 +82,6 @@ def execute(
     else:
         search.search(timeout=timeout)
     logging.info("Search is done")
-
-    # if rank == 0:
-    #     results.to_csv(os.path.join(search_log_dir, "results.csv"))
 
     if log_dir != search_log_dir:
 

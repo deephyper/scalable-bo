@@ -6,10 +6,10 @@
 
 #!!! CONFIGURATION - START
 export RANKS_PER_NODE=16
-export COBALT_JOBSIZE=8
+export COBALT_JOBSIZE=1
 export acq_func="UCB"
 export strategy="cl_max"
-export model="GP"
+export model="RF"
 export timeout=25200
 export random_state=42 
 export problem="candle_attn"

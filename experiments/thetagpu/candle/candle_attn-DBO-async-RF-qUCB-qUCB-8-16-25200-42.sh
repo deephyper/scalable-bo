@@ -1,5 +1,5 @@
 #!/bin/bash
-#COBALT -n 1
+#COBALT -n 8
 #COBALT -t 425
 #COBALT -q full-node
 #COBALT -A datascience
@@ -14,7 +14,7 @@ export timeout=25200
 export random_state=42 
 export problem="candle_attn"
 export sync_val=0
-export search="CBO"
+export search="DBO"
 #!!! CONFIGURATION - END
 
 # activate Python environment

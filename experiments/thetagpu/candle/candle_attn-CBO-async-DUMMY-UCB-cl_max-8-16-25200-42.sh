@@ -1,12 +1,12 @@
 #!/bin/bash
-#COBALT -n 1
+#COBALT -n 8
 #COBALT -t 425
 #COBALT -q full-node
 #COBALT -A datascience
 
 #!!! CONFIGURATION - START
 export RANKS_PER_NODE=16
-export COBALT_JOBSIZE=1
+export COBALT_JOBSIZE=8
 export acq_func="UCB"
 export strategy="cl_max"
 export model="DUMMY"

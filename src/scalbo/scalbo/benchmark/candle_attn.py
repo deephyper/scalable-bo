@@ -3,6 +3,7 @@ from __future__ import print_function
 import numpy as np
 import sklearn
 import h5py
+import pathlib
 
 import os
 import logging
@@ -383,7 +384,7 @@ def run_candle(params):
     # set up a bunch of callbacks to do work during model training..
 
     checkpointer = ModelCheckpoint(
-        filepath=params["save_path"] + root_fname + ".autosave.model.h5",
+        filepath=os.path.join(params["save_path"], root_fname + ".autosave.model.h5"),
         verbose=params.get("verbose", 0),
         save_weights_only=False,
         save_best_only=True,
@@ -413,7 +414,8 @@ def run_candle(params):
 
     history_logger = LoggingCallback(attn.logger.debug)
 
-    callbacks = [candle_monitor, timeout_monitor, history_logger]
+    # callbacks = [candle_monitor, timeout_monitor, history_logger]
+    callbacks = [timeout_monitor]
 
     if params["reduce_lr"]:
         callbacks.append(reduce_lr)
@@ -663,7 +665,8 @@ def run(config, log_dir=None):
     params["timeout"] = 60 * 10  # 10 minutes per model
 
     if log_dir is not None:
-        params["save_path"] = log_dir
+        params["save_path"] = os.path.join(log_dir, "save")
+        pathlib.Path(params["save_path"]).mkdir(parents=True, exist_ok=True)
 
         if "trial_id" in config:
             params["root_fname"] = f"trial-{config['trial_id']}"
@@ -672,8 +675,8 @@ def run(config, log_dir=None):
 
             # params["save_path"] + root_fname + ".autosave.model.h5"
             if config["resource"] > 1:
-                params["cp_weights_path"] = (
-                    params["save_path"] + params["root_fname"] + ".autosave.model.h5"
+                params["cp_weights_path"] = os.path.join(
+                    params["save_path"], params["root_fname"] + ".autosave.model.h5"
                 )
         else:
             params["use_cp"] = False

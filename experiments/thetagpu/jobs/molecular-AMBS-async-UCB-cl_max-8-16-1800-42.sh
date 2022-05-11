@@ -5,15 +5,15 @@
 #COBALT -A datascience
 
 #!!! CONFIGURATION - START
-export RANKS_PER_NODE=32
+export RANKS_PER_NODE=16
 export COBALT_JOBSIZE=8
-export acq_func="qUCB"
-export strategy="qUCB"
+export acq_func="UCB"
+export strategy="cl_max"
 export timeout=1800
 export random_state=42 
 export problem="molecular"
 export sync_val=0
-export search="DMBS"
+export search="AMBS"
 #!!! CONFIGURATION - END
 
 # activate Python environment
@@ -41,7 +41,7 @@ export log_dir="output/$problem-$search-$sync_str-$acq_func-$strategy-$COBALT_JO
 mkdir $log_dir;
 gpustat --no-color -i >> "$log_dir/gpustat.txt" &
 
-echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $COBALT_JOBSIZE --hostfile $COBALT_NODEFILE python -m scalbo.exp --problem $problem \
+echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE --hostfile $COBALT_NODEFILE python -m scalbo.exp --problem $problem \
 --search $search \
 --sync $sync_val \
 --timeout $timeout \

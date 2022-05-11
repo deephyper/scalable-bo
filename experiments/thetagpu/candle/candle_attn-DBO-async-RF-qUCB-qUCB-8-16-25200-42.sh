@@ -6,7 +6,7 @@
 
 #!!! CONFIGURATION - START
 export RANKS_PER_NODE=16
-export COBALT_JOBSIZE=1
+export COBALT_JOBSIZE=8
 export acq_func="qUCB"
 export strategy="qUCB"
 export model="RF"

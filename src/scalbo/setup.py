@@ -4,7 +4,8 @@ from setuptools import setup
 
 REQUIRED = [
     "matplotlib",
-    "pyaml"
+    "pyaml",
+    "optuna"
 ]
 
 

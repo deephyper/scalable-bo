@@ -11,7 +11,7 @@ import warnings
 if __name__ == "__main__":
     rank = 0
     gpu_local_idx = 0
-else: # Assuming a ThetaGPU Node here
+else:  # Assuming a ThetaGPU Node here
     from mpi4py import MPI
 
     comm = MPI.COMM_WORLD
@@ -293,7 +293,7 @@ def run_candle(params):
     candle.set_seed(seed)
 
     # cache data
-    train_file = params['train_data']
+    train_file = params["train_data"]
     cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
     # only the first rank of each node caches the data
     if os.path.exists(cache_train_file):
@@ -311,7 +311,8 @@ def run_candle(params):
     candle.verify_path(params["save_path"])
     prefix = "{}{}".format(params["save_path"], ext)
     logfile = params["logfile"] if params["logfile"] else prefix + ".log"
-    root_fname = "Agg_attn_bin"
+    # root_fname = "Agg_attn_bin"
+    root_fname = params["root_fname"]
     candle.set_up_logger(logfile, attn.logger, params["verbose"])
     attn.logger.info("Params: {}".format(params))
 
@@ -365,6 +366,10 @@ def run_candle(params):
     PS = X_train.shape[1]
     model = build_attention_model(params, PS)
 
+    # TODO: load checkpointed weights
+    if "cp_weights_path" in params:
+        model.load_weights(params["cp_weights_path"])
+
     kerasDefaults = candle.keras_default_config()
     if params["momentum"]:
         kerasDefaults["momentum_sgd"] = params["momentum"]
@@ -395,7 +400,10 @@ def run_candle(params):
         min_lr=0.000000001,
     )
     early_stop = EarlyStopping(
-        monitor="val_tf_auc", patience=200, verbose=params.get("verbose", 0), mode="auto"
+        monitor="val_tf_auc",
+        patience=200,
+        verbose=params.get("verbose", 0),
+        mode="auto",
     )
     candle_monitor = candle.CandleRemoteMonitor(params=params)
 
@@ -409,7 +417,7 @@ def run_candle(params):
 
     if params["reduce_lr"]:
         callbacks.append(reduce_lr)
-    
+
     if params.get("csv_logger", False):
         callbacks.append(csv_logger)
 
@@ -435,18 +443,28 @@ def run_candle(params):
 
     # diagnostic plots
     if params.get("evaluate_model", False):
-        if 'loss' in history.history.keys():
-            candle.plot_history(params['save_path'] + root_fname, history, 'loss')
-        if 'acc' in history.history.keys():
-            candle.plot_history(params['save_path'] + root_fname, history, 'acc')
-        if 'tf_auc' in history.history.keys():
-            candle.plot_history(params['save_path'] + root_fname, history, 'tf_auc')
+        if "loss" in history.history.keys():
+            candle.plot_history(params["save_path"] + root_fname, history, "loss")
+        if "acc" in history.history.keys():
+            candle.plot_history(params["save_path"] + root_fname, history, "acc")
+        if "tf_auc" in history.history.keys():
+            candle.plot_history(params["save_path"] + root_fname, history, "tf_auc")
 
         # Evaluate model
         score = model.evaluate(X_test, Y_test, verbose=0)
         Y_predict = model.predict(X_test)
 
-        evaluate_model(params, root_fname, nb_classes, Y_test, _Y_test, Y_predict, pos, total, score)
+        evaluate_model(
+            params,
+            root_fname,
+            nb_classes,
+            Y_test,
+            _Y_test,
+            Y_predict,
+            pos,
+            total,
+            score,
+        )
 
         save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test)
 
@@ -598,7 +616,9 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
     logging.info("json Validation loss:", score_json[0])
     logging.info("json Validation accuracy:", score_json[1])
 
-    logging.info("json %s: %.2f%%" % (loaded_model_json.metrics_names[1], score_json[1] * 100))
+    logging.info(
+        "json %s: %.2f%%" % (loaded_model_json.metrics_names[1], score_json[1] * 100)
+    )
 
     # predict using loaded model on test and training data
     predict_train = loaded_model_json.predict(X_train)
@@ -636,14 +656,28 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
 
 
 @profile
-def run(config):
+def run(config, log_dir=None):
     params = initialize_parameters()
 
     params["epochs"] = 10
-    params["timeout"] = 60*10 # 10 minutes per model
+    params["timeout"] = 60 * 10  # 10 minutes per model
 
-    # deactive some features
-    params["use_cp"] = False  # checkpointing
+    if log_dir is not None:
+        params["save_path"] = log_dir
+
+        if "trial_id" in config:
+            params["root_fname"] = f"trial-{config['trial_id']}"
+            params["use_cp"] = True  # checkpointing
+            params["epochs"] = 1
+
+            # params["save_path"] + root_fname + ".autosave.model.h5"
+            if config["resource"] > 1:
+                params["cp_weights_path"] = (
+                    params["save_path"] + params["root_fname"] + ".autosave.model.h5"
+                )
+        else:
+            params["use_cp"] = False
+            params["root_fname"] = f"job-{config['job_id']}"
 
     if len(config) > 0:
         # collect dense units
@@ -676,14 +710,14 @@ def run(config):
 
     return score
 
+
 def full_training(config):
 
     config["epochs"] = 100
-    config["timeout"] = 60*60*1 # 1 hour
+    config["timeout"] = 60 * 60 * 1  # 1 hour
     config["evaluate_model"] = True
 
     run(config)
-
 
 
 if __name__ == "__main__":

@@ -1,0 +1,85 @@
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   thetagpu16
+  Local device: mlx5_0
+--------------------------------------------------------------------------
+INFO:attn:Params: {'data_url': 'http://ftp.mcs.anl.gov/pub/candle/public/benchmarks/Pilot1/uno/', 'train_data': 'top_21_1fold_001.h5', 'model_name': 'attn', 'dense': [1000, 1000, 1000, 500, 250, 125, 60, 2], 'batch_size': 32, 'epochs': 100, 'activation': ['relu', 'relu', 'softmax', 'relu', 'relu', 'relu', 'relu', 'softmax'], 'loss': 'categorical_crossentropy', 'optimizer': 'sgd', 'dropout': 0.2, 'learning_rate': 1e-05, 'momentum': 0.9, 'scaling': 'minmax', 'val_split': 0.1, 'epsilon_std': 1.0, 'rng_seed': 2017, 'initialization': 'glorot_uniform', 'latent_dim': 2, 'batch_normalization': False, 'use_cp': False, 'early_stop': True, 'reduce_lr': True, 'feature_subsample': 0, 'save_path': './save/001/', 'timeout': 3600, 'train_bool': True, 'profiling': False, 'experiment_id': 'EXP000', 'run_id': 'RUN000', 'verbose': False, 'logfile': None, 'shuffle': False, 'ckpt_restart_mode': 'auto', 'ckpt_checksum': False, 'ckpt_skip_epochs': 0, 'ckpt_directory': './save', 'ckpt_save_best': True, 'ckpt_save_best_metric': 'val_loss', 'ckpt_save_weights_only': False, 'ckpt_save_interval': 0, 'ckpt_keep_mode': 'linear', 'ckpt_keep_limit': 1000000, 'residual': False, 'warmup_lr': False, 'use_tb': False, 'tsne': False, 'data_type': <class 'numpy.float32'>, 'output_dir': '/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/experiments/thetagpu/candle/Output/EXP000/RUN000', 'evaluate_model': True}
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/layers/normalization/batch_normalization.py:532: _colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/layers/normalization/batch_normalization.py:532: _colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/optimizer_v2/gradient_descent.py:102: UserWarning: The `lr` argument is deprecated, use `learning_rate` instead.
+  super(SGD, self).__init__(name, **kwargs)
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/converters/directives.py:126: The name tf.keras.backend.get_session is deprecated. Please use tf.compat.v1.keras.backend.get_session instead.
+
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/converters/directives.py:126: The name tf.keras.backend.get_session is deprecated. Please use tf.compat.v1.keras.backend.get_session instead.
+
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/impl/api.py:459: auc (from tensorflow.python.ops.metrics_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+The value of AUC returned by this may race with the update so this is deprecated. Please use tf.keras.metrics.AUC instead.
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/impl/api.py:459: auc (from tensorflow.python.ops.metrics_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+The value of AUC returned by this may race with the update so this is deprecated. Please use tf.keras.metrics.AUC instead.
+WARNING:tensorflow:OMP_NUM_THREADS is no longer used by the default Keras config. To configure the number of threads, use tf.config.threading APIs.
+WARNING:tensorflow:OMP_NUM_THREADS is no longer used by the default Keras config. To configure the number of threads, use tf.config.threading APIs.
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/engine/training_v1.py:2057: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates = self.state_updates
+DEBUG:attn:[Epoch: 0] acc: 0.579148, loss: 0.729625, tf_auc: 0.561290, val_acc: 0.900762, val_loss: 0.450972, val_tf_auc: 0.618815
+DEBUG:attn:[Epoch: 1] acc: 0.677771, loss: 0.524806, tf_auc: 0.655915, val_acc: 0.875371, val_loss: 0.461579, val_tf_auc: 0.685329
+DEBUG:attn:[Epoch: 2] acc: 0.749745, loss: 0.437249, tf_auc: 0.710308, val_acc: 0.909059, val_loss: 0.359691, val_tf_auc: 0.733404
+DEBUG:attn:[Epoch: 3] acc: 0.798801, loss: 0.378398, tf_auc: 0.752841, val_acc: 0.925770, val_loss: 0.339254, val_tf_auc: 0.770258
+DEBUG:attn:[Epoch: 4] acc: 0.832558, loss: 0.340608, tf_auc: 0.785105, val_acc: 0.924240, val_loss: 0.282625, val_tf_auc: 0.798398
+DEBUG:attn:[Epoch: 5] acc: 0.854425, loss: 0.310360, tf_auc: 0.809905, val_acc: 0.920945, val_loss: 0.291867, val_tf_auc: 0.820084
+DEBUG:attn:[Epoch: 6] acc: 0.870011, loss: 0.286692, tf_auc: 0.828930, val_acc: 0.929948, val_loss: 0.265197, val_tf_auc: 0.837163
+DEBUG:attn:[Epoch: 7] acc: 0.880632, loss: 0.269299, tf_auc: 0.844404, val_acc: 0.942834, val_loss: 0.195368, val_tf_auc: 0.851138
+DEBUG:attn:[Epoch: 8] acc: 0.888557, loss: 0.254123, tf_auc: 0.857163, val_acc: 0.927800, val_loss: 0.253337, val_tf_auc: 0.862584
+DEBUG:attn:[Epoch: 9] acc: 0.895467, loss: 0.243775, tf_auc: 0.867457, val_acc: 0.930154, val_loss: 0.237124, val_tf_auc: 0.872085
+DEBUG:attn:[Epoch: 10] acc: 0.899469, loss: 0.236758, tf_auc: 0.876194, val_acc: 0.932537, val_loss: 0.230748, val_tf_auc: 0.880064
+DEBUG:attn:[Epoch: 11] acc: 0.905139, loss: 0.224199, tf_auc: 0.883634, val_acc: 0.932508, val_loss: 0.219836, val_tf_auc: 0.887004
+DEBUG:attn:[Epoch: 12] acc: 0.908416, loss: 0.217918, tf_auc: 0.890110, val_acc: 0.935950, val_loss: 0.205192, val_tf_auc: 0.893052
+DEBUG:attn:[Epoch: 13] acc: 0.912322, loss: 0.208961, tf_auc: 0.895810, val_acc: 0.940951, val_loss: 0.194307, val_tf_auc: 0.898438
+DEBUG:attn:[Epoch: 14] acc: 0.915157, loss: 0.201980, tf_auc: 0.900893, val_acc: 0.936421, val_loss: 0.199826, val_tf_auc: 0.903208
+DEBUG:attn:[Epoch: 15] acc: 0.916341, loss: 0.198560, tf_auc: 0.905374, val_acc: 0.936950, val_loss: 0.212159, val_tf_auc: 0.907407
+DEBUG:attn:[Epoch: 16] acc: 0.920129, loss: 0.189967, tf_auc: 0.909374, val_acc: 0.935626, val_loss: 0.215586, val_tf_auc: 0.911232
+DEBUG:attn:[Epoch: 17] acc: 0.922314, loss: 0.186455, tf_auc: 0.912990, val_acc: 0.939333, val_loss: 0.207045, val_tf_auc: 0.914697
+DEBUG:attn:[Epoch: 18] acc: 0.923616, loss: 0.182430, tf_auc: 0.916295, val_acc: 0.938892, val_loss: 0.195873, val_tf_auc: 0.917836
+DEBUG:attn:[Epoch: 19] acc: 0.925900, loss: 0.175888, tf_auc: 0.919301, val_acc: 0.939157, val_loss: 0.186394, val_tf_auc: 0.920723
+DEBUG:attn:[Epoch: 20] acc: 0.928132, loss: 0.169382, tf_auc: 0.922107, val_acc: 0.939863, val_loss: 0.190487, val_tf_auc: 0.923413
+DEBUG:attn:[Epoch: 21] acc: 0.929993, loss: 0.168650, tf_auc: 0.924678, val_acc: 0.939039, val_loss: 0.189355, val_tf_auc: 0.925888
+DEBUG:attn:[Epoch: 22] acc: 0.930464, loss: 0.164368, tf_auc: 0.927044, val_acc: 0.944600, val_loss: 0.170646, val_tf_auc: 0.928176
+DEBUG:attn:[Epoch: 23] acc: 0.933130, loss: 0.160098, tf_auc: 0.929263, val_acc: 0.939392, val_loss: 0.190039, val_tf_auc: 0.930310
+DEBUG:attn:[Epoch: 24] acc: 0.933954, loss: 0.156764, tf_auc: 0.931312, val_acc: 0.942687, val_loss: 0.177616, val_tf_auc: 0.932299
+DEBUG:attn:[Epoch: 25] acc: 0.935719, loss: 0.152714, tf_auc: 0.933267, val_acc: 0.945953, val_loss: 0.166930, val_tf_auc: 0.934190
+DEBUG:attn:[Epoch: 26] acc: 0.937080, loss: 0.149652, tf_auc: 0.935092, val_acc: 0.946600, val_loss: 0.170126, val_tf_auc: 0.935981
+DEBUG:attn:[Epoch: 27] acc: 0.939393, loss: 0.145284, tf_auc: 0.936839, val_acc: 0.946188, val_loss: 0.174044, val_tf_auc: 0.937676
+DEBUG:attn:[Epoch: 28] acc: 0.940338, loss: 0.142574, tf_auc: 0.938470, val_acc: 0.946130, val_loss: 0.177498, val_tf_auc: 0.939275
+DEBUG:attn:[Epoch: 29] acc: 0.941721, loss: 0.138253, tf_auc: 0.940022, val_acc: 0.946365, val_loss: 0.165544, val_tf_auc: 0.940793
+DEBUG:attn:[Epoch: 30] acc: 0.942868, loss: 0.137547, tf_auc: 0.941501, val_acc: 0.945218, val_loss: 0.189138, val_tf_auc: 0.942225
+DEBUG:attn:[Epoch: 31] acc: 0.944008, loss: 0.135175, tf_auc: 0.942897, val_acc: 0.946865, val_loss: 0.182406, val_tf_auc: 0.943579
+DEBUG:attn:[Epoch: 32] acc: 0.944365, loss: 0.133022, tf_auc: 0.944243, val_acc: 0.948748, val_loss: 0.172945, val_tf_auc: 0.944874
+DEBUG:attn:[Epoch: 33] acc: 0.945365, loss: 0.131768, tf_auc: 0.945486, val_acc: 0.952161, val_loss: 0.162308, val_tf_auc: 0.946113
+DEBUG:attn:[Epoch: 34] acc: 0.946825, loss: 0.128174, tf_auc: 0.946714, val_acc: 0.950396, val_loss: 0.170923, val_tf_auc: 0.947299
+DEBUG:attn:[Epoch: 35] acc: 0.947480, loss: 0.126737, tf_auc: 0.947863, val_acc: 0.950778, val_loss: 0.171606, val_tf_auc: 0.948422
+DEBUG:attn:[Epoch: 36] acc: 0.948392, loss: 0.124285, tf_auc: 0.948972, val_acc: 0.948189, val_loss: 0.187865, val_tf_auc: 0.949492
+DEBUG:attn:[Epoch: 37] acc: 0.949470, loss: 0.121903, tf_auc: 0.949999, val_acc: 0.951278, val_loss: 0.178761, val_tf_auc: 0.950519
+DEBUG:attn:[Epoch: 38] acc: 0.950698, loss: 0.119258, tf_auc: 0.951005, val_acc: 0.951455, val_loss: 0.174678, val_tf_auc: 0.951504
+DEBUG:attn:[Epoch: 39] acc: 0.950871, loss: 0.118669, tf_auc: 0.951968, val_acc: 0.952485, val_loss: 0.169726, val_tf_auc: 0.952453
+DEBUG:attn:[Epoch: 40] acc: 0.952257, loss: 0.114283, tf_auc: 0.952919, val_acc: 0.952043, val_loss: 0.163222, val_tf_auc: 0.953370
+DEBUG:attn:[Epoch: 41] acc: 0.954298, loss: 0.109666, tf_auc: 0.953837, val_acc: 0.954309, val_loss: 0.152716, val_tf_auc: 0.954272
+DEBUG:attn:[Epoch: 42] acc: 0.954401, loss: 0.109232, tf_auc: 0.954710, val_acc: 0.955015, val_loss: 0.151791, val_tf_auc: 0.955133
+DEBUG:attn:[Epoch: 43] acc: 0.955218, loss: 0.106407, tf_auc: 0.955531, val_acc: 0.955338, val_loss: 0.153111, val_tf_auc: 0.955956
+DEBUG:attn:[Epoch: 44] acc: 0.955247, loss: 0.107963, tf_auc: 0.956368, val_acc: 0.954750, val_loss: 0.155265, val_tf_auc: 0.956737
+DEBUG:attn:[Epoch: 45] acc: 0.956233, loss: 0.105491, tf_auc: 0.957113, val_acc: 0.955368, val_loss: 0.155261, val_tf_auc: 0.957489
+DEBUG:attn:[Epoch: 46] acc: 0.956398, loss: 0.105410, tf_auc: 0.957844, val_acc: 0.955486, val_loss: 0.153087, val_tf_auc: 0.958200
+DEBUG:attn:[Epoch: 47] acc: 0.956016, loss: 0.105830, tf_auc: 0.958533, val_acc: 0.956751, val_loss: 0.148182, val_tf_auc: 0.958872
+DEBUG:attn:[Epoch: 48] acc: 0.956751, loss: 0.105666, tf_auc: 0.959250, val_acc: 0.956074, val_loss: 0.150069, val_tf_auc: 0.959525
+DEBUG:attn:[Epoch: 49] acc: 0.956917, loss: 0.105920, tf_auc: 0.959821, val_acc: 0.955280, val_loss: 0.156421, val_tf_auc: 0.960148
+DEBUG:attn:[Epoch: 50] acc: 0.956946, loss: 0.103356, tf_auc: 0.960413, val_acc: 0.956103, val_loss: 0.150555, val_tf_auc: 0.960742
+DEBUG:attn:[Epoch: 51] acc: 0.958060, loss: 0.101787, tf_auc: 0.961020, val_acc: 0.956751, val_loss: 0.152126, val_tf_auc: 0.961319
+DEBUG:attn:[Epoch: 52] acc: 0.958042, loss: 0.102550, tf_auc: 0.961627, val_acc: 0.956280, val_loss: 0.153633, val_tf_auc: 0.961873
+DEBUG:attn:[Epoch: 53] acc: 0.958528, loss: 0.100412, tf_auc: 0.962216, val_acc: 0.955250, val_loss: 0.155723, val_tf_auc: 0.962398
+DEBUG:attn:[Epoch: 54] acc: 0.958079, loss: 0.101294, tf_auc: 0.962729, val_acc: 0.956427, val_loss: 0.152442, val_tf_auc: 0.962918
+DEBUG:attn:[Epoch: 55] acc: 0.958906, loss: 0.100661, tf_auc: 0.963221, val_acc: 0.956103, val_loss: 0.155771, val_tf_auc: 0.963415

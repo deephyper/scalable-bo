@@ -5,9 +5,12 @@ import sklearn
 import h5py
 import pathlib
 
+import argparse
 import os
 import logging
 import warnings
+import json
+
 
 if __name__ == "__main__":
     rank = 0
@@ -720,10 +723,36 @@ def full_training(config):
 
     run(config, cache_data=True)
 
+def create_parser():
+    parser = argparse.ArgumentParser(description="ECP-Candle Attn Benchmark Parser.")
+
+    parser.add_argument(
+        "--json", 
+        type=str, 
+        default=None, 
+        help="Path to the JSON file containing configuration to test."
+    )
+    return parser
+
+
+
+def load_json(f):
+    with open(f, "r") as f:
+        js_data = json.load(f)
+    return js_data
+
 
 if __name__ == "__main__":
 
-    # default_config = {}
-    default_config = hp_problem.default_configuration
-    logging.info(f"{default_config=}")
-    full_training(default_config)
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if args.json:
+        filtered_keys = ["trial_id", "resource"]
+        config = load_json(args.json)["0"]
+        config = {k:v for k,v in config.items() if not(k in filtered_keys)}
+    else:
+        # default_config = {}
+        config = hp_problem.default_configuration
+
+    full_training(config)

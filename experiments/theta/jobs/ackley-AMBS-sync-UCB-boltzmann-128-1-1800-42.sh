@@ -13,7 +13,7 @@ export timeout=1800
 export random_state=42 
 export problem="ackley"
 export sync_val=1
-export search="AMBS"
+export search="CBO"
 
 if [[ "$sync_val" -eq 0 ]];
 then
@@ -22,7 +22,7 @@ else
   export sync_str="sync"
 fi
 
-# AMBS
+# CBO
 export log_dir="output/$problem-$search-$sync_str-$acq_func-$strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "Running: aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -cc depth -e OMP_NUM_THREADS=8 python -m scalbo.exp --problem $problem \

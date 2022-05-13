@@ -39,7 +39,7 @@ def execute(
     n_jobs,
     model,
 ):
-    """Execute the AMBS algorithm.
+    """Execute the CBO algorithm.
 
     Args:
         problem (HpProblem): problem (search space) definition.

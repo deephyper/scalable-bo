@@ -12,7 +12,7 @@ This project is used to experiment the *Asynchronous Distributed Bayesian optimi
 * asynchronous communication between agents
 * no congestion in the optimization queue
 
-The implementation of ADBO is directly available in the DeepHyper project (https://github.com/deephyper/deephyper/blob/develop/deephyper/search/hps/_dmbs_mpi.py).
+The implementation of ADBO is directly available in the DeepHyper project (https://github.com/deephyper/deephyper/blob/develop/deephyper/search/hps/_dbo.py).
 
 ## Environment information
 
@@ -114,7 +114,7 @@ In general experiments are launched with MPI and the `src/scalbo/exp.py` script 
 
 ```console
 $ mpirun -np 8 python -m scalbo.exp --problem ackley \
-    --search DMBS \
+    --search DBO \
     --timeout 20 \
     --acq-func qUCB \
     --strategy qUCB \
@@ -123,7 +123,7 @@ $ mpirun -np 8 python -m scalbo.exp --problem ackley \
     --verbose 1 
 ```
 
-where we execute the Ackley benchmark (`problem`) with the distributed search (`DMBS`) for 20 seconds (`timeout`) with the qUCB acquisition function strategy (`acq-func` and `strategy`) with random state 42 (`random-state`), verbose mode active (`verbose`) and results are saved in the `output` (`log-dir`) directory.
+where we execute the Ackley benchmark (`problem`) with the distributed search (`DBO`) for 20 seconds (`timeout`) with the qUCB acquisition function strategy (`acq-func` and `strategy`) with random state 42 (`random-state`), verbose mode active (`verbose`) and results are saved in the `output` (`log-dir`) directory.
 
 Complementary information about the `python -m scalbo.exp` command can be found by using the `--help` argument:
 
@@ -131,7 +131,7 @@ Complementary information about the `python -m scalbo.exp` command can be found 
 $ python -m scalbo.exp --help
 usage: exp.py [-h] --problem
               {ackley_5,ackley_10,ackley_30,ackley_50,ackley_100,hartmann6D,levy,griewank,schwefel,frnn,minimalistic-frnn,molecular,candle_attn,candle_attn_sim}
-              --search {AMBS,DMBS} [--sync SYNC] [--acq-func ACQ_FUNC] [--strategy {cl_max,topk,boltzmann,qUCB}] [--timeout TIMEOUT]
+              --search {CBO,DBO} [--sync SYNC] [--acq-func ACQ_FUNC] [--strategy {cl_max,topk,boltzmann,qUCB}] [--timeout TIMEOUT]
               [--max-evals MAX_EVALS] [--random-state RANDOM_STATE] [--log-dir LOG_DIR] [--cache-dir CACHE_DIR] [-v VERBOSE]
 
 Command line to run experiments.
@@ -140,7 +140,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --problem {ackley_5,ackley_10,ackley_30,ackley_50,ackley_100,hartmann6D,levy,griewank,schwefel,frnn,minimalistic-frnn,molecular,candle_attn,candle_attn_sim}
                         Problem on which to experiment.
-  --search {AMBS,DMBS}  Search the experiment must be done with.
+  --search {CBO,DBO}  Search the experiment must be done with.
   --sync SYNC           If the search workers must be syncronized or not.
   --acq-func ACQ_FUNC   Acquisition funciton to use.
   --strategy {cl_max,topk,boltzmann,qUCB}
@@ -180,12 +180,12 @@ cd experiments/docker/
 
 Execute the synchronous distributed BO with UCB and Boltzmann policy (SDBO+bUCB):
 ```console
-./fast_ackley_2-DMBS-sync-UCB-boltzmann-1-8-30-42.sh
+./fast_ackley_2-DBO-sync-UCB-boltzmann-1-8-30-42.sh
 ```
 
 Execute the asynchronous distributed BO with qUCB (ADBO+qUCB):
 ```console
-./fast_ackley_2-DMBS-async-qUCB-qUCB-1-8-30-42.sh
+./fast_ackley_2-DBO-async-qUCB-qUCB-1-8-30-42.sh
 ```
 
 The results should no be in `experiments/docker/output/`. Each experiment's output will contain an:

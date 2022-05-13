@@ -385,10 +385,10 @@ def compile_profile(df):
 def compute_num_workers(exp_name):
     exp_name = exp_name.split("-")
     alg_name = exp_name[1]
-    num_nodes = int(exp_name[5])
-    num_ranks_per_node = int(exp_name[6])
+    num_nodes = int(exp_name[6])
+    num_ranks_per_node = int(exp_name[7])
     
-    if alg_name == "AMBS":
+    if alg_name in ["CBO", "HB"]:
         return num_nodes * num_ranks_per_node - 1
     else:
         return num_nodes * num_ranks_per_node

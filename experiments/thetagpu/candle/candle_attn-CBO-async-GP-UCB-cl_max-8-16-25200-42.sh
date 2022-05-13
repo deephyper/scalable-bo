@@ -35,7 +35,7 @@ else
   export sync_str="sync"
 fi
 
-# AMBS
+# CBO
 export log_dir="output/$problem-$search-$sync_str-$model-$acq_func-$strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
 
 # profile gpu

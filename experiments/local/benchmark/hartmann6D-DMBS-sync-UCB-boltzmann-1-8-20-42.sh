@@ -6,7 +6,7 @@ export timeout=20
 export random_state=42 
 export problem="hartmann6D"
 export sync_val=1
-export search="DMBS"
+export search="DBO"
 
 if [[ "$sync_val" -eq 0 ]];
 then
@@ -15,7 +15,7 @@ else
   export sync_str="sync"
 fi
 
-# AMBS
+# CBO
 export log_dir="output/$problem-$search-$sync_str-$acq_func-$strategy-1-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "Running: mpirun -np $RANKS_PER_NODE python -m scalbo.exp --problem $problem \

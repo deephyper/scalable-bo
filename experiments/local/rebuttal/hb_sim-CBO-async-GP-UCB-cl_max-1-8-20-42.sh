@@ -16,7 +16,7 @@ else
   export sync_str="sync"
 fi
 
-# AMBS
+# CBO
 export log_dir="output/$problem-$search-$sync_str-$model-$acq_func-$strategy-1-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "Running: mpirun -np $RANKS_PER_NODE python -m scalbo.exp --problem $problem \

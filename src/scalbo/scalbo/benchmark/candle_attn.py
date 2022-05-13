@@ -748,7 +748,7 @@ if __name__ == "__main__":
     parser = create_parser()
     args = parser.parse_args()
 
-    sys.argv = sys.argv[1:]
+    sys.argv = sys.argv[:1]
 
     if args.json:
         filtered_keys = ["trial_id", "resource"]

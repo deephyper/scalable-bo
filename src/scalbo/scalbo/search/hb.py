@@ -86,7 +86,7 @@ def execute(
         method="mpicomm",
         method_kwargs={
             "callbacks": [profiler],
-            "run_function_kwargs": {"log_dir": search_log_dir},
+            # "run_function_kwargs": {"log_dir": search_log_dir},
         },
     ) as evaluator:
         if evaluator is not None:

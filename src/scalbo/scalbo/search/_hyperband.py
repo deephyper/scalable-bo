@@ -108,7 +108,7 @@ class HB(Search):
 
         self._gather_type = "ALL" if sync_communication else "BATCH"
 
-    def _ask(self, n_points):
+    def _ask_v1(self, n_points):
         configs = []
         pending_trials = list(self._pending_trials.values())
         for i in range(n_points):
@@ -132,7 +132,16 @@ class HB(Search):
 
         return configs
 
-    def _tell(self, trial_ids, y_batch):
+    def _ask(self, n_points):
+        configs = []
+        for i in range(n_points):
+            trial = self._opt_study.ask(self._opt_space)
+            config = {p: trial.params[p] for p in trial.params}
+            config["optuna_trial"] = trial
+            configs.append(config)
+        return configs
+
+    def _tell_v1(self, trial_ids, y_batch):
 
         for trial_id, y in zip(trial_ids, y_batch):
 
@@ -149,6 +158,20 @@ class HB(Search):
                 else:
                     self._pending_trials[trial_id] = trial
                     logging.info(f"continue: #{trial.number}")
+    
+    def _tell(self, trials, y_batch):
+
+        for trial, y in zip(trials, y_batch):
+
+            # y["pruned"]
+            # y["objective"]
+            # y["step"]
+
+            trial.report(y["objective"], step=y["step"])
+            if y["pruned"]:
+                self._opt_study.tell(trial, state=optuna.trial.TrialState.PRUNED)
+            else:
+                self._opt_study.tell(trial, y["objective"])
 
     def _search(self, max_evals, timeout):
 
@@ -192,10 +215,10 @@ class HB(Search):
                 logging.info("Transforming received configurations to list...")
                 t1 = time.time()
 
-                trial_ids = []
+                trials = []
                 opt_y = []
                 for cfg, obj in new_results:
-                    trial_ids.append(cfg["trial_id"])
+                    trials.append(cfg["optuna_trial"])
                     opt_y.append(obj)
 
                 logging.info(f"Transformation took {time.time() - t1:.4f} sec.")
@@ -204,7 +227,7 @@ class HB(Search):
                 t1 = time.time()
 
                 if len(opt_y) > 0:
-                    self._tell(trial_ids, opt_y)
+                    self._tell(trials, opt_y)
                     logging.info(f"Fitting took {time.time() - t1:.4f} sec.")
 
                 logging.info(f"Asking {len(new_results)} new configurations...")

@@ -294,26 +294,26 @@ def run_candle(params):
     candle.set_seed(seed)
 
     # cache data
-    train_file = params["train_data"]
-    cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
-    # only the first rank of each node caches the data
-    if os.path.exists(cache_train_file):
-        params["train_data"] = cache_train_file
-    else:
-        if rank % 16 == 0:
-            ret = os.system(f"cp {train_file} {cache_train_file}")
-            if ret == 0:
-                params["train_data"] = cache_train_file
-            else:
-                params["train_data"] = train_file
+    if os.path.exists("/dev/shm"):
+        train_file = params["train_data"]
+        cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
+        # only the first rank of each node caches the data
+        if os.path.exists(cache_train_file):
+            params["train_data"] = cache_train_file
+        else:
+            if rank % 16 == 0 and os.path.exists(train_file):
+                ret = os.system(f"cp {train_file} {cache_train_file}")
+                if ret == 0:
+                    params["train_data"] = cache_train_file
+                else:
+                    params["train_data"] = train_file
 
     # Construct extension to save model
     ext = attn.extension_from_parameters(params, "keras")
     candle.verify_path(params["save_path"])
     prefix = "{}{}".format(params["save_path"], ext)
     logfile = params["logfile"] if params["logfile"] else prefix + ".log"
-    # root_fname = "Agg_attn_bin"
-    root_fname = params["root_fname"]
+    root_fname = params.get("root_fname", "Agg_attn_bin")
     candle.set_up_logger(logfile, attn.logger, params["verbose"])
     attn.logger.info("Params: {}".format(params))
 
@@ -415,7 +415,7 @@ def run_candle(params):
     history_logger = LoggingCallback(attn.logger.debug)
 
     # callbacks = [candle_monitor, timeout_monitor, history_logger]
-    callbacks = [timeout_monitor]
+    callbacks = [timeout_monitor, history_logger]
 
     if params["reduce_lr"]:
         callbacks.append(reduce_lr)
@@ -658,7 +658,7 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
 
 
 @profile
-def run(config, log_dir=None):
+def run(config, log_dir=None, cache_data=False):
     params = initialize_parameters()
 
     params["epochs"] = 10
@@ -703,12 +703,10 @@ def run(config, log_dir=None):
 
         params.update(config)
 
-    logging.info(f"{params=}")
-
     try:
         history = run_candle(params)
         score = history.history["val_tf_auc"][-1]
-    except:
+    except Exception as e:
         score = 0
 
     return score
@@ -720,7 +718,7 @@ def full_training(config):
     config["timeout"] = 60 * 60 * 1  # 1 hour
     config["evaluate_model"] = True
 
-    run(config)
+    run(config, cache_data=True)
 
 
 if __name__ == "__main__":

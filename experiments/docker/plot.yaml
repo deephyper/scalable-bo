@@ -10,11 +10,11 @@ experiments:
     t_max: 120 
     ylim: [0, 25]
     data:
-      fast_ackley_2-DMBS-async-qUCB-qUCB-1-8-120-42:
+      fast_ackley_2-DBO-async-qUCB-qUCB-1-8-120-42:
         label: "ADBO+qUCB"
         color: "magenta"
         linestyle: "-"
-      fast_ackley_2-DMBS-sync-UCB-boltzmann-1-8-120-42:
+      fast_ackley_2-DBO-sync-UCB-boltzmann-1-8-120-42:
         label: "SDBO+bUCB"
         color: "cyan"
         linestyle: "-"

@@ -1,0 +1,127 @@
+INFO:attn:Params: {'data_url': 'http://ftp.mcs.anl.gov/pub/candle/public/benchmarks/Pilot1/uno/', 'train_data': 'top_21_1fold_001.h5', 'model_name': 'attn', 'dense': [68, 849, 849, 10, 116, 720, 916, 2], 'batch_size': 73, 'epochs': 100, 'activation': ['tanh', 'gelu', 'softmax', 'gelu', 'tanh', 'linear', 'selu', 'softmax'], 'loss': 'categorical_crossentropy', 'optimizer': 'adagrad', 'dropout': 0.2, 'learning_rate': 0.0066965887, 'momentum': 0.6604925547, 'scaling': 'minmax', 'val_split': 0.1, 'epsilon_std': 1.0, 'rng_seed': 2017, 'initialization': 'glorot_uniform', 'latent_dim': 2, 'batch_normalization': False, 'use_cp': False, 'early_stop': True, 'reduce_lr': True, 'feature_subsample': 0, 'save_path': './save/001/', 'timeout': 3600, 'train_bool': True, 'profiling': False, 'experiment_id': 'EXP000', 'run_id': 'RUN000', 'verbose': False, 'logfile': None, 'shuffle': False, 'ckpt_restart_mode': 'auto', 'ckpt_checksum': False, 'ckpt_skip_epochs': 0, 'ckpt_directory': './save', 'ckpt_save_best': True, 'ckpt_save_best_metric': 'val_loss', 'ckpt_save_weights_only': False, 'ckpt_save_interval': 0, 'ckpt_keep_mode': 'linear', 'ckpt_keep_limit': 1000000, 'residual': False, 'warmup_lr': False, 'use_tb': False, 'tsne': False, 'data_type': <class 'numpy.float32'>, 'output_dir': '/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/experiments/thetagpu/candle/Output/EXP000/RUN000', 'job_id': 29, 'objective': 0.97467357, 'step': 9, 'pruned': False, 'timestamp_submit': 0.2144594193, 'timestamp_gather': 396.6622605324, 'timestamp_start': 0.4919614792, 'timestamp_end': 396.6601896286, 'evaluate_model': True}
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/layers/normalization/batch_normalization.py:532: _colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/layers/normalization/batch_normalization.py:532: _colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/optimizer_v2/adagrad.py:74: UserWarning: The `lr` argument is deprecated, use `learning_rate` instead.
+  super(Adagrad, self).__init__(name, **kwargs)
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/converters/directives.py:126: The name tf.keras.backend.get_session is deprecated. Please use tf.compat.v1.keras.backend.get_session instead.
+
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/converters/directives.py:126: The name tf.keras.backend.get_session is deprecated. Please use tf.compat.v1.keras.backend.get_session instead.
+
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/impl/api.py:459: auc (from tensorflow.python.ops.metrics_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+The value of AUC returned by this may race with the update so this is deprecated. Please use tf.keras.metrics.AUC instead.
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/tensorflow/python/autograph/impl/api.py:459: auc (from tensorflow.python.ops.metrics_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+The value of AUC returned by this may race with the update so this is deprecated. Please use tf.keras.metrics.AUC instead.
+WARNING:tensorflow:OMP_NUM_THREADS is no longer used by the default Keras config. To configure the number of threads, use tf.config.threading APIs.
+WARNING:tensorflow:OMP_NUM_THREADS is no longer used by the default Keras config. To configure the number of threads, use tf.config.threading APIs.
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/optimizer_v2/adagrad.py:83: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/optimizer_v2/adagrad.py:83: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/engine/training_v1.py:2057: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates = self.state_updates
+DEBUG:attn:[Epoch: 0] acc: 0.854929, loss: 0.340652, tf_auc: 0.834196, val_acc: 0.891730, val_loss: 0.308054, val_tf_auc: 0.912383
+DEBUG:attn:[Epoch: 1] acc: 0.911498, loss: 0.216035, tf_auc: 0.928461, val_acc: 0.917238, val_loss: 0.217229, val_tf_auc: 0.939311
+DEBUG:attn:[Epoch: 2] acc: 0.919019, loss: 0.188302, tf_auc: 0.945743, val_acc: 0.908176, val_loss: 0.242793, val_tf_auc: 0.950662
+DEBUG:attn:[Epoch: 3] acc: 0.924098, loss: 0.169599, tf_auc: 0.954250, val_acc: 0.910824, val_loss: 0.226021, val_tf_auc: 0.957360
+DEBUG:attn:[Epoch: 4] acc: 0.928235, loss: 0.156447, tf_auc: 0.959950, val_acc: 0.910530, val_loss: 0.226337, val_tf_auc: 0.962096
+DEBUG:attn:[Epoch: 5] acc: 0.932733, loss: 0.145007, tf_auc: 0.963912, val_acc: 0.921122, val_loss: 0.211347, val_tf_auc: 0.965591
+DEBUG:attn:[Epoch: 6] acc: 0.936451, loss: 0.135119, tf_auc: 0.967078, val_acc: 0.933567, val_loss: 0.189365, val_tf_auc: 0.968444
+DEBUG:attn:[Epoch: 7] acc: 0.939507, loss: 0.130593, tf_auc: 0.969686, val_acc: 0.936803, val_loss: 0.169396, val_tf_auc: 0.970795
+DEBUG:attn:[Epoch: 8] acc: 0.942158, loss: 0.123667, tf_auc: 0.971820, val_acc: 0.935450, val_loss: 0.182141, val_tf_auc: 0.972745
+DEBUG:attn:[Epoch: 9] acc: 0.945067, loss: 0.118410, tf_auc: 0.973594, val_acc: 0.934714, val_loss: 0.189604, val_tf_auc: 0.974361
+DEBUG:attn:[Epoch: 10] acc: 0.946288, loss: 0.113799, tf_auc: 0.975078, val_acc: 0.942629, val_loss: 0.160244, val_tf_auc: 0.975781
+DEBUG:attn:[Epoch: 11] acc: 0.949017, loss: 0.108496, tf_auc: 0.976433, val_acc: 0.945541, val_loss: 0.158733, val_tf_auc: 0.977050
+DEBUG:attn:[Epoch: 12] acc: 0.951452, loss: 0.104432, tf_auc: 0.977628, val_acc: 0.942805, val_loss: 0.173133, val_tf_auc: 0.978148
+DEBUG:attn:[Epoch: 13] acc: 0.953294, loss: 0.101252, tf_auc: 0.978648, val_acc: 0.943158, val_loss: 0.156556, val_tf_auc: 0.979129
+DEBUG:attn:[Epoch: 14] acc: 0.954883, loss: 0.096902, tf_auc: 0.979600, val_acc: 0.945482, val_loss: 0.157133, val_tf_auc: 0.980040
+DEBUG:attn:[Epoch: 15] acc: 0.956531, loss: 0.094121, tf_auc: 0.980449, val_acc: 0.951808, val_loss: 0.147846, val_tf_auc: 0.980851
+DEBUG:attn:[Epoch: 16] acc: 0.957310, loss: 0.093381, tf_auc: 0.981229, val_acc: 0.943070, val_loss: 0.177797, val_tf_auc: 0.981566
+DEBUG:attn:[Epoch: 17] acc: 0.959355, loss: 0.088317, tf_auc: 0.981899, val_acc: 0.943835, val_loss: 0.171282, val_tf_auc: 0.982218
+DEBUG:attn:[Epoch: 18] acc: 0.959568, loss: 0.087846, tf_auc: 0.982521, val_acc: 0.951602, val_loss: 0.146225, val_tf_auc: 0.982823
+DEBUG:attn:[Epoch: 19] acc: 0.962613, loss: 0.081987, tf_auc: 0.983120, val_acc: 0.956692, val_loss: 0.141156, val_tf_auc: 0.983411
+DEBUG:attn:[Epoch: 20] acc: 0.962205, loss: 0.082830, tf_auc: 0.983686, val_acc: 0.953308, val_loss: 0.144281, val_tf_auc: 0.983936
+DEBUG:attn:[Epoch: 21] acc: 0.964386, loss: 0.078345, tf_auc: 0.984211, val_acc: 0.953603, val_loss: 0.156999, val_tf_auc: 0.984434
+DEBUG:attn:[Epoch: 22] acc: 0.964456, loss: 0.077877, tf_auc: 0.984663, val_acc: 0.954897, val_loss: 0.149221, val_tf_auc: 0.984884
+DEBUG:attn:[Epoch: 23] acc: 0.966655, loss: 0.074230, tf_auc: 0.985103, val_acc: 0.954632, val_loss: 0.149477, val_tf_auc: 0.985312
+DEBUG:attn:[Epoch: 24] acc: 0.966677, loss: 0.073930, tf_auc: 0.985504, val_acc: 0.958045, val_loss: 0.130406, val_tf_auc: 0.985714
+DEBUG:attn:[Epoch: 25] acc: 0.967736, loss: 0.072138, tf_auc: 0.985931, val_acc: 0.958398, val_loss: 0.135847, val_tf_auc: 0.986103
+DEBUG:attn:[Epoch: 26] acc: 0.968593, loss: 0.070776, tf_auc: 0.986261, val_acc: 0.957427, val_loss: 0.147462, val_tf_auc: 0.986450
+DEBUG:attn:[Epoch: 27] acc: 0.969325, loss: 0.068604, tf_auc: 0.986614, val_acc: 0.957192, val_loss: 0.147370, val_tf_auc: 0.986778
+DEBUG:attn:[Epoch: 28] acc: 0.970134, loss: 0.067580, tf_auc: 0.986960, val_acc: 0.957604, val_loss: 0.144976, val_tf_auc: 0.987089
+DEBUG:attn:[Epoch: 29] acc: 0.969994, loss: 0.067734, tf_auc: 0.987224, val_acc: 0.959605, val_loss: 0.136708, val_tf_auc: 0.987370
+DEBUG:attn:[Epoch: 30] acc: 0.971800, loss: 0.063700, tf_auc: 0.987499, val_acc: 0.962341, val_loss: 0.131445, val_tf_auc: 0.987662
+DEBUG:attn:[Epoch: 31] acc: 0.971815, loss: 0.063845, tf_auc: 0.987777, val_acc: 0.962282, val_loss: 0.133567, val_tf_auc: 0.987924
+DEBUG:attn:[Epoch: 32] acc: 0.972561, loss: 0.062328, tf_auc: 0.988035, val_acc: 0.957427, val_loss: 0.149699, val_tf_auc: 0.988182
+DEBUG:attn:[Epoch: 33] acc: 0.972819, loss: 0.062066, tf_auc: 0.988266, val_acc: 0.959605, val_loss: 0.148038, val_tf_auc: 0.988405
+DEBUG:attn:[Epoch: 34] acc: 0.972407, loss: 0.063437, tf_auc: 0.988503, val_acc: 0.956486, val_loss: 0.156507, val_tf_auc: 0.988619
+DEBUG:attn:[Epoch: 35] acc: 0.974429, loss: 0.058656, tf_auc: 0.988721, val_acc: 0.959104, val_loss: 0.151128, val_tf_auc: 0.988831
+DEBUG:attn:[Epoch: 36] acc: 0.974415, loss: 0.058991, tf_auc: 0.988938, val_acc: 0.962458, val_loss: 0.132460, val_tf_auc: 0.989036
+DEBUG:attn:[Epoch: 37] acc: 0.975044, loss: 0.057938, tf_auc: 0.989169, val_acc: 0.962370, val_loss: 0.137906, val_tf_auc: 0.989227
+DEBUG:attn:[Epoch: 38] acc: 0.975386, loss: 0.057071, tf_auc: 0.989314, val_acc: 0.962606, val_loss: 0.133653, val_tf_auc: 0.989412
+DEBUG:attn:[Epoch: 39] acc: 0.976051, loss: 0.055406, tf_auc: 0.989484, val_acc: 0.964018, val_loss: 0.139031, val_tf_auc: 0.989594
+DEBUG:attn:[Epoch: 40] acc: 0.976452, loss: 0.055199, tf_auc: 0.989681, val_acc: 0.962635, val_loss: 0.142494, val_tf_auc: 0.989769
+DEBUG:attn:[Epoch: 41] acc: 0.979023, loss: 0.049504, tf_auc: 0.989891, val_acc: 0.965106, val_loss: 0.135223, val_tf_auc: 0.989938
+DEBUG:attn:[Epoch: 42] acc: 0.980130, loss: 0.047054, tf_auc: 0.989992, val_acc: 0.965342, val_loss: 0.135653, val_tf_auc: 0.990113
+DEBUG:attn:[Epoch: 43] acc: 0.980773, loss: 0.045705, tf_auc: 0.990198, val_acc: 0.965724, val_loss: 0.134730, val_tf_auc: 0.990279
+DEBUG:attn:[Epoch: 44] acc: 0.981138, loss: 0.045138, tf_auc: 0.990394, val_acc: 0.965930, val_loss: 0.136114, val_tf_auc: 0.990442
+DEBUG:attn:[Epoch: 45] acc: 0.981384, loss: 0.044233, tf_auc: 0.990474, val_acc: 0.967136, val_loss: 0.133324, val_tf_auc: 0.990598
+DEBUG:attn:[Epoch: 46] acc: 0.981869, loss: 0.043925, tf_auc: 0.990662, val_acc: 0.966401, val_loss: 0.137204, val_tf_auc: 0.990731
+DEBUG:attn:[Epoch: 47] acc: 0.981961, loss: 0.043382, tf_auc: 0.990813, val_acc: 0.967489, val_loss: 0.131605, val_tf_auc: 0.990875
+DEBUG:attn:[Epoch: 48] acc: 0.981969, loss: 0.043304, tf_auc: 0.990946, val_acc: 0.966813, val_loss: 0.134435, val_tf_auc: 0.991005
+DEBUG:attn:[Epoch: 49] acc: 0.982255, loss: 0.043035, tf_auc: 0.991106, val_acc: 0.966224, val_loss: 0.138131, val_tf_auc: 0.991128
+DEBUG:attn:[Epoch: 50] acc: 0.982322, loss: 0.042560, tf_auc: 0.991193, val_acc: 0.967107, val_loss: 0.135715, val_tf_auc: 0.991250
+DEBUG:attn:[Epoch: 51] acc: 0.982719, loss: 0.041977, tf_auc: 0.991344, val_acc: 0.967048, val_loss: 0.135752, val_tf_auc: 0.991365
+DEBUG:attn:[Epoch: 52] acc: 0.982789, loss: 0.042125, tf_auc: 0.991435, val_acc: 0.965812, val_loss: 0.141479, val_tf_auc: 0.991479
+DEBUG:attn:[Epoch: 53] acc: 0.982943, loss: 0.041233, tf_auc: 0.991508, val_acc: 0.966430, val_loss: 0.139726, val_tf_auc: 0.991579
+DEBUG:attn:[Epoch: 54] acc: 0.983076, loss: 0.041114, tf_auc: 0.991635, val_acc: 0.967401, val_loss: 0.137156, val_tf_auc: 0.991677
+DEBUG:attn:[Epoch: 55] acc: 0.983098, loss: 0.040849, tf_auc: 0.991698, val_acc: 0.966930, val_loss: 0.141367, val_tf_auc: 0.991778
+DEBUG:attn:[Epoch: 56] acc: 0.983223, loss: 0.040976, tf_auc: 0.991868, val_acc: 0.967784, val_loss: 0.135509, val_tf_auc: 0.991865
+DEBUG:attn:[Epoch: 57] acc: 0.983219, loss: 0.040894, tf_auc: 0.991925, val_acc: 0.967284, val_loss: 0.138527, val_tf_auc: 0.991952
+DEBUG:attn:[Epoch: 58] acc: 0.983134, loss: 0.040765, tf_auc: 0.991947, val_acc: 0.968313, val_loss: 0.135804, val_tf_auc: 0.992037
+DEBUG:attn:[Epoch: 59] acc: 0.983745, loss: 0.040188, tf_auc: 0.992116, val_acc: 0.967225, val_loss: 0.137304, val_tf_auc: 0.992126
+DEBUG:attn:[Epoch: 60] acc: 0.983506, loss: 0.040257, tf_auc: 0.992170, val_acc: 0.967872, val_loss: 0.135398, val_tf_auc: 0.992196
+DEBUG:attn:[Epoch: 61] acc: 0.983462, loss: 0.040809, tf_auc: 0.992193, val_acc: 0.967136, val_loss: 0.139792, val_tf_auc: 0.992279
+DEBUG:attn:[Epoch: 62] acc: 0.983451, loss: 0.039946, tf_auc: 0.992360, val_acc: 0.967019, val_loss: 0.139663, val_tf_auc: 0.992347
+DEBUG:attn:[Epoch: 63] acc: 0.983719, loss: 0.039643, tf_auc: 0.992407, val_acc: 0.968254, val_loss: 0.134795, val_tf_auc: 0.992425
+DEBUG:attn:[Epoch: 64] acc: 0.983944, loss: 0.038885, tf_auc: 0.992431, val_acc: 0.968137, val_loss: 0.139418, val_tf_auc: 0.992493
+DEBUG:attn:[Epoch: 65] acc: 0.983892, loss: 0.039681, tf_auc: 0.992496, val_acc: 0.967078, val_loss: 0.140679, val_tf_auc: 0.992554
+DEBUG:attn:[Epoch: 66] acc: 0.984131, loss: 0.039294, tf_auc: 0.992608, val_acc: 0.967431, val_loss: 0.138585, val_tf_auc: 0.992617
+DEBUG:attn:[Epoch: 67] acc: 0.984495, loss: 0.038369, tf_auc: 0.992659, val_acc: 0.968460, val_loss: 0.138589, val_tf_auc: 0.992678
+DEBUG:attn:[Epoch: 68] acc: 0.984650, loss: 0.038111, tf_auc: 0.992676, val_acc: 0.967931, val_loss: 0.142567, val_tf_auc: 0.992739
+DEBUG:attn:[Epoch: 69] acc: 0.984297, loss: 0.038772, tf_auc: 0.992740, val_acc: 0.967843, val_loss: 0.139906, val_tf_auc: 0.992798
+DEBUG:attn:[Epoch: 70] acc: 0.984624, loss: 0.038228, tf_auc: 0.992852, val_acc: 0.968107, val_loss: 0.140041, val_tf_auc: 0.992857
+DEBUG:attn:[Epoch: 71] acc: 0.984697, loss: 0.038153, tf_auc: 0.992903, val_acc: 0.967813, val_loss: 0.140259, val_tf_auc: 0.992899
+DEBUG:attn:[Epoch: 72] acc: 0.984745, loss: 0.037285, tf_auc: 0.992919, val_acc: 0.968843, val_loss: 0.137813, val_tf_auc: 0.992957
+DEBUG:attn:[Epoch: 73] acc: 0.984800, loss: 0.037508, tf_auc: 0.992948, val_acc: 0.968107, val_loss: 0.140196, val_tf_auc: 0.993012
+DEBUG:attn:[Epoch: 74] acc: 0.985076, loss: 0.036824, tf_auc: 0.993087, val_acc: 0.968313, val_loss: 0.140029, val_tf_auc: 0.993067
+DEBUG:attn:[Epoch: 75] acc: 0.984624, loss: 0.037709, tf_auc: 0.993101, val_acc: 0.967754, val_loss: 0.141331, val_tf_auc: 0.993105
+DEBUG:attn:[Epoch: 76] acc: 0.984598, loss: 0.037488, tf_auc: 0.993147, val_acc: 0.967960, val_loss: 0.141532, val_tf_auc: 0.993160
+DEBUG:attn:[Epoch: 77] acc: 0.985043, loss: 0.037499, tf_auc: 0.993163, val_acc: 0.967578, val_loss: 0.146827, val_tf_auc: 0.993197
+DEBUG:attn:[Epoch: 78] acc: 0.984867, loss: 0.037206, tf_auc: 0.993177, val_acc: 0.967960, val_loss: 0.143333, val_tf_auc: 0.993241
+DEBUG:attn:[Epoch: 79] acc: 0.985010, loss: 0.037103, tf_auc: 0.993233, val_acc: 0.967931, val_loss: 0.144504, val_tf_auc: 0.993287
+DEBUG:attn:[Epoch: 80] acc: 0.985242, loss: 0.036846, tf_auc: 0.993340, val_acc: 0.968284, val_loss: 0.141241, val_tf_auc: 0.993325
+DEBUG:attn:[Epoch: 81] acc: 0.985484, loss: 0.036159, tf_auc: 0.993361, val_acc: 0.968166, val_loss: 0.142065, val_tf_auc: 0.993371
+DEBUG:attn:[Epoch: 82] acc: 0.985209, loss: 0.036786, tf_auc: 0.993394, val_acc: 0.967754, val_loss: 0.146405, val_tf_auc: 0.993408
+DEBUG:attn:[Epoch: 83] acc: 0.985606, loss: 0.035328, tf_auc: 0.993408, val_acc: 0.968578, val_loss: 0.142192, val_tf_auc: 0.993442
+DEBUG:attn:[Epoch: 84] acc: 0.985598, loss: 0.036123, tf_auc: 0.993421, val_acc: 0.967843, val_loss: 0.144858, val_tf_auc: 0.993478
+DEBUG:attn:[Epoch: 85] acc: 0.985771, loss: 0.035457, tf_auc: 0.993460, val_acc: 0.968931, val_loss: 0.141185, val_tf_auc: 0.993517
+DEBUG:attn:[Epoch: 86] acc: 0.985676, loss: 0.035896, tf_auc: 0.993584, val_acc: 0.968343, val_loss: 0.141709, val_tf_auc: 0.993559
+DEBUG:attn:[Epoch: 87] acc: 0.985716, loss: 0.035441, tf_auc: 0.993589, val_acc: 0.968549, val_loss: 0.141568, val_tf_auc: 0.993591
+DEBUG:attn:[Epoch: 88] acc: 0.985841, loss: 0.035349, tf_auc: 0.993635, val_acc: 0.968431, val_loss: 0.141947, val_tf_auc: 0.993622
+DEBUG:attn:[Epoch: 89] acc: 0.985768, loss: 0.035513, tf_auc: 0.993648, val_acc: 0.968431, val_loss: 0.141838, val_tf_auc: 0.993654
+DEBUG:attn:[Epoch: 90] acc: 0.986080, loss: 0.034999, tf_auc: 0.993652, val_acc: 0.968490, val_loss: 0.144387, val_tf_auc: 0.993685
+DEBUG:attn:[Epoch: 91] acc: 0.985676, loss: 0.035781, tf_auc: 0.993665, val_acc: 0.968460, val_loss: 0.143406, val_tf_auc: 0.993716
+DEBUG:attn:[Epoch: 92] acc: 0.986007, loss: 0.034683, tf_auc: 0.993703, val_acc: 0.968549, val_loss: 0.142477, val_tf_auc: 0.993746
+DEBUG:attn:[Epoch: 93] acc: 0.985985, loss: 0.034995, tf_auc: 0.993771, val_acc: 0.968431, val_loss: 0.143428, val_tf_auc: 0.993777
+DEBUG:attn:[Epoch: 94] acc: 0.985731, loss: 0.035348, tf_auc: 0.993829, val_acc: 0.968931, val_loss: 0.141842, val_tf_auc: 0.993807
+DEBUG:attn:[Epoch: 95] acc: 0.986117, loss: 0.034803, tf_auc: 0.993842, val_acc: 0.968343, val_loss: 0.143501, val_tf_auc: 0.993836
+DEBUG:attn:[Epoch: 96] acc: 0.985999, loss: 0.035173, tf_auc: 0.993879, val_acc: 0.968549, val_loss: 0.143001, val_tf_auc: 0.993866
+DEBUG:attn:[Epoch: 97] acc: 0.986025, loss: 0.035006, tf_auc: 0.993887, val_acc: 0.968225, val_loss: 0.143680, val_tf_auc: 0.993895

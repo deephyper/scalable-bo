@@ -13,7 +13,7 @@ export strategy="boltzmann"
 export model="RF"
 export timeout=1800
 export random_state=71 
-export problem="ackley"
+export problem="ackley_5"
 export sync_val=1
 export search="DBO"
 

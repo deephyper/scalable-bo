@@ -11,7 +11,7 @@ export acq_func="qUCB"
 export strategy="qUCB"
 export timeout=1800
 export random_state=42 
-export problem="ackley"
+export problem="ackley_5"
 export sync_val=0
 export search="CBO"
 

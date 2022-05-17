@@ -136,7 +136,7 @@ hp_problem.add_hyperparameter(
 hp_problem.add_hyperparameter(
     (1e-5, 1e-2, "log-uniform"), "base_lr", default_value=0.001
 )
-hp_problem.add_hyperparameter([True, False], "base_lr", default_value=False)
+hp_problem.add_hyperparameter([True, False], "residual", default_value=False)
 hp_problem.add_hyperparameter([True, False], "reduce_lr", default_value=False)
 hp_problem.add_hyperparameter([True, False], "warmup_lr", default_value=False)
 hp_problem.add_hyperparameter([True, False], "batch_normalization", default_value=False)
@@ -1103,11 +1103,14 @@ def run_candle(params):
 
 
 @profile
-def run(config, log_dir=None, cache_data=False):
+def run(config, verbose=0):
     params = initialize_parameters()
 
     params["epochs"] = 10
     params["timeout"] = 60 * 10  # 10 minutes per model
+    params["cp"] = False
+    params["verbose"] = verbose
+    params["tb"] = False
 
     if len(config) > 0:
         dense = []
@@ -1138,9 +1141,8 @@ def full_training(config):
 
     config["epochs"] = 100
     config["timeout"] = 60 * 60 * 1  # 1 hour
-    config["evaluate_model"] = True
 
-    run(config, cache_data=True)
+    run(config, verbose=1)
 
 
 def create_parser():

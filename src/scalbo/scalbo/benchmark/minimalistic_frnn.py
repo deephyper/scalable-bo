@@ -73,6 +73,8 @@ hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
 hp_problem.add_hyperparameter((0.9, 1.0), "momentum")
 hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob")
 hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
+# hp_problem.add_hyperparameter(['minmax','meanvar','averagevar','var'], "normalizer")
+# hp_problem.add_hyperparameter(['hinge','focal'], "loss")
 
 
 # dataset_path = "/lus/theta-fs0/projects/fusiondl_aesp/felker"
@@ -107,7 +109,6 @@ class CustomModel(tf.keras.Model):
                             batch_states = tf.keras.backend.get_value(state)
                             batch_states[j] = 0
                             tf.keras.backend.set_value(state, batch_states)
-        return batches_to_reset
         
     def train_step(self, data):
         x, r, y = data
@@ -145,22 +146,6 @@ class CustomModel(tf.keras.Model):
     
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
-
-    # def predict_step(self, data):
-    #     x, r = data
-
-    #     y_pred = self(x, training=False)
-    #     self.reset_states()
-
-    #     return y_pred
-
-
-targets = {
-    'hinge': {
-        'loss': 'hinge',
-        'activation': 'linear'
-    }
-}
 
 
 class ModelBuilder(object):
@@ -315,38 +300,6 @@ class ModelBuilder(object):
         #             tf.global_variables_initializer())
         model.reset_states()
         return model
-    
-    def build_model_zeros(self):
-        conf = self.conf
-        model_conf = conf['model']
-        length = model_conf['length']
-        use_signals = conf['paths']['use_signals']
-        num_signals = sum([sig.num_channels for sig in use_signals])
-        batch_size = conf['training']['batch_size']
-        batch_input_shape = (batch_size, length, num_signals)
-        batch_output_shape = (batch_size, length, 1)
-        x_input = Input(batch_shape=batch_input_shape)
-
-        output = output = Lambda(lambda _: tf.zeros(batch_output_shape))(x_input)
-
-        model = tf.keras.Model(inputs=x_input, outputs=output)
-        return model
-    
-    def build_model_ones(self):
-        conf = self.conf
-        model_conf = conf['model']
-        length = model_conf['length']
-        use_signals = conf['paths']['use_signals']
-        num_signals = sum([sig.num_channels for sig in use_signals])
-        batch_size = conf['training']['batch_size']
-        batch_input_shape = (batch_size, length, num_signals)
-        batch_output_shape = (batch_size, length, 1)
-        x_input = Input(batch_shape=batch_input_shape)
-
-        output = output = Lambda(lambda _: tf.ones(batch_output_shape))(x_input)
-
-        model = tf.keras.Model(inputs=x_input, outputs=output)
-        return model
 
     def build_optimizer(self):
         conf = self.conf
@@ -392,7 +345,6 @@ class DataHandler(object):
 
     def load_dataset(self, shot_list, loader):
         conf = self.conf
-        # batch_generator = partial(loader.training_batch_generator, shot_list=shot_list)
         batch_generator = partial(loader.training_batch_generator_partial_reset_bis, shot_list=shot_list)
 
         length = conf['model']['length']
@@ -409,6 +361,24 @@ class DataHandler(object):
             )
         )
         return dataset
+
+
+class AdaptedFocalLoss(tf.losses.BinaryFocalCrossentropy):
+    def __call__(self, y_true, y_pred, sample_weight=None):
+        y_true = tf.clip_by_value(y_true, 0, 1)
+        return super().__call__(y_true, y_pred, sample_weight)
+
+
+targets = {
+    'hinge': {
+        'loss': 'hinge',
+        'activation': 'linear',
+    },
+    'focal': {
+        'loss': AdaptedFocalLoss(from_logits=True),
+        'activation': 'linear',
+    }
+}
 
 
 class ModelEvaluator(object):
@@ -436,6 +406,7 @@ class ModelEvaluator(object):
             X, y, shot_lengths, disr = loader.load_as_X_y_pred(shot_sublist)
 
             # load data and fit on data
+            model.reset_states()
             y_p = model.predict(X, batch_size=conf['model']['pred_batch_size'])
 
             y_p = loader.batch_output_to_array(y_p)
@@ -464,11 +435,10 @@ class ModelEvaluator(object):
         return roc_area, loss
 
 
-class CustomAUC(tf.keras.metrics.AUC):
+class AdaptedAUC(tf.keras.metrics.AUC):
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         y_true = tf.clip_by_value(y_true, 0, 1)
-        y_pred = tf.math.sigmoid(y_pred)
         return super().update_state(y_true, y_pred, sample_weight)
 
 
@@ -499,11 +469,13 @@ def run(config: None):
 
         loss = targets[conf['target']]['loss']
         optimizer = builder.build_optimizer()
-        model.compile(optimizer=optimizer, loss=loss) #, metrics=[CustomAUC(name="auc")])
+        model.compile(optimizer=optimizer, loss=loss) #, metrics=[AdaptedAUC(name="auc", from_logits=True)])
 
         lr_decay = conf['model']['lr_decay']
         def scheduler(epoch, lr):
-            return lr * lr_decay
+            if epoch > 0:
+                lr *= lr_decay
+            return lr
 
         lr_scheduler = tf.keras.callbacks.LearningRateScheduler(scheduler)
 
@@ -511,8 +483,8 @@ def run(config: None):
         validation_steps = loader.get_steps_per_epoch_bis(shot_list_valid)
 
         # train it
-        num_epochs = conf['training']['num_epochs']
-        t = time.time()
+        num_epochs = 4 #conf['training']['num_epochs']
+        tf.config.run_functions_eagerly(True)
         history = model.fit(
             train_dataset,
             batch_size=conf['training']['batch_size'],
@@ -522,33 +494,27 @@ def run(config: None):
             validation_steps=validation_steps,
             callbacks=[lr_scheduler],
         )
-        fit_duration = time.time() - t
-        print(f"[{rank}]Fit duration : {fit_duration:.2f}s. -i.e- {fit_duration/num_epochs:.2f}s./epoch")
 
         # history_dict = history.history
         # del history_dict['lr']
-        # history_file = '/lus/theta-fs0/projects/datascience/jgouneau/deephyper/frnn/scalable-bo/experiments/thetagpu/jobs/output/history/'
-        # if rank == 0:
-        #     history_file += 'baseline_conf.json'
-        # else:
-        #     history_file += 'best_conf.json'
+        # history_file = '/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/final_evaluation/histories/'
         # with open(history_file, 'w') as file:
         #     json.dump(history_dict, file)
 
         # evaluate it
         evaluator = ModelEvaluator(model, loader, conf)
-        train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
+        # train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
         valid_roc, valid_loss = evaluator.make_predictions_and_evaluate(shot_list_valid)
-        test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
+        # test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
 
         # print results
         print(f'[{rank}]======== RESULTS =======')
-        print(f'[{rank}]Train Loss: {train_loss:.3e}')
-        print(f'[{rank}]Train ROC: {train_roc:.4f}')
+        # print(f'[{rank}]Train Loss: {train_loss:.3e}')
+        # print(f'[{rank}]Train ROC: {train_roc:.4f}')
         print(f'[{rank}]Valid Loss: {valid_loss:.3e}')
         print(f'[{rank}]Valid ROC: {valid_roc:.4f}')
-        print(f'[{rank}]Test Loss: {test_loss:.3e}')
-        print(f'[{rank}]Test ROC: {test_roc:.4f}')
+        # print(f'[{rank}]Test Loss: {test_loss:.3e}')
+        # print(f'[{rank}]Test ROC: {test_roc:.4f}')
 
         objective = valid_roc
 
@@ -560,8 +526,9 @@ def run(config: None):
 
     return objective
 
+
 if __name__ == '__main__':
-    baseline_conf = {
+    conf = {
         'length': 128,
         'rnn_size': 200,
         'rnn_layers': 2,
@@ -578,43 +545,6 @@ if __name__ == '__main__':
         'dropout_prob': 0.1,
         'batch_size': 128,
     }
-
-    best_conf = {
-        'batch_size':193,
-        'dense_regularization':0.7116142884654129,
-        'dense_size':188,
-        'dropout_prob':0.08291023294018751,
-        'length':52,
-        'lr':5.274829167162617e-05,
-        'lr_decay':0.9232554232111658,
-        'momentum':0.9356337925457681,
-        'num_conv_filters':45,
-        'num_conv_layers':2,
-        'regularization':0.0050287564160431675,
-        'rnn_layers':1,
-        'rnn_size':69,
-    }
-
-    best_conf_bis = {
-        'batch_size': 245,
-        'dense_regularization': 0.9743751473998066,
-        'dense_size': 71,
-        'dropout_prob': 0.04548075596695794,
-        'length': 37,
-        'lr': 7.691737528198673e-05,
-        'lr_decay': 0.9284411981081988,
-        'momentum': 0.9055619582784972,
-        'num_conv_filters': 34,
-        'num_conv_layers': 3,
-        'regularization': 0.0034724895968206715,
-        'rnn_layers': 1,
-        'rnn_size': 106,
-    }
-
-    if rank == 0:
-        conf = baseline_conf
-    else:
-        conf = best_conf_bis
     t = time.time()
     run(conf)
     print(f"Run duration : {time.time() - t:.2f}s.")

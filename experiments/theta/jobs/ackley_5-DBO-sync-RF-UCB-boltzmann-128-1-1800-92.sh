@@ -3,14 +3,16 @@
 #COBALT -t 45
 #COBALT -q default
 #COBALT -A datascience
+#COBALT --attrs filesystems=home,grand,theta-fs0
 
 source ../../../build/activate-dhenv.sh
 
 export RANKS_PER_NODE=1
 export acq_func="UCB"
 export strategy="boltzmann"
+export model="RF"
 export timeout=1800
-export random_state=42 
+export random_state=92
 export problem="ackley"
 export sync_val=1
 export search="DBO"
@@ -23,10 +25,11 @@ else
 fi
 
 # DBO
-export log_dir="output/$problem-$search-$sync_str-$acq_func-$strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
+export log_dir="output/$problem-$search-$sync_str-$model-$acq_func-$strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "Running: aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -cc depth -e OMP_NUM_THREADS=8 python -m scalbo.exp --problem $problem \
 --search $search \
+--model $model \
 --sync $sync_val \
 --timeout $timeout \
 --acq-func $acq_func \
@@ -37,6 +40,7 @@ echo "Running: aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_N
 
 aprun -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $RANKS_PER_NODE -d 8 -j 4 -cc depth -e OMP_NUM_THREADS=8 python -m scalbo.exp --problem $problem \
     --search $search \
+    --model $model \
     --sync $sync_val \
     --timeout $timeout \
     --acq-func $acq_func \

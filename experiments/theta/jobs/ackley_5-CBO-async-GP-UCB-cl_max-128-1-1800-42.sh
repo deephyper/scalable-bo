@@ -1,16 +1,16 @@
 #!/bin/bash
-#COBALT -n 4
-#COBALT -t 15
-#COBALT -q debug-cache-quad
+#COBALT -n 128
+#COBALT -t 45
+#COBALT -q default
 #COBALT -A datascience
 #COBALT --attrs filesystems=home,grand,theta-fs0
 
 source ../../../build/activate-dhenv.sh
 
-export RANKS_PER_NODE=32
-export acq_func="qUCB"
-export strategy="qUCB"
-export model="DUMMY"
+export RANKS_PER_NODE=1
+export acq_func="UCB"
+export strategy="cl_max"
+export model="GP"
 export timeout=1800
 export random_state=42 
 export problem="ackley_5"

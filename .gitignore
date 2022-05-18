@@ -143,3 +143,5 @@ paper/
 output*/
 gpustat.txt
 *.pdf
+*.png
+*.tsv

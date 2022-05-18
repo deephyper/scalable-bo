@@ -1073,21 +1073,21 @@ def run_candle(params):
             # print('old_pred:', y_val_pred[:10])
             # print('new_pred:', new_pred[:10])
 
-        candle.plot_history(prefix, history, "loss")
-        candle.plot_history(prefix, history, "r2")
+        # candle.plot_history(prefix, history, "loss")
+        # candle.plot_history(prefix, history, "r2")
 
         if K.backend() == "tensorflow":
             K.clear_session()
 
-    if not args.gen:
-        if args.use_combo_score:
-            pred_fname = prefix + ".predicted.score.tsv"
-        elif args.use_mean_growth:
-            pred_fname = prefix + ".predicted.mean.growth.tsv"
-        else:
-            pred_fname = prefix + ".predicted.growth.tsv"
-        df_pred = pd.concat(df_pred_list)
-        df_pred.to_csv(pred_fname, sep="\t", index=False, float_format="%.4g")
+    # if not args.gen:
+    #     if args.use_combo_score:
+    #         pred_fname = prefix + ".predicted.score.tsv"
+    #     elif args.use_mean_growth:
+    #         pred_fname = prefix + ".predicted.mean.growth.tsv"
+    #     else:
+    #         pred_fname = prefix + ".predicted.growth.tsv"
+    #     df_pred = pd.concat(df_pred_list)
+    #     df_pred.to_csv(pred_fname, sep="\t", index=False, float_format="%.4g")
 
     logger.handlers = []
 
@@ -1133,6 +1133,12 @@ def run(config, verbose=0):
         score = run_candle(params)
     except Exception as e:
         score = -1
+        if "optuna_trial" in params:
+            score = {
+                "objective": score,
+                "step": 1,
+                "pruned": True
+            }
 
     return score
 

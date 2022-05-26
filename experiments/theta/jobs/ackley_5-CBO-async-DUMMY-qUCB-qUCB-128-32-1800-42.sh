@@ -3,7 +3,7 @@
 #COBALT -t 45
 #COBALT -q default
 #COBALT -A datascience
-#COBALT --attrs filesystems:home,grand,theta-fs0
+#COBALT --attrs filesystems=home,grand,theta-fs0
 
 source ../../../build/activate-dhenv.sh
 

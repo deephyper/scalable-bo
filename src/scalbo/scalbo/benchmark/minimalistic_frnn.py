@@ -1,5 +1,6 @@
 import os
 import logging
+import traceback
 
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
@@ -73,6 +74,7 @@ hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
 hp_problem.add_hyperparameter((0.9, 1.0), "momentum")
 hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob")
 hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
+hp_problem.add_hyperparameter(['hinge','focal'], "loss")
 # hp_problem.add_hyperparameter(['minmax','meanvar','averagevar','var'], "normalizer")
 # hp_problem.add_hyperparameter(['hinge','focal'], "loss")
 
@@ -100,24 +102,25 @@ class CustomModel(tf.keras.Model):
     
     @tf.function
     def state_reset(self, batches_to_reset):
-        for j, reset in enumerate(tf.unstack(batches_to_reset)):
-            if reset != 0:
-                for layer in self.layers:
-                    if hasattr(layer, "states"):
-                        for state in layer.states:
-                            assert len(batches_to_reset) == state.shape[0]
-                            batch_states = tf.keras.backend.get_value(state)
-                            batch_states[j] = 0
-                            tf.keras.backend.set_value(state, batch_states)
+        for layer in (layer for layer in self.layers if hasattr(layer, 'states') and getattr(layer, 'stateful', False)):
+            for i, state in enumerate(layer.states):
+                assert state.shape[0] == batches_to_reset.shape[0]
+                stacked_batches_to_reset = tf.stack([batches_to_reset for _ in range(state.shape[1])], axis=1)
+                new_val = tf.multiply(state, 1-stacked_batches_to_reset)
+                layer.states[i].assign(new_val)
+        return batches_to_reset
         
     def train_step(self, data):
         x, r, y = data
 
-        self.state_reset(r)
+        tf.cond(
+            tf.greater(tf.reduce_sum(r), 0),
+            lambda: self.state_reset(r),
+            lambda: r
+        )
         
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)  # Forward pass
-            # self.reset_states()
             # Compute the loss value
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
 
@@ -136,7 +139,11 @@ class CustomModel(tf.keras.Model):
     def test_step(self, data):
         x, r, y = data
 
-        self.state_reset(r)
+        tf.cond(
+            tf.greater(tf.reduce_sum(r), 0),
+            lambda: self.state_reset(r),
+            lambda: r
+        )
 
         y_pred = self(x, training=False)
 
@@ -356,7 +363,7 @@ class DataHandler(object):
             batch_generator,
             output_signature=(
                 tf.TensorSpec(shape=(batch_size, length, num_signals), dtype=tf.float32),
-                tf.TensorSpec(shape=(batch_size), dtype=tf.int32),
+                tf.TensorSpec(shape=(batch_size), dtype=tf.float32),
                 tf.TensorSpec(shape=(batch_size, length, 1), dtype=tf.float32),
             )
         )
@@ -431,8 +438,8 @@ class ModelEvaluator(object):
         analyzer = PerformanceAnalyzer(conf=conf)
         roc_area = analyzer.get_roc_area(y_prime, y_gold, disruptive)
         shot_list.set_weights(analyzer.get_shot_difficulty(y_prime, y_gold, disruptive))
-        loss = get_loss_from_list(y_prime, y_gold, conf['data']['target'])
-        return roc_area, loss
+        # loss = get_loss_from_list(y_prime, y_gold, conf['data']['target'])
+        return roc_area #, loss
 
 
 class AdaptedAUC(tf.keras.metrics.AUC):
@@ -483,8 +490,8 @@ def run(config: None):
         validation_steps = loader.get_steps_per_epoch_bis(shot_list_valid)
 
         # train it
-        num_epochs = 4 #conf['training']['num_epochs']
-        tf.config.run_functions_eagerly(True)
+        num_epochs = 15 #conf['training']['num_epochs']
+        # tf.config.run_functions_eagerly(True)
         history = model.fit(
             train_dataset,
             batch_size=conf['training']['batch_size'],
@@ -504,14 +511,14 @@ def run(config: None):
         # evaluate it
         evaluator = ModelEvaluator(model, loader, conf)
         # train_roc, train_loss = evaluator.make_predictions_and_evaluate(shot_list_train)
-        valid_roc, valid_loss = evaluator.make_predictions_and_evaluate(shot_list_valid)
+        valid_roc = evaluator.make_predictions_and_evaluate(shot_list_valid)
         # test_roc, test_loss = evaluator.make_predictions_and_evaluate(shot_list_test)
 
         # print results
         print(f'[{rank}]======== RESULTS =======')
         # print(f'[{rank}]Train Loss: {train_loss:.3e}')
         # print(f'[{rank}]Train ROC: {train_roc:.4f}')
-        print(f'[{rank}]Valid Loss: {valid_loss:.3e}')
+        # print(f'[{rank}]Valid Loss: {valid_loss:.3e}')
         print(f'[{rank}]Valid ROC: {valid_roc:.4f}')
         # print(f'[{rank}]Test Loss: {test_loss:.3e}')
         # print(f'[{rank}]Test ROC: {test_roc:.4f}')
@@ -521,6 +528,8 @@ def run(config: None):
         clear_session()
     
     except tf.errors.ResourceExhaustedError as e:
+        print("ERROR DURING RUN FUNCTION :")
+        print(traceback.format_exc())
         objective = 0
         clear_session()
 

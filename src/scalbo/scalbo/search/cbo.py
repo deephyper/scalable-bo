@@ -99,7 +99,7 @@ def execute(
                 hp_problem,
                 evaluator,
                 sync_communication=sync,
-                liar_strategy=strategy,
+                multi_points_strategy=strategy,
                 n_jobs=n_jobs,
                 log_dir=search_log_dir,
                 random_state=rank_seed,

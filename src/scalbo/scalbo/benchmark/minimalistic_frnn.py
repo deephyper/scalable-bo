@@ -60,24 +60,40 @@ from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
 
-hp_problem = HpProblem()
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "length")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "rnn_size")
-hp_problem.add_hyperparameter((1, 4), "rnn_layers")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "num_conv_filters")
-hp_problem.add_hyperparameter((1, 4), "num_conv_layers")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "dense_size")
-hp_problem.add_hyperparameter((0.0, 1.0), "regularization")
-hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization")
-hp_problem.add_hyperparameter((1e-7, 1e-2, "log-uniform"), "lr")
-hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay")
-hp_problem.add_hyperparameter((0.9, 1.0), "momentum")
-hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob")
-hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size")
-hp_problem.add_hyperparameter(['hinge','focal'], "loss")
-# hp_problem.add_hyperparameter(['minmax','meanvar','averagevar','var'], "normalizer")
-# hp_problem.add_hyperparameter(['hinge','focal'], "loss")
+baseline_conf = {
+        'batch_size': 128,
+        'dense_size': 128,
+        'dense_regularization': 0.001,
+        'dropout_prob': 0.1,
+        'length': 128,
+        'loss': 'focal',
+        'lr': 2e-5,
+        'lr_decay': 0.97,
+        'momentum': 0.9,
+        'num_conv_filters': 128,
+        'num_conv_layers': 3,
+        'num_epochs': 32,
+        'regularization': 0.001,
+        'rnn_layers': 2,
+        'rnn_size': 200,
+    }
 
+hp_problem = HpProblem()
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "batch_size", default_value=128)
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "dense_size", default_value=128)
+hp_problem.add_hyperparameter((0.0, 1.0), "dense_regularization", default_value=0.001)
+hp_problem.add_hyperparameter((0.0, 0.5), "dropout_prob", default_value=0.1)
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "length", default_value=128)
+hp_problem.add_hyperparameter(['hinge','focal'], "loss", default_value='focal')
+hp_problem.add_hyperparameter((1e-7, 1e-2, "log-uniform"), "lr", default_value=2e-5)
+hp_problem.add_hyperparameter((0.9, 1.0), "lr_decay", default_value=0.97)
+hp_problem.add_hyperparameter((0.9, 1.0), "momentum", default_value=0.9)
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "num_conv_filters", default_value=128)
+hp_problem.add_hyperparameter((1, 4), "num_conv_layers", default_value=3)
+hp_problem.add_hyperparameter((1, 32, "log-uniform"), "num_epochs", default_value=32)
+hp_problem.add_hyperparameter((0.0, 1.0), "regularization", default_value=0.001)
+hp_problem.add_hyperparameter((1, 4), "rnn_layers", default_value=2)
+hp_problem.add_hyperparameter((32, 256, "log-uniform"), "rnn_size", default_value=200)
 
 # dataset_path = "/lus/theta-fs0/projects/fusiondl_aesp/felker"
 # sub_dirs = [
@@ -376,16 +392,10 @@ class AdaptedFocalLoss(tf.losses.BinaryFocalCrossentropy):
         return super().__call__(y_true, y_pred, sample_weight)
 
 
-targets = {
-    'hinge': {
-        'loss': 'hinge',
-        'activation': 'linear',
-    },
-    'focal': {
-        'loss': AdaptedFocalLoss(from_logits=True),
-        'activation': 'linear',
-    }
-}
+class AdaptedAUC(tf.keras.metrics.AUC):
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        y_true = tf.clip_by_value(y_true, 0, 1)
+        return super().update_state(y_true, y_pred, sample_weight)
 
 
 class ModelEvaluator(object):
@@ -442,11 +452,27 @@ class ModelEvaluator(object):
         return roc_area #, loss
 
 
-class AdaptedAUC(tf.keras.metrics.AUC):
+class TimeoutCallback(tf.keras.callbacks.Callback):
+    def __init__(self, max_duration) -> None:
+        super().__init__()
+        self._max_duration = max_duration
+        self._t_start = time.time()
 
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        y_true = tf.clip_by_value(y_true, 0, 1)
-        return super().update_state(y_true, y_pred, sample_weight)
+    def on_batch_end(self, batch, logs=None):
+        if time.time() - self._t_start > self._max_duration:
+            self.model.stop_training = True
+
+
+targets = {
+    'hinge': {
+        'loss': 'hinge',
+        'activation': 'linear',
+    },
+    'focal': {
+        'loss': AdaptedFocalLoss(from_logits=True),
+        'activation': 'linear',
+    }
+}
 
 
 @profile
@@ -485,13 +511,13 @@ def run(config: None):
             return lr
 
         lr_scheduler = tf.keras.callbacks.LearningRateScheduler(scheduler)
+        timeout_callback = TimeoutCallback(30*60)
 
         steps_per_epoch = loader.get_steps_per_epoch_bis(shot_list_train)
         validation_steps = loader.get_steps_per_epoch_bis(shot_list_valid)
 
         # train it
-        num_epochs = 15 #conf['training']['num_epochs']
-        # tf.config.run_functions_eagerly(True)
+        num_epochs = config['num_epochs']
         history = model.fit(
             train_dataset,
             batch_size=conf['training']['batch_size'],
@@ -499,14 +525,11 @@ def run(config: None):
             steps_per_epoch=steps_per_epoch,
             validation_data=valid_dataset,
             validation_steps=validation_steps,
-            callbacks=[lr_scheduler],
+            callbacks=[lr_scheduler, timeout_callback],
         )
 
-        # history_dict = history.history
-        # del history_dict['lr']
-        # history_file = '/lus/grand/projects/datascience/jgouneau/deephyper/frnn/exp/final_evaluation/histories/'
-        # with open(history_file, 'w') as file:
-        #     json.dump(history_dict, file)
+        history_dict = history.history
+        num_epochs_eff = len(history_dict['lr'])
 
         # evaluate it
         evaluator = ModelEvaluator(model, loader, conf)
@@ -537,23 +560,6 @@ def run(config: None):
 
 
 if __name__ == '__main__':
-    conf = {
-        'length': 128,
-        'rnn_size': 200,
-        'rnn_layers': 2,
-        'num_conv_filters': 128,
-        'num_conv_layers': 3,
-        'size_conv_filters': 3,
-        'pool_size': 2,
-        'dense_size': 128,
-        'regularization': 0.001,
-        'dense_regularization': 0.001,
-        'lr': 2e-5,
-        'lr_decay': 0.97,
-        'momentum': 0.9,
-        'dropout_prob': 0.1,
-        'batch_size': 128,
-    }
     t = time.time()
-    run(conf)
+    run(baseline_conf)
     print(f"Run duration : {time.time() - t:.2f}s.")

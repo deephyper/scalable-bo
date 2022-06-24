@@ -14,7 +14,7 @@ export timeout=1800
 export random_state=42 
 export problem="minimalistic-frnn"
 export sync_val=0
-export search="DMBS"
+export search="DBO"
 #!!! CONFIGURATION - END
 
 # activate Python environment
@@ -28,7 +28,7 @@ else
   export sync_str="sync"
 fi
 
-# AMBS
+# CBO
 export log_dir="output/$problem-$search-$sync_str-$acq_func-$strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -n $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) -N $COBALT_JOBSIZE --hostfile $COBALT_NODEFILE python -m scalbo.exp --problem $problem \

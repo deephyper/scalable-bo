@@ -1,0 +1,175 @@
+[1652298723.250355] [thetagpu16:2549433:0]    ucp_context.c:1079 UCX  ERROR exceeded transports/devices limit (73 requested, up to 64 are supported)
+Importing candle utils for keras
+Params:
+{'activation': ['relu',
+                'relu',
+                'softmax',
+                'relu',
+                'relu',
+                'relu',
+                'relu',
+                'relu',
+                'softmax'],
+ 'batch_normalization': False,
+ 'batch_size': 32,
+ 'ckpt_checksum': False,
+ 'ckpt_directory': './save',
+ 'ckpt_keep_limit': 1000000,
+ 'ckpt_keep_mode': 'linear',
+ 'ckpt_restart_mode': 'auto',
+ 'ckpt_save_best': True,
+ 'ckpt_save_best_metric': 'val_loss',
+ 'ckpt_save_interval': 0,
+ 'ckpt_save_weights_only': False,
+ 'ckpt_skip_epochs': 0,
+ 'data_type': <class 'numpy.float32'>,
+ 'data_url': 'http://ftp.mcs.anl.gov/pub/candle/public/benchmarks/Pilot1/uno/',
+ 'dense': [1000, 1000, 1000, 500, 250, 125, 60, 30, 2],
+ 'dropout': 0.2,
+ 'early_stop': True,
+ 'epochs': 1,
+ 'epsilon_std': 1.0,
+ 'experiment_id': 'EXP000',
+ 'feature_subsample': 0,
+ 'initialization': 'glorot_uniform',
+ 'latent_dim': 2,
+ 'learning_rate': 1e-05,
+ 'logfile': None,
+ 'loss': 'categorical_crossentropy',
+ 'model_name': 'attn',
+ 'momentum': 0.9,
+ 'optimizer': 'sgd',
+ 'output_dir': '/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/experiments/thetagpu/candle/Output/EXP000/RUN000',
+ 'profiling': False,
+ 'reduce_lr': True,
+ 'residual': False,
+ 'rng_seed': 2017,
+ 'run_id': 'RUN000',
+ 'save_path': './save/001/',
+ 'scaling': 'minmax',
+ 'shuffle': False,
+ 'timeout': 3600,
+ 'train_bool': True,
+ 'train_data': 'top_21_1fold_001.h5',
+ 'tsne': False,
+ 'use_cp': False,
+ 'use_tb': False,
+ 'val_split': 0.1,
+ 'verbose': False,
+ 'warmup_lr': False}
+Params: {'data_url': 'http://ftp.mcs.anl.gov/pub/candle/public/benchmarks/Pilot1/uno/', 'train_data': 'top_21_1fold_001.h5', 'model_name': 'attn', 'dense': [1000, 1000, 1000, 500, 250, 125, 60, 2], 'batch_size': 32, 'epochs': 100, 'activation': ['relu', 'relu', 'softmax', 'relu', 'relu', 'relu', 'relu', 'softmax'], 'loss': 'categorical_crossentropy', 'optimizer': 'sgd', 'dropout': 0.2, 'learning_rate': 1e-05, 'momentum': 0.9, 'scaling': 'minmax', 'val_split': 0.1, 'epsilon_std': 1.0, 'rng_seed': 2017, 'initialization': 'glorot_uniform', 'latent_dim': 2, 'batch_normalization': False, 'use_cp': False, 'early_stop': True, 'reduce_lr': True, 'feature_subsample': 0, 'save_path': './save/001/', 'timeout': 3600, 'train_bool': True, 'profiling': False, 'experiment_id': 'EXP000', 'run_id': 'RUN000', 'verbose': False, 'logfile': None, 'shuffle': False, 'ckpt_restart_mode': 'auto', 'ckpt_checksum': False, 'ckpt_skip_epochs': 0, 'ckpt_directory': './save', 'ckpt_save_best': True, 'ckpt_save_best_metric': 'val_loss', 'ckpt_save_weights_only': False, 'ckpt_save_interval': 0, 'ckpt_keep_mode': 'linear', 'ckpt_keep_limit': 1000000, 'residual': False, 'warmup_lr': False, 'use_tb': False, 'tsne': False, 'data_type': <class 'numpy.float32'>, 'output_dir': '/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/experiments/thetagpu/candle/Output/EXP000/RUN000', 'evaluate_model': True}
+processing h5 in file top_21_1fold_001.h5
+x_train shape: (271915, 6212)
+x_test shape: (33989, 6212)
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 6212)]       0           []                               
+                                                                                                  
+ dense (Dense)                  (None, 1000)         6213000     ['input_1[0][0]']                
+                                                                                                  
+ batch_normalization (BatchNorm  (None, 1000)        4000        ['dense[0][0]']                  
+ alization)                                                                                       
+                                                                                                  
+ dense_1 (Dense)                (None, 1000)         1001000     ['batch_normalization[0][0]']    
+                                                                                                  
+ batch_normalization_1 (BatchNo  (None, 1000)        4000        ['dense_1[0][0]']                
+ rmalization)                                                                                     
+                                                                                                  
+ dense_2 (Dense)                (None, 1000)         1001000     ['batch_normalization[0][0]']    
+                                                                                                  
+ multiply (Multiply)            (None, 1000)         0           ['batch_normalization_1[0][0]',  
+                                                                  'dense_2[0][0]']                
+                                                                                                  
+ dense_3 (Dense)                (None, 500)          500500      ['multiply[0][0]']               
+                                                                                                  
+ batch_normalization_2 (BatchNo  (None, 500)         2000        ['dense_3[0][0]']                
+ rmalization)                                                                                     
+                                                                                                  
+ dropout (Dropout)              (None, 500)          0           ['batch_normalization_2[0][0]']  
+                                                                                                  
+ dense_4 (Dense)                (None, 250)          125250      ['dropout[0][0]']                
+                                                                                                  
+ batch_normalization_3 (BatchNo  (None, 250)         1000        ['dense_4[0][0]']                
+ rmalization)                                                                                     
+                                                                                                  
+ dropout_1 (Dropout)            (None, 250)          0           ['batch_normalization_3[0][0]']  
+                                                                                                  
+ dense_5 (Dense)                (None, 125)          31375       ['dropout_1[0][0]']              
+                                                                                                  
+ batch_normalization_4 (BatchNo  (None, 125)         500         ['dense_5[0][0]']                
+ rmalization)                                                                                     
+                                                                                                  
+ dropout_2 (Dropout)            (None, 125)          0           ['batch_normalization_4[0][0]']  
+                                                                                                  
+ dense_6 (Dense)                (None, 60)           7560        ['dropout_2[0][0]']              
+                                                                                                  
+ batch_normalization_5 (BatchNo  (None, 60)          240         ['dense_6[0][0]']                
+ rmalization)                                                                                     
+                                                                                                  
+ dropout_3 (Dropout)            (None, 60)           0           ['batch_normalization_5[0][0]']  
+                                                                                                  
+ dense_7 (Dense)                (None, 2)            122         ['dropout_3[0][0]']              
+                                                                                                  
+==================================================================================================
+Total params: 8,891,547
+Trainable params: 8,885,677
+Non-trainable params: 5,870
+__________________________________________________________________________________________________
+Current time ....63.182
+Current time ....125.122
+Current time ....187.278
+Current time ....249.776
+Current time ....311.202
+Current time ....372.810
+Current time ....435.176
+Current time ....496.978
+Current time ....558.631
+Current time ....619.901
+Current time ....681.161
+Current time ....743.043
+Current time ....804.555
+Current time ....866.924
+Current time ....929.105
+Current time ....991.475
+Current time ....1053.238
+Current time ....1115.288
+Current time ....1177.860
+Current time ....1239.725
+Current time ....1301.062
+Current time ....1362.761
+Current time ....1425.066
+Current time ....1486.516
+Current time ....1548.618
+Current time ....1610.610
+Current time ....1672.260
+Current time ....1733.421
+Current time ....1796.004
+Current time ....1858.307
+Current time ....1920.952
+Current time ....1982.368
+Current time ....2044.355
+Current time ....2106.250
+Current time ....2168.876
+Current time ....2233.679
+Current time ....2298.788
+Current time ....2363.169
+Current time ....2428.536
+Current time ....2493.523
+Current time ....2558.214
+Current time ....2623.332
+Current time ....2688.080
+Current time ....2753.376
+Current time ....2818.491
+Current time ....2883.683
+Current time ....2948.996
+Current time ....3014.116
+Current time ....3078.232
+Current time ....3143.726
+Current time ....3208.462
+Current time ....3273.330
+Current time ....3340.264
+Current time ....3405.479
+Current time ....3471.046
+Current time ....3536.075

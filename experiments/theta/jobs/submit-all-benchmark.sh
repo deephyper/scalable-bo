@@ -1,16 +1,16 @@
 #!/bin/bash
 
-qsub ackley-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
-qsub ackley-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
+qsub ackley-DBO-async-qUCB-qUCB-128-32-1800-42.sh
+qsub ackley-DBO-sync-UCB-boltzmann-128-32-1800-42.sh
 
-qsub hartmann6D-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
-qsub hartmann6D-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
+qsub hartmann6D-DBO-async-qUCB-qUCB-128-32-1800-42.sh
+qsub hartmann6D-DBO-sync-UCB-boltzmann-128-32-1800-42.sh
 
-qsub levy-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
-qsub levy-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
+qsub levy-DBO-async-qUCB-qUCB-128-32-1800-42.sh
+qsub levy-DBO-sync-UCB-boltzmann-128-32-1800-42.sh
 
-qsub griewank-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
-qsub griewank-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
+qsub griewank-DBO-async-qUCB-qUCB-128-32-1800-42.sh
+qsub griewank-DBO-sync-UCB-boltzmann-128-32-1800-42.sh
 
-qsub schwefel-DMBS-async-qUCB-qUCB-128-32-1800-42.sh
-qsub schwefel-DMBS-sync-UCB-boltzmann-128-32-1800-42.sh
+qsub schwefel-DBO-async-qUCB-qUCB-128-32-1800-42.sh
+qsub schwefel-DBO-sync-UCB-boltzmann-128-32-1800-42.sh

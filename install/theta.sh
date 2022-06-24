@@ -10,12 +10,7 @@ conda activate dhenv/
 # Clone DeepHyper (develop)
 git clone -b develop https://github.com/deephyper/deephyper.git
 
-# Clone DeepHyper/Scikit-Optimize (master)
-git clone https://github.com/deephyper/scikit-optimize.git
-
 # Install DeepHyper
-pip install ConfigSpace
-pip install -e scikit-optimize/
 pip install -e deephyper/
 
 # Install MPI4PY

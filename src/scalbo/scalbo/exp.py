@@ -7,12 +7,15 @@ import pathlib
 import importlib
 import sys
 
-import scalbo.search.ambs
-import scalbo.search.dmbs
+import scalbo.search.cbo
+import scalbo.search.dbo
+import scalbo.search.hb
 
 
 PROBLEMS = {
     "fast_ackley_2": "scalbo.benchmark.fast_ackley_2",
+    "fastest_ackley_2": "scalbo.benchmark.fastest_ackley_2",
+    "hb_sim": "scalbo.benchmark.hb_sim",
     "ackley_5": "scalbo.benchmark.ackley_5",
     "ackley_10": "scalbo.benchmark.ackley_10",
     "ackley_30": "scalbo.benchmark.ackley_30",
@@ -26,12 +29,14 @@ PROBLEMS = {
     "minimalistic-frnn": "scalbo.benchmark.minimalistic_frnn",
     "molecular": "scalbo.benchmark.molecularmpnn",
     "candle_attn": "scalbo.benchmark.candle_attn",
-    "candle_attn_sim": "scalbo.benchmark.candle_attn_sim"
+    "candle_attn_sim": "scalbo.benchmark.candle_attn_sim",
+    "candle_combo": "scalbo.benchmark.candle_combo",
 }
 
 SEARCHES = {
-    "AMBS": scalbo.search.ambs,  # Centralized Model-Based Search (Master-Worker)
-    "DMBS": scalbo.search.dmbs,  # Fully Distributed Model-Based Search
+    "CBO": scalbo.search.cbo,  # Centralized Model-Based Search (Master-Worker)
+    "DBO": scalbo.search.dbo,  # Fully Distributed Model-Based Search
+    "HB": scalbo.search.hb,  # Hyperband
 }
 
 
@@ -51,6 +56,14 @@ def create_parser():
         choices=list(SEARCHES.keys()),
         required=True,
         help="Search the experiment must be done with.",
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        choices=["RF", "GP", "DUMMY"],
+        required=False,
+        default="RF",
+        help="Surrogate model used by the Bayesian optimizer.",
     )
     parser.add_argument(
         "--sync",
@@ -137,6 +150,7 @@ def main(args):
         args.log_dir,
         args.cache_dir,
         args.n_jobs,
+        args.model,
     )
 
 

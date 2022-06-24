@@ -1,0 +1,155 @@
+INFO:__main__:Params: {'cell_features': ['expression'], 'drug_features': ['descriptors'], 'dense': [1000, 1000, 1000], 'dense_feature_layers': [1000, 1000, 1000], 'activation': 'relu', 'loss': 'mse', 'optimizer': 'sgd', 'scaling': 'std', 'dropout': 0.0, 'epochs': 100, 'batch_size': 32, 'val_split': 0.2, 'cv': 1, 'cv_partition': 'overlapping', 'max_val_loss': 1.0, 'learning_rate': 0.001, 'base_lr': 0.001, 'residual': False, 'reduce_lr': False, 'warmup_lr': False, 'batch_normalization': False, 'feature_subsample': 0, 'rng_seed': 2017, 'save_path': 'save/combo', 'gen': False, 'use_combo_score': False, 'verbose': 1, 'timeout': 3600, 'train_bool': True, 'profiling': False, 'experiment_id': 'EXP000', 'run_id': 'RUN000', 'logfile': None, 'shuffle': False, 'ckpt_restart_mode': 'auto', 'ckpt_checksum': False, 'ckpt_skip_epochs': 0, 'ckpt_directory': './save', 'ckpt_save_best': True, 'ckpt_save_best_metric': 'val_loss', 'ckpt_save_weights_only': False, 'ckpt_save_interval': 0, 'ckpt_keep_mode': 'linear', 'ckpt_keep_limit': 1000000, 'use_landmark_genes': True, 'preprocess_rnaseq': 'none', 'response_url': None, 'cp': False, 'tb': False, 'use_mean_growth': False, 'exclude_cells': [], 'exclude_drugs': [], 'data_type': <class 'numpy.float32'>, 'output_dir': '/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/experiments/thetagpu/candle/Output/EXP000/RUN000'}
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/src/scalbo/scalbo/benchmark/candle_combo.py:335: FutureWarning: The error_bad_lines argument has been deprecated and will be removed in a future version.
+
+
+  df = NCI60.load_combo_response(
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/src/scalbo/scalbo/benchmark/candle_combo.py:335: FutureWarning: The warn_bad_lines argument has been deprecated and will be removed in a future version.
+
+
+  df = NCI60.load_combo_response(
+INFO:__main__:Loaded 317899 unique (CL, D1, D2) response sets.
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/ecp-candle-benchmarks/Pilot1/Combo/NCI60.py:544: FutureWarning: In a future version of pandas all arguments of DataFrame.drop except for the argument 'labels' will be keyword-only
+  df2 = df.drop('CELLNAME', 1)
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/ecp-candle-benchmarks/Pilot1/Combo/NCI60.py:386: FutureWarning: In a future version of pandas all arguments of DataFrame.drop except for the argument 'labels' will be keyword-only
+  df2 = df.drop('NAME', 1)
+INFO:__main__:Filtered down to 276112 rows with matching information.
+INFO:__main__:Unique cell lines: 60
+INFO:__main__:Unique drugs: 98
+INFO:__main__:Distribution of dose response:
+INFO:__main__:              GROWTH
+count  276112.000000
+mean        0.334128
+std         0.526155
+min        -1.000000
+25%         0.059500
+50%         0.420100
+75%         0.780253
+max         1.693300
+INFO:__main__:Rows in train: 220890, val: 55222
+INFO:__main__:Input features shapes:
+INFO:__main__:  cell.expression: (942,)
+INFO:__main__:  drug1.descriptors: (3839,)
+INFO:__main__:  drug2.descriptors: (3839,)
+INFO:__main__:Total input dimensions: 8620
+WARNING:tensorflow:OMP_NUM_THREADS is no longer used by the default Keras config. To configure the number of threads, use tf.config.threading APIs.
+WARNING:tensorflow:OMP_NUM_THREADS is no longer used by the default Keras config. To configure the number of threads, use tf.config.threading APIs.
+INFO:__main__:Between random pairs in y_val:
+INFO:__main__:  mse: 0.5504
+INFO:__main__:  mae: 0.5816
+INFO:__main__:  r2: -0.9890
+INFO:__main__:  corr: 0.0055
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/engine/training_v1.py:2057: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates = self.state_updates
+DEBUG:__main__:[Epoch: 0] loss: 0.122677, mae: 0.265036, r2: 0.527815, val_loss: 0.102854, val_mae: 0.239322, val_r2: 0.603164
+DEBUG:__main__:[Epoch: 1] loss: 0.094080, mae: 0.229084, r2: 0.636182, val_loss: 0.086119, val_mae: 0.216939, val_r2: 0.667695
+DEBUG:__main__:[Epoch: 2] loss: 0.078356, mae: 0.207585, r2: 0.696351, val_loss: 0.074008, val_mae: 0.199720, val_r2: 0.712406
+DEBUG:__main__:[Epoch: 3] loss: 0.067261, mae: 0.191267, r2: 0.738808, val_loss: 0.066142, val_mae: 0.188091, val_r2: 0.742817
+DEBUG:__main__:[Epoch: 4] loss: 0.059948, mae: 0.179759, r2: 0.766786, val_loss: 0.061061, val_mae: 0.180385, val_r2: 0.762643
+DEBUG:__main__:[Epoch: 5] loss: 0.054790, mae: 0.171304, r2: 0.786584, val_loss: 0.057156, val_mae: 0.174245, val_r2: 0.778245
+DEBUG:__main__:[Epoch: 6] loss: 0.050779, mae: 0.164597, r2: 0.802032, val_loss: 0.054095, val_mae: 0.169263, val_r2: 0.789803
+DEBUG:__main__:[Epoch: 7] loss: 0.047514, mae: 0.158966, r2: 0.814620, val_loss: 0.051384, val_mae: 0.164778, val_r2: 0.800243
+DEBUG:__main__:[Epoch: 8] loss: 0.044781, mae: 0.154144, r2: 0.825176, val_loss: 0.049234, val_mae: 0.161094, val_r2: 0.808328
+DEBUG:__main__:[Epoch: 9] loss: 0.042435, mae: 0.149881, r2: 0.834258, val_loss: 0.047337, val_mae: 0.157756, val_r2: 0.815546
+DEBUG:__main__:[Epoch: 10] loss: 0.040428, mae: 0.146115, r2: 0.842050, val_loss: 0.045612, val_mae: 0.154618, val_r2: 0.822335
+DEBUG:__main__:[Epoch: 11] loss: 0.038684, mae: 0.142781, r2: 0.848817, val_loss: 0.044217, val_mae: 0.152006, val_r2: 0.827509
+DEBUG:__main__:[Epoch: 12] loss: 0.037157, mae: 0.139804, r2: 0.854744, val_loss: 0.043042, val_mae: 0.149784, val_r2: 0.832520
+DEBUG:__main__:[Epoch: 13] loss: 0.035808, mae: 0.137125, r2: 0.859980, val_loss: 0.042030, val_mae: 0.147862, val_r2: 0.835925
+DEBUG:__main__:[Epoch: 14] loss: 0.034596, mae: 0.134655, r2: 0.864691, val_loss: 0.041097, val_mae: 0.146004, val_r2: 0.838765
+DEBUG:__main__:[Epoch: 15] loss: 0.033503, mae: 0.132424, r2: 0.868931, val_loss: 0.040286, val_mae: 0.144433, val_r2: 0.843410
+DEBUG:__main__:[Epoch: 16] loss: 0.032501, mae: 0.130347, r2: 0.872828, val_loss: 0.039534, val_mae: 0.142930, val_r2: 0.845988
+DEBUG:__main__:[Epoch: 17] loss: 0.031591, mae: 0.128440, r2: 0.876367, val_loss: 0.038907, val_mae: 0.141715, val_r2: 0.847752
+DEBUG:__main__:[Epoch: 18] loss: 0.030749, mae: 0.126645, r2: 0.879637, val_loss: 0.038361, val_mae: 0.140611, val_r2: 0.850258
+DEBUG:__main__:[Epoch: 19] loss: 0.029976, mae: 0.124981, r2: 0.882636, val_loss: 0.037879, val_mae: 0.139672, val_r2: 0.851812
+DEBUG:__main__:[Epoch: 20] loss: 0.029266, mae: 0.123456, r2: 0.885399, val_loss: 0.037432, val_mae: 0.138743, val_r2: 0.854071
+DEBUG:__main__:[Epoch: 21] loss: 0.028605, mae: 0.122008, r2: 0.887967, val_loss: 0.037072, val_mae: 0.138048, val_r2: 0.855594
+DEBUG:__main__:[Epoch: 22] loss: 0.027977, mae: 0.120615, r2: 0.890411, val_loss: 0.036712, val_mae: 0.137313, val_r2: 0.856608
+DEBUG:__main__:[Epoch: 23] loss: 0.027399, mae: 0.119317, r2: 0.892656, val_loss: 0.036377, val_mae: 0.136645, val_r2: 0.857583
+DEBUG:__main__:[Epoch: 24] loss: 0.026847, mae: 0.118075, r2: 0.894807, val_loss: 0.036067, val_mae: 0.136011, val_r2: 0.857871
+DEBUG:__main__:[Epoch: 25] loss: 0.026332, mae: 0.116889, r2: 0.896811, val_loss: 0.035771, val_mae: 0.135440, val_r2: 0.859612
+DEBUG:__main__:[Epoch: 26] loss: 0.025844, mae: 0.115761, r2: 0.898716, val_loss: 0.035508, val_mae: 0.134888, val_r2: 0.861499
+DEBUG:__main__:[Epoch: 27] loss: 0.025384, mae: 0.114688, r2: 0.900511, val_loss: 0.035255, val_mae: 0.134388, val_r2: 0.861832
+DEBUG:__main__:[Epoch: 28] loss: 0.024946, mae: 0.113665, r2: 0.902215, val_loss: 0.035033, val_mae: 0.133928, val_r2: 0.862798
+DEBUG:__main__:[Epoch: 29] loss: 0.024532, mae: 0.112685, r2: 0.903824, val_loss: 0.034813, val_mae: 0.133488, val_r2: 0.864419
+DEBUG:__main__:[Epoch: 30] loss: 0.024133, mae: 0.111746, r2: 0.905379, val_loss: 0.034616, val_mae: 0.133049, val_r2: 0.864241
+DEBUG:__main__:[Epoch: 31] loss: 0.023745, mae: 0.110826, r2: 0.906887, val_loss: 0.034431, val_mae: 0.132662, val_r2: 0.865318
+DEBUG:__main__:[Epoch: 32] loss: 0.023381, mae: 0.109962, r2: 0.908310, val_loss: 0.034281, val_mae: 0.132348, val_r2: 0.865872
+DEBUG:__main__:[Epoch: 33] loss: 0.023032, mae: 0.109125, r2: 0.909671, val_loss: 0.034129, val_mae: 0.132037, val_r2: 0.865440
+DEBUG:__main__:[Epoch: 34] loss: 0.022694, mae: 0.108306, r2: 0.910987, val_loss: 0.034013, val_mae: 0.131810, val_r2: 0.867178
+DEBUG:__main__:[Epoch: 35] loss: 0.022372, mae: 0.107537, r2: 0.912246, val_loss: 0.033873, val_mae: 0.131525, val_r2: 0.866867
+DEBUG:__main__:[Epoch: 36] loss: 0.022059, mae: 0.106777, r2: 0.913470, val_loss: 0.033729, val_mae: 0.131237, val_r2: 0.866656
+DEBUG:__main__:[Epoch: 37] loss: 0.021759, mae: 0.106043, r2: 0.914643, val_loss: 0.033615, val_mae: 0.131000, val_r2: 0.868130
+DEBUG:__main__:[Epoch: 38] loss: 0.021470, mae: 0.105330, r2: 0.915772, val_loss: 0.033512, val_mae: 0.130761, val_r2: 0.867562
+DEBUG:__main__:[Epoch: 39] loss: 0.021187, mae: 0.104634, r2: 0.916875, val_loss: 0.033397, val_mae: 0.130524, val_r2: 0.868670
+DEBUG:__main__:[Epoch: 40] loss: 0.020917, mae: 0.103966, r2: 0.917925, val_loss: 0.033287, val_mae: 0.130264, val_r2: 0.869149
+DEBUG:__main__:[Epoch: 41] loss: 0.020656, mae: 0.103314, r2: 0.918946, val_loss: 0.033230, val_mae: 0.130135, val_r2: 0.870025
+DEBUG:__main__:[Epoch: 42] loss: 0.020405, mae: 0.102678, r2: 0.919919, val_loss: 0.033134, val_mae: 0.129931, val_r2: 0.870725
+DEBUG:__main__:[Epoch: 43] loss: 0.020158, mae: 0.102056, r2: 0.920882, val_loss: 0.033048, val_mae: 0.129726, val_r2: 0.870648
+DEBUG:__main__:[Epoch: 44] loss: 0.019918, mae: 0.101443, r2: 0.921823, val_loss: 0.032963, val_mae: 0.129561, val_r2: 0.870654
+DEBUG:__main__:[Epoch: 45] loss: 0.019687, mae: 0.100846, r2: 0.922728, val_loss: 0.032900, val_mae: 0.129448, val_r2: 0.870762
+DEBUG:__main__:[Epoch: 46] loss: 0.019459, mae: 0.100255, r2: 0.923617, val_loss: 0.032844, val_mae: 0.129343, val_r2: 0.870897
+DEBUG:__main__:[Epoch: 47] loss: 0.019240, mae: 0.099684, r2: 0.924472, val_loss: 0.032766, val_mae: 0.129159, val_r2: 0.870737
+DEBUG:__main__:[Epoch: 48] loss: 0.019025, mae: 0.099119, r2: 0.925310, val_loss: 0.032715, val_mae: 0.129060, val_r2: 0.871389
+DEBUG:__main__:[Epoch: 49] loss: 0.018818, mae: 0.098575, r2: 0.926120, val_loss: 0.032667, val_mae: 0.128936, val_r2: 0.871748
+DEBUG:__main__:[Epoch: 50] loss: 0.018616, mae: 0.098037, r2: 0.926912, val_loss: 0.032592, val_mae: 0.128772, val_r2: 0.871821
+DEBUG:__main__:[Epoch: 51] loss: 0.018416, mae: 0.097505, r2: 0.927694, val_loss: 0.032539, val_mae: 0.128639, val_r2: 0.872919
+DEBUG:__main__:[Epoch: 52] loss: 0.018223, mae: 0.096990, r2: 0.928447, val_loss: 0.032506, val_mae: 0.128573, val_r2: 0.873047
+DEBUG:__main__:[Epoch: 53] loss: 0.018033, mae: 0.096484, r2: 0.929187, val_loss: 0.032462, val_mae: 0.128475, val_r2: 0.872968
+DEBUG:__main__:[Epoch: 54] loss: 0.017847, mae: 0.095981, r2: 0.929916, val_loss: 0.032449, val_mae: 0.128452, val_r2: 0.872488
+DEBUG:__main__:[Epoch: 55] loss: 0.017667, mae: 0.095484, r2: 0.930619, val_loss: 0.032435, val_mae: 0.128429, val_r2: 0.872428
+DEBUG:__main__:[Epoch: 56] loss: 0.017491, mae: 0.095006, r2: 0.931306, val_loss: 0.032394, val_mae: 0.128340, val_r2: 0.873026
+DEBUG:__main__:[Epoch: 57] loss: 0.017317, mae: 0.094536, r2: 0.931990, val_loss: 0.032371, val_mae: 0.128283, val_r2: 0.872919
+DEBUG:__main__:[Epoch: 58] loss: 0.017147, mae: 0.094060, r2: 0.932655, val_loss: 0.032349, val_mae: 0.128233, val_r2: 0.873633
+DEBUG:__main__:[Epoch: 59] loss: 0.016980, mae: 0.093599, r2: 0.933309, val_loss: 0.032321, val_mae: 0.128158, val_r2: 0.873417
+DEBUG:__main__:[Epoch: 60] loss: 0.016817, mae: 0.093151, r2: 0.933948, val_loss: 0.032345, val_mae: 0.128242, val_r2: 0.872669
+DEBUG:__main__:[Epoch: 61] loss: 0.016659, mae: 0.092709, r2: 0.934566, val_loss: 0.032286, val_mae: 0.128085, val_r2: 0.873076
+DEBUG:__main__:[Epoch: 62] loss: 0.016501, mae: 0.092271, r2: 0.935185, val_loss: 0.032253, val_mae: 0.127982, val_r2: 0.873083
+DEBUG:__main__:[Epoch: 63] loss: 0.016350, mae: 0.091847, r2: 0.935777, val_loss: 0.032244, val_mae: 0.127978, val_r2: 0.873354
+DEBUG:__main__:[Epoch: 64] loss: 0.016201, mae: 0.091425, r2: 0.936361, val_loss: 0.032259, val_mae: 0.128012, val_r2: 0.873408
+DEBUG:__main__:[Epoch: 65] loss: 0.016056, mae: 0.091023, r2: 0.936928, val_loss: 0.032217, val_mae: 0.127906, val_r2: 0.872406
+DEBUG:__main__:[Epoch: 66] loss: 0.015909, mae: 0.090604, r2: 0.937505, val_loss: 0.032221, val_mae: 0.127938, val_r2: 0.872907
+DEBUG:__main__:[Epoch: 67] loss: 0.015768, mae: 0.090206, r2: 0.938058, val_loss: 0.032253, val_mae: 0.128036, val_r2: 0.872905
+DEBUG:__main__:[Epoch: 68] loss: 0.015629, mae: 0.089813, r2: 0.938597, val_loss: 0.032241, val_mae: 0.128010, val_r2: 0.874279
+DEBUG:__main__:[Epoch: 69] loss: 0.015493, mae: 0.089425, r2: 0.939127, val_loss: 0.032224, val_mae: 0.127980, val_r2: 0.874052
+DEBUG:__main__:[Epoch: 70] loss: 0.015358, mae: 0.089037, r2: 0.939659, val_loss: 0.032244, val_mae: 0.128041, val_r2: 0.872936
+DEBUG:__main__:[Epoch: 71] loss: 0.015227, mae: 0.088659, r2: 0.940169, val_loss: 0.032230, val_mae: 0.128017, val_r2: 0.872649
+DEBUG:__main__:[Epoch: 72] loss: 0.015096, mae: 0.088281, r2: 0.940675, val_loss: 0.032228, val_mae: 0.128017, val_r2: 0.872974
+DEBUG:__main__:[Epoch: 73] loss: 0.014969, mae: 0.087908, r2: 0.941174, val_loss: 0.032244, val_mae: 0.128079, val_r2: 0.873688
+DEBUG:__main__:[Epoch: 74] loss: 0.014843, mae: 0.087536, r2: 0.941664, val_loss: 0.032296, val_mae: 0.128237, val_r2: 0.872465
+DEBUG:__main__:[Epoch: 75] loss: 0.014719, mae: 0.087170, r2: 0.942150, val_loss: 0.032273, val_mae: 0.128175, val_r2: 0.872501
+DEBUG:__main__:[Epoch: 76] loss: 0.014599, mae: 0.086810, r2: 0.942619, val_loss: 0.032258, val_mae: 0.128129, val_r2: 0.874132
+DEBUG:__main__:[Epoch: 77] loss: 0.014478, mae: 0.086451, r2: 0.943092, val_loss: 0.032284, val_mae: 0.128197, val_r2: 0.872602
+DEBUG:__main__:[Epoch: 78] loss: 0.014362, mae: 0.086108, r2: 0.943545, val_loss: 0.032251, val_mae: 0.128133, val_r2: 0.873749
+DEBUG:__main__:[Epoch: 79] loss: 0.014243, mae: 0.085750, r2: 0.944008, val_loss: 0.032288, val_mae: 0.128257, val_r2: 0.873011
+DEBUG:__main__:[Epoch: 80] loss: 0.014130, mae: 0.085406, r2: 0.944451, val_loss: 0.032300, val_mae: 0.128292, val_r2: 0.873001
+DEBUG:__main__:[Epoch: 81] loss: 0.014017, mae: 0.085062, r2: 0.944895, val_loss: 0.032311, val_mae: 0.128323, val_r2: 0.872099
+DEBUG:__main__:[Epoch: 82] loss: 0.013909, mae: 0.084730, r2: 0.945317, val_loss: 0.032303, val_mae: 0.128327, val_r2: 0.873599
+DEBUG:__main__:[Epoch: 83] loss: 0.013799, mae: 0.084392, r2: 0.945749, val_loss: 0.032334, val_mae: 0.128421, val_r2: 0.873445
+DEBUG:__main__:[Epoch: 84] loss: 0.013691, mae: 0.084058, r2: 0.946172, val_loss: 0.032320, val_mae: 0.128373, val_r2: 0.872836
+DEBUG:__main__:[Epoch: 85] loss: 0.013586, mae: 0.083733, r2: 0.946583, val_loss: 0.032312, val_mae: 0.128347, val_r2: 0.873663
+DEBUG:__main__:[Epoch: 86] loss: 0.013484, mae: 0.083423, r2: 0.946986, val_loss: 0.032285, val_mae: 0.128265, val_r2: 0.873094
+DEBUG:__main__:[Epoch: 87] loss: 0.013382, mae: 0.083095, r2: 0.947382, val_loss: 0.032356, val_mae: 0.128460, val_r2: 0.873359
+DEBUG:__main__:[Epoch: 88] loss: 0.013281, mae: 0.082782, r2: 0.947777, val_loss: 0.032333, val_mae: 0.128383, val_r2: 0.873468
+DEBUG:__main__:[Epoch: 89] loss: 0.013181, mae: 0.082467, r2: 0.948165, val_loss: 0.032318, val_mae: 0.128335, val_r2: 0.873457
+DEBUG:__main__:[Epoch: 90] loss: 0.013084, mae: 0.082159, r2: 0.948547, val_loss: 0.032314, val_mae: 0.128310, val_r2: 0.873284
+DEBUG:__main__:[Epoch: 91] loss: 0.012987, mae: 0.081853, r2: 0.948928, val_loss: 0.032288, val_mae: 0.128225, val_r2: 0.873703
+DEBUG:__main__:[Epoch: 92] loss: 0.012893, mae: 0.081557, r2: 0.949292, val_loss: 0.032306, val_mae: 0.128292, val_r2: 0.873081
+DEBUG:__main__:[Epoch: 93] loss: 0.012799, mae: 0.081254, r2: 0.949660, val_loss: 0.032320, val_mae: 0.128313, val_r2: 0.873259
+DEBUG:__main__:[Epoch: 94] loss: 0.012704, mae: 0.080951, r2: 0.950034, val_loss: 0.032339, val_mae: 0.128380, val_r2: 0.873205
+DEBUG:__main__:[Epoch: 95] loss: 0.012614, mae: 0.080663, r2: 0.950391, val_loss: 0.032363, val_mae: 0.128445, val_r2: 0.872517
+DEBUG:__main__:[Epoch: 96] loss: 0.012525, mae: 0.080375, r2: 0.950736, val_loss: 0.032373, val_mae: 0.128472, val_r2: 0.873620
+DEBUG:__main__:[Epoch: 97] loss: 0.012434, mae: 0.080081, r2: 0.951096, val_loss: 0.032345, val_mae: 0.128386, val_r2: 0.873864
+DEBUG:__main__:[Epoch: 98] loss: 0.012346, mae: 0.079791, r2: 0.951437, val_loss: 0.032380, val_mae: 0.128497, val_r2: 0.872792
+DEBUG:__main__:[Epoch: 99] loss: 0.012260, mae: 0.079512, r2: 0.951776, val_loss: 0.032365, val_mae: 0.128434, val_r2: 0.872673
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/keras/engine/training_v1.py:2079: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates=self.state_updates,
+INFO:__main__:Comparing y_true and y_pred:
+INFO:__main__:  mse: 0.0324
+INFO:__main__:  mae: 0.1284
+INFO:__main__:  r2: 0.8830
+INFO:__main__:  corr: 0.9411
+/lus/grand/projects/datascience/regele/thetagpu/scaling/scalable-bo/build/dhenv/lib/python3.8/site-packages/pandas/core/indexing.py:1667: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  self.obj[key] = value

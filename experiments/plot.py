@@ -196,41 +196,63 @@ def plot_objective_multi(df, exp_config, output_dir, show):
 
             exp_dfs = exp_df
 
-            times = np.unique(
-                np.concatenate([df.timestamp_end.to_numpy() for df in exp_dfs],
-                               axis=0))
-            times = np.concatenate([[0], times, [exp_config["t_max"]]])
+            T = np.linspace(0, exp_config["t_max"], 50000)
 
-            series = []
-            for exp_df in exp_dfs:
+            y_list = []
+            for i, df_i in enumerate(exp_dfs):
+                df_i = df_i.sort_values("timestamp_end")
+                x, y = df_i.timestamp_end.to_numpy(), df_i.objective.cummin().to_numpy()
+                f = interp1d(x, y, kind="previous", fill_value="extrapolate")
+                y = f(T)
+                y_list.append(y)
 
-                exp_df = exp_df.sort_values("timestamp_end")
-                x, y = exp_df.timestamp_end.to_numpy(
-                ), exp_df.objective.to_numpy()
-                y = best_objective(y)
+            y_list = np.asarray(y_list)
+            y_mean = y_list.mean(axis=0)
+            y_std = y_list.std(axis=0)
+            y_se = y_std/np.sqrt(y_list.shape[0])
+            # y_min = y_list.min(axis=0)
+            # y_max = y_list.max(axis=0)
 
-                s = pd.Series(data=y, index=x)
-                s = s.reindex(times).fillna(method="ffill").fillna(method="bfill")
-                series.append(s)
+            # times = np.unique(
+            #     np.concatenate([df.timestamp_end.to_numpy() for df in exp_dfs],
+            #                    axis=0))
+            # times = np.concatenate([[0], times, [exp_config["t_max"]]])
 
-            array = np.array([s.to_numpy() for s in series])
-            loc = np.nanmean(array, axis=0)
-            scale = np.nanstd(array, axis=0)
-            loc_max = loc + scale
-            loc_min = loc - scale
+            # series = []
+            # for exp_df in exp_dfs:
+
+            #     exp_df = exp_df.sort_values("timestamp_end")
+            #     x, y = exp_df.timestamp_end.to_numpy(
+            #     ), exp_df.objective.to_numpy()
+            #     y = best_objective(y)
+
+            #     s = pd.Series(data=y, index=x)
+            #     s = s.reindex(times).fillna(method="ffill").fillna(method="bfill")
+            #     series.append(s)
+
+            # array = np.array([s.to_numpy() for s in series])
+            # loc = np.nanmean(array, axis=0)
+            # scale = np.nanstd(array, axis=0)
+            # loc_max = loc + scale
+            # loc_min = loc - scale
 
             plt.plot(
-                times,
-                loc,
+                T,
+                y_mean,
                 label=exp_config["data"][exp_name]["label"],
                 color=exp_config["data"][exp_name]["color"],
                 linestyle=exp_config["data"][exp_name].get("linestyle", "-"),
             )
-            plt.fill_between(times,
-                             loc_min,
-                             loc_max,
+            plt.fill_between(T,
+                             y_mean-1.96*y_se,
+                             y_mean+1.96*y_se,
                              facecolor=exp_config["data"][exp_name]["color"],
                              alpha=0.3)
+            # plt.fill_between(T,
+            #                  y_mean-1.96*y_std,
+            #                  y_mean+1.96*y_std,
+            #                  facecolor=exp_config["data"][exp_name]["color"],
+            #                  alpha=0.3)
         else:
             exp_df = exp_df.sort_values("timestamp_end")
             x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
@@ -385,10 +407,10 @@ def compile_profile(df):
 def compute_num_workers(exp_name):
     exp_name = exp_name.split("-")
     alg_name = exp_name[1]
-    num_nodes = int(exp_name[5])
-    num_ranks_per_node = int(exp_name[6])
+    num_nodes = int(exp_name[6])
+    num_ranks_per_node = int(exp_name[7])
     
-    if alg_name == "AMBS":
+    if alg_name in ["CBO", "HB"]:
         return num_nodes * num_ranks_per_node - 1
     else:
         return num_nodes * num_ranks_per_node
@@ -538,6 +560,57 @@ def write_infos(df, exp_config, output_dir):
 
         if "rep" in exp_config["data"][exp_name]:
             exp_dfs = exp_df
+
+            num_evaluations = []
+            utilization = []
+            best_objective = []
+            best_objective_timestamp = []
+            for i, exp_df in enumerate(exp_dfs):
+                infos[exp_name] = {}
+                exp_df = exp_df[exp_df.timestamp_end < exp_config["t_max"]]
+
+                num_evaluations.append(len(exp_df))
+
+                if i == 0:
+                    num_workers = compute_num_workers(exp_name)
+                    infos[exp_name]["num_workers"] = num_workers
+
+                # available compute time
+                T_avail = exp_config["t_max"] * num_workers
+                T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
+                utilization.append(T_eff/T_avail)
+
+                # compute best objective found
+                if MODE == "max":
+                    idx_best = exp_df.objective.argmax()
+                else:
+                    idx_best = exp_df.objective.argmin()
+
+                obj_best = exp_df.objective.iloc[idx_best]
+                obj_best_timestamp = exp_df.timestamp_end.iloc[idx_best]
+                best_objective.append(float(obj_best))
+                best_objective_timestamp.append(float(obj_best_timestamp))
+
+            data = num_evaluations
+            loc = np.mean(data) 
+            err = 1.96*np.std(data)/np.sqrt(len(exp_dfs))
+            infos[exp_name]["num_evaluations"] = f"{loc} +/- {err}"
+
+            data = utilization
+            loc = np.mean(data) 
+            err = 1.96*np.std(data)/np.sqrt(len(exp_dfs))
+            infos[exp_name]["utilization"] = f"{loc} +/- {err}"
+
+            data = best_objective
+            loc = np.mean(data) 
+            err = 1.96*np.std(data)/np.sqrt(len(exp_dfs))
+            infos[exp_name]["best_objective"] = f"{loc} +/- {err}"
+
+            data = best_objective_timestamp
+            loc = np.mean(data) 
+            err = 1.96*np.std(data)/np.sqrt(len(exp_dfs))
+            infos[exp_name]["best_objective_timestamp"] = f"{loc} +/- {err}"
+
         else:
             infos[exp_name] = {}
             exp_df = exp_df[exp_df.timestamp_end < exp_config["t_max"]]

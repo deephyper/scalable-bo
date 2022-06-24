@@ -17,7 +17,7 @@ export random_state=42
 export problem="frnn"
 export cache_dir="/dev/shm"
 export sync_val=0
-export search="DMBS"
+export search="DBO"
 
 if [[ "$sync_val" -eq 0 ]];
 then
@@ -26,7 +26,7 @@ else
   export sync_str="sync"
 fi
 
-# AMBS
+# CBO
 export log_dir="output/$problem-$search-$sync_str-$liar_strategy-$COBALT_JOBSIZE-$RANKS_PER_NODE-$timeout-$random_state";
 
 echo "mpirun -x LD_LIBRARY_PATH -x PYTHONPATH -x PATH -np $(( $COBALT_JOBSIZE * $RANKS_PER_NODE )) --hostfile $COBALT_NODEFILE python -m scalbo.exp --problem $problem \

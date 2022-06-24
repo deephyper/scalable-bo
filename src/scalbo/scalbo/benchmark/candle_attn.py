@@ -3,15 +3,20 @@ from __future__ import print_function
 import numpy as np
 import sklearn
 import h5py
+import pathlib
 
+import argparse
 import os
 import logging
 import warnings
+import json
+import sys
+
 
 if __name__ == "__main__":
     rank = 0
     gpu_local_idx = 0
-else: # Assuming a ThetaGPU Node here
+else:  # Assuming a ThetaGPU Node here
     from mpi4py import MPI
 
     comm = MPI.COMM_WORLD
@@ -68,6 +73,7 @@ import attn
 import candle
 
 import attn_viz_utils as attnviz
+import optuna
 
 #!!! DeepHyper Problem [START]
 from deephyper.problem import HpProblem
@@ -135,6 +141,55 @@ hp_problem.add_hyperparameter((8, 512, "log-uniform"), "batch_size", default_val
 
 np.set_printoptions(precision=4)
 tf.compat.v1.disable_eager_execution()
+
+class TFKerasPruningCallback(tf.keras.callbacks.Callback):
+    """tf.keras callback to prune unpromising trials.
+
+    This callback is intend to be compatible for TensorFlow v1 and v2,
+    but only tested with TensorFlow v2.
+
+    See `the example <https://github.com/optuna/optuna-examples/blob/main/
+    tfkeras/tfkeras_integration.py>`__
+    if you want to add a pruning callback which observes the validation accuracy.
+
+    Args:
+        trial:
+            A :class:`~optuna.trial.Trial` corresponding to the current evaluation of the
+            objective function.
+        monitor:
+            An evaluation metric for pruning, e.g., ``val_loss`` or ``val_acc``.
+    """
+
+    def __init__(self, trial: optuna.trial.Trial, monitor: str) -> None:
+
+        super().__init__()
+
+        self._trial = trial
+        self._monitor = monitor
+        self.pruned = False
+        self.step = None
+
+    def on_epoch_end(self, epoch: int, logs = None) -> None:
+
+        logs = logs or {}
+        current_score = logs.get(self._monitor)
+
+        if current_score is None:
+            message = (
+                "The metric '{}' is not in the evaluation logs for pruning. "
+                "Please make sure you set the correct metric name.".format(self._monitor)
+            )
+            warnings.warn(message)
+            return
+
+        # Report current score and epoch to Optuna's trial.
+        self.step = epoch
+        self._trial.report(float(current_score), step=self.step)
+
+        # Prune trial if needed
+        if self._trial.should_prune():
+            self.model.stop_training = True
+            self.pruned = True
 
 
 def r2(y_true, y_pred):
@@ -292,12 +347,27 @@ def run_candle(params):
     seed = args.rng_seed
     candle.set_seed(seed)
 
+    # cache data
+    if os.path.exists("/dev/shm"):
+        train_file = params["train_data"]
+        cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
+        # only the first rank of each node caches the data
+        if os.path.exists(cache_train_file):
+            params["train_data"] = cache_train_file
+        else:
+            if rank % 16 == 0 and os.path.exists(train_file):
+                ret = os.system(f"cp {train_file} {cache_train_file}")
+                if ret == 0:
+                    params["train_data"] = cache_train_file
+                else:
+                    params["train_data"] = train_file
+
     # Construct extension to save model
     ext = attn.extension_from_parameters(params, "keras")
     candle.verify_path(params["save_path"])
     prefix = "{}{}".format(params["save_path"], ext)
     logfile = params["logfile"] if params["logfile"] else prefix + ".log"
-    root_fname = "Agg_attn_bin"
+    root_fname = params.get("root_fname", "Agg_attn_bin")
     candle.set_up_logger(logfile, attn.logger, params["verbose"])
     attn.logger.info("Params: {}".format(params))
 
@@ -351,6 +421,10 @@ def run_candle(params):
     PS = X_train.shape[1]
     model = build_attention_model(params, PS)
 
+    # TODO: load checkpointed weights
+    # if "cp_weights_path" in params:
+    #     model.load_weights(params["cp_weights_path"])
+
     kerasDefaults = candle.keras_default_config()
     if params["momentum"]:
         kerasDefaults["momentum_sgd"] = params["momentum"]
@@ -364,7 +438,7 @@ def run_candle(params):
     # set up a bunch of callbacks to do work during model training..
 
     checkpointer = ModelCheckpoint(
-        filepath=params["save_path"] + root_fname + ".autosave.model.h5",
+        filepath=os.path.join(params["save_path"], root_fname + ".autosave.model.h5"),
         verbose=params.get("verbose", 0),
         save_weights_only=False,
         save_best_only=True,
@@ -381,7 +455,10 @@ def run_candle(params):
         min_lr=0.000000001,
     )
     early_stop = EarlyStopping(
-        monitor="val_tf_auc", patience=200, verbose=params.get("verbose", 0), mode="auto"
+        monitor="val_tf_auc",
+        patience=200,
+        verbose=params.get("verbose", 0),
+        mode="auto",
     )
     candle_monitor = candle.CandleRemoteMonitor(params=params)
 
@@ -391,11 +468,16 @@ def run_candle(params):
 
     history_logger = LoggingCallback(attn.logger.debug)
 
-    callbacks = [candle_monitor, timeout_monitor, history_logger]
+    # callbacks = [candle_monitor, timeout_monitor, history_logger]
+    callbacks = [timeout_monitor, history_logger]
+
+    if "optuna_trial" in params:
+        pruning_cb = TFKerasPruningCallback(params["optuna_trial"], monitor="val_tf_auc")
+        callbacks.append(pruning_cb)
 
     if params["reduce_lr"]:
         callbacks.append(reduce_lr)
-    
+
     if params.get("csv_logger", False):
         callbacks.append(csv_logger)
 
@@ -421,24 +503,42 @@ def run_candle(params):
 
     # diagnostic plots
     if params.get("evaluate_model", False):
-        if 'loss' in history.history.keys():
-            candle.plot_history(params['save_path'] + root_fname, history, 'loss')
-        if 'acc' in history.history.keys():
-            candle.plot_history(params['save_path'] + root_fname, history, 'acc')
-        if 'tf_auc' in history.history.keys():
-            candle.plot_history(params['save_path'] + root_fname, history, 'tf_auc')
+        if "loss" in history.history.keys():
+            candle.plot_history(params["save_path"] + root_fname, history, "loss")
+        if "acc" in history.history.keys():
+            candle.plot_history(params["save_path"] + root_fname, history, "acc")
+        if "tf_auc" in history.history.keys():
+            candle.plot_history(params["save_path"] + root_fname, history, "tf_auc")
 
         # Evaluate model
         score = model.evaluate(X_test, Y_test, verbose=0)
         Y_predict = model.predict(X_test)
 
-        evaluate_model(params, root_fname, nb_classes, Y_test, _Y_test, Y_predict, pos, total, score)
+        evaluate_model(
+            params,
+            root_fname,
+            nb_classes,
+            Y_test,
+            _Y_test,
+            Y_predict,
+            pos,
+            total,
+            score,
+        )
 
         save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test)
 
         attn.logger.handlers = []
-
-    return history
+    
+    objective = history.history["val_tf_auc"][-1]
+    if "optuna_trial" in params:
+        return {
+            "objective": objective,
+            "step": pruning_cb.step,
+            "pruned": pruning_cb.pruned
+        }
+    else:
+        return objective
 
 
 def evaluate_model(
@@ -584,7 +684,9 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
     logging.info("json Validation loss:", score_json[0])
     logging.info("json Validation accuracy:", score_json[1])
 
-    logging.info("json %s: %.2f%%" % (loaded_model_json.metrics_names[1], score_json[1] * 100))
+    logging.info(
+        "json %s: %.2f%%" % (loaded_model_json.metrics_names[1], score_json[1] * 100)
+    )
 
     # predict using loaded model on test and training data
     predict_train = loaded_model_json.predict(X_train)
@@ -622,14 +724,29 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
 
 
 @profile
-def run(config):
+def run(config, log_dir=None, cache_data=False):
     params = initialize_parameters()
 
     params["epochs"] = 10
-    params["timeout"] = 60*10 # 10 minutes per model
+    params["timeout"] = 60 * 10  # 10 minutes per model
 
-    # deactive some features
-    params["use_cp"] = False  # checkpointing
+    # if log_dir is not None:
+    #     params["save_path"] = os.path.join(log_dir, "save")
+    #     pathlib.Path(params["save_path"]).mkdir(parents=True, exist_ok=True)
+
+    #     if "trial_id" in config:
+    #         params["root_fname"] = f"trial-{config['trial_id']}"
+    #         params["use_cp"] = True  # checkpointing
+    #         params["epochs"] = 1
+
+    #         # params["save_path"] + root_fname + ".autosave.model.h5"
+    #         if config["resource"] > 1:
+    #             params["cp_weights_path"] = os.path.join(
+    #                 params["save_path"], params["root_fname"] + ".autosave.model.h5"
+    #             )
+    #     else:
+    #         params["use_cp"] = False
+    #         params["root_fname"] = f"job-{config['job_id']}"
 
     if len(config) > 0:
         # collect dense units
@@ -652,29 +769,54 @@ def run(config):
 
         params.update(config)
 
-    logging.info(f"{params=}")
-
     try:
-        history = run_candle(params)
-        score = history.history["val_tf_auc"][-1]
-    except:
+        score = run_candle(params)
+    except Exception as e:
         score = 0
 
     return score
 
+
 def full_training(config):
 
     config["epochs"] = 100
-    config["timeout"] = 60*60*10 # 10 hours
+    config["timeout"] = 60 * 60 * 1  # 1 hour
     config["evaluate_model"] = True
 
-    run(config)
+    run(config, cache_data=True)
 
+def create_parser():
+    parser = argparse.ArgumentParser(description="ECP-Candle Attn Benchmark Parser.")
+
+    parser.add_argument(
+        "--json", 
+        type=str, 
+        default=None, 
+        help="Path to the JSON file containing configuration to test."
+    )
+    return parser
+
+
+
+def load_json(f):
+    with open(f, "r") as f:
+        js_data = json.load(f)
+    return js_data
 
 
 if __name__ == "__main__":
 
-    # default_config = {}
-    default_config = hp_problem.default_configuration
-    logging.info(f"{default_config=}")
-    run(default_config)
+    parser = create_parser()
+    args = parser.parse_args()
+
+    sys.argv = sys.argv[:1]
+
+    if args.json:
+        filtered_keys = ["trial_id", "resource"]
+        config = load_json(args.json)["0"]
+        config = {k:v for k,v in config.items() if not(k in filtered_keys)}
+    else:
+        # default_config = {}
+        config = hp_problem.default_configuration
+
+    full_training(config)

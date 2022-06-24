@@ -4,4 +4,4 @@
 
 module load gcc
 module load cmake
-module load open-ce/1.5.2-py37-0
+module load open-ce/1.5.2-py38-0

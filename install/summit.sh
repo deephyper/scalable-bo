@@ -1,11 +1,15 @@
 #!/bin/bash
 
-. /etc/profile
+# . /etc/profile
+
+set -e
 
 module load cmake
-module load open-ce/1.5.2-py37-0
+module load open-ce/1.5.0-py38-0
+#module load open-ce
 
-conda create -p dhenv --clone open-ce-1.5.2-py37-0 -y
+conda create -p dhenv --clone open-ce-1.5.0-py38-0 -y
+#conda create -p dhenv --clone open-ce-1.5.2-py39-0 -y
 conda activate dhenv/
 
 # Clone DeepHyper (develop)

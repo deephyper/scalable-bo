@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# . /etc/profile
+. /etc/profile
 
 set -e
 

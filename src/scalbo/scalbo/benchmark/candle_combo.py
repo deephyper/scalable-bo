@@ -8,38 +8,45 @@ import json
 import logging
 import os
 import sys
+import traceback
 import threading
 import warnings
 
-if __name__ == "__main__":
-    rank = 0
-    gpu_local_idx = 0
-else:  # Assuming a ThetaGPU Node here
-    from mpi4py import MPI
+# if __name__ == "__main__":
+#     rank = 0
+# else:  # Assuming a ThetaGPU Node here
+#     from mpi4py import MPI
 
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-    gpu_local_idx = rank % 8
+#     comm = MPI.COMM_WORLD
+#     rank = comm.Get_rank()
+#     size = comm.Get_size()
 
 # Temporary suppress tf logs
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import tensorflow as tf
 
-gpus = tf.config.list_physical_devices("GPU")
-if gpus:
-    # Restrict TensorFlow to only use the first GPU
-    try:
-        tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
-        tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
-        logical_gpus = tf.config.list_logical_devices("GPU")
-        logging.info(
-            f"[r={rank}]: {len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU"
-        )
-    except RuntimeError as e:
-        # Visible devices must be set before GPUs have been initialized
-        logging.info(f"{e}")
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
+# logging.info(
+#     f"[r={rank}]: {tf.config.list_logical_devices('GPU')} Logical GPU"
+# )
+
+# gpus = tf.config.list_physical_devices("GPU")
+# gpus_per_node = len(gpus)
+# gpu_local_idx = rank % gpus_per_node
+# if gpus:
+#     # Restrict TensorFlow to only use the first GPU
+#     try:
+#         tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
+#         tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
+#         logical_gpus = tf.config.list_logical_devices("GPU")
+#         logging.info(
+#             f"[r={rank}]: {len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU"
+#         )
+#     except RuntimeError as e:
+#         # Visible devices must be set before GPUs have been initialized
+#         logging.info(f"{e}")
 
 import numpy as np
 import pandas as pd
@@ -207,22 +214,25 @@ def verify_path(path):
 
 
 def set_up_logger(logfile, verbose):
-    verify_path(logfile)
-    fh = logging.FileHandler(logfile)
-    fh.setFormatter(
-        logging.Formatter(
-            "[%(asctime)s %(process)d] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    if verbose:
+        verify_path(logfile)
+        fh = logging.FileHandler(logfile)
+        fh.setFormatter(
+            logging.Formatter(
+                "[%(asctime)s %(process)d] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+            )
         )
-    )
-    fh.setLevel(logging.DEBUG)
+        fh.setLevel(logging.DEBUG)
 
-    sh = logging.StreamHandler(sys.stdout)
-    sh.setFormatter(logging.Formatter(""))
-    sh.setLevel(logging.DEBUG if verbose else logging.INFO)
+        sh = logging.StreamHandler(sys.stdout)
+        sh.setFormatter(logging.Formatter(""))
+        sh.setLevel(logging.DEBUG if verbose else logging.INFO)
 
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(fh)
-    logger.addHandler(sh)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(fh)
+        logger.addHandler(sh)
+    else:
+        logger.disabled = True
 
 
 def extension_from_parameters(args):
@@ -925,8 +935,8 @@ def run_candle(params):
     train_steps = int(loader.n_train / args.batch_size)
     val_steps = int(loader.n_val / args.batch_size)
 
-    model = build_model(loader, args, verbose=True)
-    model.summary()
+    model = build_model(loader, args, verbose=False)
+    # model.summary()
     # candle.plot_model(model, to_file=prefix+'.model.png', show_shapes=True)
 
     if args.cp:
@@ -980,7 +990,9 @@ def run_candle(params):
 
         # callbacks = [history_logger, model_recorder]
         # callbacks = [candle_monitor, timeout_monitor, history_logger, model_recorder]
-        callbacks = [timeout_monitor, history_logger]
+        callbacks = [timeout_monitor]
+        if args.verbose:
+            callbacks.append(history_logger)
 
         if args.reduce_lr:
             callbacks.append(reduce_lr)
@@ -1038,10 +1050,11 @@ def run_candle(params):
                 epochs=args.epochs,
                 callbacks=callbacks,
                 validation_data=(x_val_list, y_val),
+                verbose=args.verbose
             )
 
-        if args.cp:
-            model.load_weights(prefix + cv_ext + ".weights.h5")
+        # if args.cp:
+        #     model.load_weights(prefix + cv_ext + ".weights.h5")
 
         if not args.gen:
             y_val_pred = model.predict(x_val_list, batch_size=args.batch_size).flatten()
@@ -1061,9 +1074,9 @@ def run_candle(params):
             df_val.loc[:, "GROWTH_ERROR"] = y_val_pred - y_val
             df_pred_list.append(df_val)
 
-        if args.cp:
+        # if args.cp:
             # model.save(prefix+'.model.h5')
-            model_recorder.best_model.save(prefix + ".model.h5")
+            # model_recorder.best_model.save(prefix + ".model.h5")
 
             # test reloadded model prediction
             # new_model = keras.models.load_model(prefix+'.model.h5')
@@ -1132,13 +1145,17 @@ def run(config, verbose=0):
     try:
         score = run_candle(params)
     except Exception as e:
+        print(traceback.format_exc())
         score = -1
-        if "optuna_trial" in params:
-            score = {
-                "objective": score,
-                "step": 1,
-                "pruned": True
-            }
+
+    score = max(score, -1)
+    
+    if "optuna_trial" in params:
+        score = {
+            "objective": score,
+            "step": 1,
+            "pruned": True
+        }
 
     return score
 
@@ -1148,7 +1165,7 @@ def full_training(config):
     config["epochs"] = 100
     config["timeout"] = 60 * 60 * 1  # 1 hour
 
-    run(config, verbose=1)
+    run(config, verbose=0)
 
 
 def create_parser():

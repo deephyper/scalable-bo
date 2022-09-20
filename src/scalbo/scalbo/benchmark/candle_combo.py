@@ -26,7 +26,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import tensorflow as tf
 
-print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
 
 # logging.info(
 #     f"[r={rank}]: {tf.config.list_logical_devices('GPU')} Logical GPU"
@@ -64,6 +64,7 @@ from tensorflow.keras.callbacks import (
     ReduceLROnPlateau,
     LearningRateScheduler,
     TensorBoard,
+    EarlyStopping,
 )
 from tensorflow.keras.utils import get_custom_objects
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
@@ -144,9 +145,24 @@ hp_problem.add_hyperparameter(
     (1e-5, 1e-2, "log-uniform"), "base_lr", default_value=0.001
 )
 hp_problem.add_hyperparameter([True, False], "residual", default_value=False)
+
+hp_problem.add_hyperparameter([True, False], "early_stopping", default_value=False)
+hp_problem.add_hyperparameter((5, 20), "early_stopping_patience", default_value=5)
+
 hp_problem.add_hyperparameter([True, False], "reduce_lr", default_value=False)
+hp_problem.add_hyperparameter((0.1, 1.0), "reduce_lr_factor", default_value=0.5)
+hp_problem.add_hyperparameter((5, 20), "reduce_lr_patience", default_value=5)
+
 hp_problem.add_hyperparameter([True, False], "warmup_lr", default_value=False)
 hp_problem.add_hyperparameter([True, False], "batch_normalization", default_value=False)
+
+hp_problem.add_hyperparameter(
+    ["mse", "mae", "logcosh", "mape", "msle", "huber"], "loss", default_value="mse"
+)
+
+hp_problem.add_hyperparameter(
+    ["std", "minmax", "maxabs"], "scaling", default_value="std"
+)
 
 
 #!!! DeepHyper Problem [END]
@@ -923,6 +939,7 @@ def run_candle(params):
         use_combo_score=args.use_combo_score,
         cv_partition=args.cv_partition,
         cv=args.cv,
+        scaling=args.scaling,
     )
     # test_loader(loader)
     # test_generator(loader)
@@ -974,11 +991,19 @@ def run_candle(params):
         # calculate trainable and non-trainable params
         params.update(candle.compute_trainable_params(model))
 
-        candle_monitor = candle.CandleRemoteMonitor(params=params)
+        early_stopping = EarlyStopping(
+            monitor="val_loss", patience=args.early_stopping_patience
+        )
+
+        # candle_monitor = candle.CandleRemoteMonitor(params=params)
         timeout_monitor = candle.TerminateOnTimeOut(params["timeout"])
 
         reduce_lr = ReduceLROnPlateau(
-            monitor="val_loss", factor=0.5, patience=5, min_lr=0.00001
+            monitor="val_loss",
+            factor=args.reduce_lr_factor,
+            patience=args.reduce_lr_patience,
+            min_lr=0.00001
+            # monitor="val_loss", factor=0.5, patience=5, min_lr=0.00001
         )
         warmup_lr = LearningRateScheduler(warmup_scheduler)
         checkpointer = ModelCheckpoint(
@@ -986,14 +1011,15 @@ def run_candle(params):
         )
         tensorboard = TensorBoard(log_dir="tb/tb{}{}".format(ext, cv_ext))
         history_logger = LoggingCallback(logger.debug)
-        model_recorder = ModelRecorder()
+        # model_recorder = ModelRecorder()
 
         # callbacks = [history_logger, model_recorder]
         # callbacks = [candle_monitor, timeout_monitor, history_logger, model_recorder]
         callbacks = [timeout_monitor]
         if args.verbose:
             callbacks.append(history_logger)
-
+        if args.early_stopping:
+            callbacks.append(early_stopping)
         if args.reduce_lr:
             callbacks.append(reduce_lr)
         if args.warmup_lr:
@@ -1004,7 +1030,9 @@ def run_candle(params):
             callbacks.append(tensorboard)
 
         if "optuna_trial" in params:
-            pruning_cb = TFKerasPruningCallback(params["optuna_trial"], monitor="val_r2")
+            pruning_cb = TFKerasPruningCallback(
+                params["optuna_trial"], monitor="val_r2"
+            )
             callbacks.append(pruning_cb)
 
         if args.gen:
@@ -1050,7 +1078,7 @@ def run_candle(params):
                 epochs=args.epochs,
                 callbacks=callbacks,
                 validation_data=(x_val_list, y_val),
-                verbose=args.verbose
+                verbose=args.verbose,
             )
 
         # if args.cp:
@@ -1075,16 +1103,16 @@ def run_candle(params):
             df_pred_list.append(df_val)
 
         # if args.cp:
-            # model.save(prefix+'.model.h5')
-            # model_recorder.best_model.save(prefix + ".model.h5")
+        # model.save(prefix+'.model.h5')
+        # model_recorder.best_model.save(prefix + ".model.h5")
 
-            # test reloadded model prediction
-            # new_model = keras.models.load_model(prefix+'.model.h5')
-            # new_model.load_weights(prefix+cv_ext+'.weights.h5')
-            # new_pred = new_model.predict(x_val_list, batch_size=args.batch_size).flatten()
-            # print('y_val:', y_val[:10])
-            # print('old_pred:', y_val_pred[:10])
-            # print('new_pred:', new_pred[:10])
+        # test reloadded model prediction
+        # new_model = keras.models.load_model(prefix+'.model.h5')
+        # new_model.load_weights(prefix+cv_ext+'.weights.h5')
+        # new_pred = new_model.predict(x_val_list, batch_size=args.batch_size).flatten()
+        # print('y_val:', y_val[:10])
+        # print('old_pred:', y_val_pred[:10])
+        # print('new_pred:', new_pred[:10])
 
         # candle.plot_history(prefix, history, "loss")
         # candle.plot_history(prefix, history, "r2")
@@ -1109,7 +1137,7 @@ def run_candle(params):
         return {
             "objective": objective,
             "step": pruning_cb.step,
-            "pruned": pruning_cb.pruned
+            "pruned": pruning_cb.pruned,
         }
     else:
         return objective
@@ -1119,8 +1147,8 @@ def run_candle(params):
 def run(config, verbose=0):
     params = initialize_parameters()
 
-    params["epochs"] = 10
-    params["timeout"] = 60 * 10  # 10 minutes per model
+    params["epochs"] = 100
+    # params["timeout"] = 60 * 20  # 20 minutes per model
     params["cp"] = False
     params["verbose"] = verbose
     params["tb"] = False
@@ -1136,11 +1164,9 @@ def run(config, verbose=0):
             key = f"dense_feature_layers_{i}"
             dense_feature_layers.append(config.pop(key))
 
-
         config["dense"] = dense
         config["dense_feature_layers"] = dense_feature_layers
         params.update(config)
-
 
     try:
         score = run_candle(params)
@@ -1149,13 +1175,9 @@ def run(config, verbose=0):
         score = -1
 
     score = max(score, -1)
-    
+
     if "optuna_trial" in params:
-        score = {
-            "objective": score,
-            "step": 1,
-            "pruned": True
-        }
+        score = {"objective": score, "step": 1, "pruned": True}
 
     return score
 
@@ -1165,7 +1187,7 @@ def full_training(config):
     config["epochs"] = 100
     config["timeout"] = 60 * 60 * 1  # 1 hour
 
-    run(config, verbose=0)
+    run(config, verbose=1)
 
 
 def create_parser():

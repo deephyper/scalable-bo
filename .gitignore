@@ -145,3 +145,6 @@ gpustat.txt
 *.pdf
 *.png
 *.tsv
+gpustat.*.txt
+*.e*
+*.o*

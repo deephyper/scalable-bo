@@ -1170,15 +1170,19 @@ def run(config, verbose=0):
 
     try:
         score = run_candle(params)
+
+        if isinstance(score, dict):
+            score["objective"] = max(score["objective"], -1)
+        else:
+            score = max(score, -1)
+
     except Exception as e:
         print(traceback.format_exc())
         score = -1
-
-    score = max(score, -1)
-
-    if "optuna_trial" in params:
-        score = {"objective": score, "step": 1, "pruned": True}
-
+    
+        if "optuna_trial" in params:
+            score = {"objective": score, "step": 1, "pruned": True}
+            
     return score
 
 

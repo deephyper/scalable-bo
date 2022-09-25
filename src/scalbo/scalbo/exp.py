@@ -7,9 +7,10 @@ import pathlib
 import importlib
 import sys
 
-import scalbo.search.cbo
-import scalbo.search.dbo
-import scalbo.search.hb
+# import scalbo.search.cbo
+# import scalbo.search.dbo
+# import scalbo.search.hb
+# import scalbo.search.dbos4m
 
 
 PROBLEMS = {
@@ -34,9 +35,10 @@ PROBLEMS = {
 }
 
 SEARCHES = {
-    "CBO": scalbo.search.cbo,  # Centralized Model-Based Search (Master-Worker)
-    "DBO": scalbo.search.dbo,  # Fully Distributed Model-Based Search
-    "HB": scalbo.search.hb,  # Hyperband
+    "CBO": "scalbo.search.cbo",  # Centralized Model-Based Search (Master-Worker)
+    "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
+    "DBOS4M": "scalbo.search.dbos4m",  # Fully Distributed Model-Based Search
+    "HB": "scalbo.search.hb",  # Hyperband
 }
 
 
@@ -135,7 +137,7 @@ def main(args):
 
     # load the problem
     problem = importlib.import_module(PROBLEMS.get(args.problem))
-    search = SEARCHES.get(args.search)
+    search = importlib.import_module(SEARCHES.get(args.search))
     sync = bool(args.sync)
 
     pathlib.Path(args.log_dir).mkdir(parents=True, exist_ok=True)

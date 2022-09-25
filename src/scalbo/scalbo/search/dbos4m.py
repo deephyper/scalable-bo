@@ -13,7 +13,7 @@ mpi4py.rc.recv_mprobe = False
 
 import numpy as np
 
-from deephyper.search.hps import DBO
+from deephyper.search.hps._dbo_s4m import DBO
 
 from mpi4py import MPI
 

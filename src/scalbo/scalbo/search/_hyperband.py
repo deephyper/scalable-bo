@@ -1,3 +1,4 @@
+import copy
 import logging
 import time
 
@@ -140,32 +141,10 @@ class HB(Search):
             config["optuna_trial"] = trial
             configs.append(config)
         return configs
-
-    def _tell_v1(self, trial_ids, y_batch):
-
-        for trial_id, y in zip(trial_ids, y_batch):
-
-            trial = self._running_trials.pop(trial_id)
-            trial.report(y, step=trial.user_attrs["resource"])
-            logging.info(f"prune #{trial_id} {trial.should_prune()}")
-            if trial.should_prune():
-                self._opt_study.tell(trial_id, state=optuna.trial.TrialState.PRUNED)
-                logging.info(f"stop: #{trial.number}")
-            else:
-                if trial.user_attrs["resource"] == self._max_resource:
-                    self._opt_study.tell(trial_id, y)
-                    logging.info(f"final update #{trial.number}")
-                else:
-                    self._pending_trials[trial_id] = trial
-                    logging.info(f"continue: #{trial.number}")
     
     def _tell(self, trials, y_batch):
 
         for trial, y in zip(trials, y_batch):
-
-            # y["pruned"]
-            # y["objective"]
-            # y["step"]
 
             trial.report(y["objective"], step=y["step"])
             if y["pruned"]:
@@ -217,7 +196,12 @@ class HB(Search):
 
                 trials = []
                 opt_y = []
-                for cfg, obj in new_results:
+                for job_i in new_results:
+                    cfg = copy.deepcopy(job_i.config)
+                    cfg.pop("job_id")
+
+                    obj = {"objective": job_i.result, "step": job_i.other["step"], "pruned": job_i.other["pruned"]}
+
                     trials.append(cfg["optuna_trial"])
                     opt_y.append(obj)
 

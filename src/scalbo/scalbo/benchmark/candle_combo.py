@@ -1190,7 +1190,6 @@ if __name__ == "__main__":
     if args.json:
         config = load_json(args.json)["0"]
     else:
-        # default_config = {}
         config = hp_problem.default_configuration
 
     full_training(config)

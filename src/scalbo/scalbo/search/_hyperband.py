@@ -93,7 +93,7 @@ class HB(Search):
 
         # check if it is possible to convert the ConfigSpace to standard skopt Space
         self._min_resource = 1
-        self._max_resource = 10
+        self._max_resource = "auto"
         self._opt_space = convert_to_optuna_space(self._problem.space)
         self._opt_study = optuna.create_study(
             direction="maximize",
@@ -108,30 +108,6 @@ class HB(Search):
         self._pending_trials = {}
 
         self._gather_type = "ALL" if sync_communication else "BATCH"
-
-    def _ask_v1(self, n_points):
-        configs = []
-        pending_trials = list(self._pending_trials.values())
-        for i in range(n_points):
-            if i < len(pending_trials):
-                trial = self._pending_trials.pop(pending_trials[i].number)
-            else:
-                trial = self._opt_study.ask(self._opt_space)
-            self._running_trials[trial.number] = trial
-            logging.info(f"ask: #{trial.number}")
-            
-            if "resource" in trial.user_attrs:
-                trial.set_user_attr("resource", trial.user_attrs["resource"]+1)
-            else:
-                trial.set_user_attr("resource", self._min_resource)
-
-            config = {p: trial.params[p] for p in trial.params}
-            config["trial_id"] = trial.number
-            config["resource"] = trial.user_attrs["resource"]
-            configs.append(config)
-            logging.info(f"{config=}")
-
-        return configs
 
     def _ask(self, n_points):
         configs = []

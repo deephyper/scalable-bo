@@ -3,7 +3,6 @@ from __future__ import print_function
 import numpy as np
 import sklearn
 import h5py
-import pathlib
 
 import argparse
 import os
@@ -11,37 +10,14 @@ import logging
 import warnings
 import json
 import sys
-
-
-if __name__ == "__main__":
-    rank = 0
-    gpu_local_idx = 0
-else:  # Assuming a ThetaGPU Node here
-    from mpi4py import MPI
-
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-    gpu_local_idx = rank % 8
+import traceback
 
 # Temporary suppress tf logs
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import tensorflow as tf
 
-gpus = tf.config.list_physical_devices("GPU")
-if gpus:
-    # Restrict TensorFlow to only use the first GPU
-    try:
-        tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
-        tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
-        logical_gpus = tf.config.list_logical_devices("GPU")
-        logging.info(
-            f"[r={rank}]: {len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU"
-        )
-    except RuntimeError as e:
-        # Visible devices must be set before GPUs have been initialized
-        logging.info(f"{e}")
+print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
 
 import tensorflow.keras as ke
 from tensorflow.keras import backend as K
@@ -71,8 +47,8 @@ from sklearn.metrics import (
 
 import attn
 import candle
-
 import attn_viz_utils as attnviz
+
 import optuna
 
 #!!! DeepHyper Problem [START]
@@ -136,6 +112,13 @@ hp_problem.add_hyperparameter(
     (1e-5, 1e-2, "log-uniform"), "learning_rate", default_value=0.00001
 )
 hp_problem.add_hyperparameter((8, 512, "log-uniform"), "batch_size", default_value=32)
+
+hp_problem.add_hyperparameter([True, False], "reduce_lr", default_value=False)
+hp_problem.add_hyperparameter((0.1,0.5), "reduce_lr_factor", default_value=0.2)
+hp_problem.add_hyperparameter((5, 100), "reduce_lr_patience", default_value=40)
+
+hp_problem.add_hyperparameter([True, False], "early_stop", default_value=False)
+hp_problem.add_hyperparameter((5, 100), "early_stop_patience", default_value=100)
 
 #!!! DeepHyper Problem [END]
 
@@ -348,19 +331,19 @@ def run_candle(params):
     candle.set_seed(seed)
 
     # cache data
-    if os.path.exists("/dev/shm"):
-        train_file = params["train_data"]
-        cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
-        # only the first rank of each node caches the data
-        if os.path.exists(cache_train_file):
-            params["train_data"] = cache_train_file
-        else:
-            if rank % 16 == 0 and os.path.exists(train_file):
-                ret = os.system(f"cp {train_file} {cache_train_file}")
-                if ret == 0:
-                    params["train_data"] = cache_train_file
-                else:
-                    params["train_data"] = train_file
+    # if os.path.exists("/dev/shm"):
+    #     train_file = params["train_data"]
+    #     cache_train_file = os.path.join("/dev/shm", os.path.basename(train_file))
+    #     # only the first rank of each node caches the data
+    #     if os.path.exists(cache_train_file):
+    #         params["train_data"] = cache_train_file
+    #     else:
+    #         if rank % 16 == 0 and os.path.exists(train_file):
+    #             ret = os.system(f"cp {train_file} {cache_train_file}")
+    #             if ret == 0:
+    #                 params["train_data"] = cache_train_file
+    #             else:
+    #                 params["train_data"] = train_file
 
     # Construct extension to save model
     ext = attn.extension_from_parameters(params, "keras")
@@ -444,10 +427,11 @@ def run_candle(params):
         save_best_only=True,
     )
     csv_logger = CSVLogger("{}/{}.training.log".format(params["save_path"], root_fname))
+
     reduce_lr = ReduceLROnPlateau(
         monitor="val_tf_auc",
-        factor=0.20,
-        patience=40,
+        factor=params.get("reduce_lr_factor", 0.20),
+        patience=params.get("reduce_lr_patience", 40),
         verbose=params.get("verbose", 0),
         mode="auto",
         min_delta=0.0001,
@@ -456,20 +440,20 @@ def run_candle(params):
     )
     early_stop = EarlyStopping(
         monitor="val_tf_auc",
-        patience=200,
+        patience=params.get("early_stop_patience", 200),
         verbose=params.get("verbose", 0),
         mode="auto",
     )
-    candle_monitor = candle.CandleRemoteMonitor(params=params)
 
-    candle_monitor = candle.CandleRemoteMonitor(params=params)
+    # candle_monitor = candle.CandleRemoteMonitor(params=params)
     timeout_monitor = candle.TerminateOnTimeOut(params["timeout"])
     tensorboard = TensorBoard(log_dir="tb/tb{}".format(ext))
 
     history_logger = LoggingCallback(attn.logger.debug)
 
     # callbacks = [candle_monitor, timeout_monitor, history_logger]
-    callbacks = [timeout_monitor, history_logger]
+    # callbacks = [timeout_monitor, history_logger]
+    callbacks = [timeout_monitor]
 
     if "optuna_trial" in params:
         pruning_cb = TFKerasPruningCallback(params["optuna_trial"], monitor="val_tf_auc")
@@ -724,29 +708,15 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
 
 
 @profile
-def run(config, log_dir=None, cache_data=False):
+def run(config, verbose=0):
     params = initialize_parameters()
 
-    params["epochs"] = 10
-    params["timeout"] = 60 * 10  # 10 minutes per model
-
-    # if log_dir is not None:
-    #     params["save_path"] = os.path.join(log_dir, "save")
-    #     pathlib.Path(params["save_path"]).mkdir(parents=True, exist_ok=True)
-
-    #     if "trial_id" in config:
-    #         params["root_fname"] = f"trial-{config['trial_id']}"
-    #         params["use_cp"] = True  # checkpointing
-    #         params["epochs"] = 1
-
-    #         # params["save_path"] + root_fname + ".autosave.model.h5"
-    #         if config["resource"] > 1:
-    #             params["cp_weights_path"] = os.path.join(
-    #                 params["save_path"], params["root_fname"] + ".autosave.model.h5"
-    #             )
-    #     else:
-    #         params["use_cp"] = False
-    #         params["root_fname"] = f"job-{config['job_id']}"
+    params["epochs"] = 100
+    # params["timeout"] = 60 * 60  # 10 minutes per model
+    params["use_cp"] = False
+    params["verbose"] = verbose
+    params["use_tb"] = False
+    params["csv_logger"] = False
 
     if len(config) > 0:
         # collect dense units
@@ -771,19 +741,29 @@ def run(config, log_dir=None, cache_data=False):
 
     try:
         score = run_candle(params)
+
+        if isinstance(score, dict):
+            score["objective"] = max(score["objective"], -1)
+        else:
+            score = max(score, -1)
+
     except Exception as e:
-        score = 0
+        print(traceback.format_exc())
+        score = -1
+    
+        if "optuna_trial" in params:
+            score = {"objective": score, "step": 1, "pruned": True}
 
     return score
 
 
 def full_training(config):
 
-    config["epochs"] = 100
-    config["timeout"] = 60 * 60 * 1  # 1 hour
+    config["epochs"] = 200
+    # config["timeout"] = 60 * 60 * 1  # 1 hour
     config["evaluate_model"] = True
 
-    run(config, cache_data=True)
+    run(config, verbose=1)
 
 def create_parser():
     parser = argparse.ArgumentParser(description="ECP-Candle Attn Benchmark Parser.")

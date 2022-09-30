@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 from __future__ import division, print_function
 
 import argparse
@@ -12,41 +10,12 @@ import traceback
 import threading
 import warnings
 
-# if __name__ == "__main__":
-#     rank = 0
-# else:  # Assuming a ThetaGPU Node here
-#     from mpi4py import MPI
-
-#     comm = MPI.COMM_WORLD
-#     rank = comm.Get_rank()
-#     size = comm.Get_size()
-
 # Temporary suppress tf logs
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import tensorflow as tf
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
-
-# logging.info(
-#     f"[r={rank}]: {tf.config.list_logical_devices('GPU')} Logical GPU"
-# )
-
-# gpus = tf.config.list_physical_devices("GPU")
-# gpus_per_node = len(gpus)
-# gpu_local_idx = rank % gpus_per_node
-# if gpus:
-#     # Restrict TensorFlow to only use the first GPU
-#     try:
-#         tf.config.set_visible_devices(gpus[gpu_local_idx], "GPU")
-#         tf.config.experimental.set_memory_growth(gpus[gpu_local_idx], True)
-#         logical_gpus = tf.config.list_logical_devices("GPU")
-#         logging.info(
-#             f"[r={rank}]: {len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU"
-#         )
-#     except RuntimeError as e:
-#         # Visible devices must be set before GPUs have been initialized
-#         logging.info(f"{e}")
 
 import numpy as np
 import pandas as pd
@@ -78,7 +47,6 @@ import combo
 import candle
 
 logger = logging.getLogger(__name__)
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import optuna
 

@@ -26,6 +26,7 @@ PROBLEMS = {
     "candle_attn": "scalbo.benchmark.candle_attn",
     "candle_attn_sim": "scalbo.benchmark.candle_attn_sim",
     "candle_combo": "scalbo.benchmark.candle_combo",
+    "test": "scalbo.benchmark.test",
 }
 
 SEARCHES = {

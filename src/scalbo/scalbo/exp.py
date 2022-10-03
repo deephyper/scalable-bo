@@ -7,12 +7,6 @@ import pathlib
 import importlib
 import sys
 
-# import scalbo.search.cbo
-# import scalbo.search.dbo
-# import scalbo.search.hb
-# import scalbo.search.dbos4m
-
-
 PROBLEMS = {
     "fast_ackley_2": "scalbo.benchmark.fast_ackley_2",
     "fastest_ackley_2": "scalbo.benchmark.fastest_ackley_2",
@@ -40,6 +34,8 @@ SEARCHES = {
     "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
     "DBOS4M": "scalbo.search.dbos4m",  # Fully Distributed Model-Based Search
     "HB": "scalbo.search.hb",  # Hyperband
+    "ASHA": "scalbo.search.asha",  # ASHA
+    "TPEASHA": "scalbo.search.tpe_asha",  # TPE-ASHA
 }
 
 

@@ -320,7 +320,7 @@ def build_attention_model(params, PS):
 
     outputs = Dense(params["dense"][-1], activation=params["activation"][-1])(x)
     model = Model(inputs=inputs, outputs=outputs)
-    model.summary()
+    # model.summary()
 
     return model
 
@@ -711,7 +711,7 @@ def save_and_test_saved_model(params, model, root_fname, X_train, X_test, Y_test
 def run(config, verbose=0):
     params = initialize_parameters()
 
-    params["epochs"] = 100
+    params["epochs"] = 50
     # params["timeout"] = 60 * 60  # 10 minutes per model
     params["use_cp"] = False
     params["verbose"] = verbose

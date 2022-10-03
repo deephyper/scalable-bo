@@ -1,0 +1,26 @@
+data:
+  speed_data_path: 'data/PEMS_bay/pems-bay.h5'
+  graph_data_path: 'data/PEMS_bay/adj_mx_bay.pkl'
+
+fixed_parameter:
+  n_heads: 1
+  pred_len: 12
+  input_len: 12
+  num_nodes: 325
+  topk: 4
+
+searched_parameter:
+  
+  d_model: 64
+  encoder_width: 64
+  encoder_depth: 3
+  decoder_width: 64
+  decoder_depth: 3
+  CAM_width: 64
+  CAM_depth: 3
+
+train:
+  lr: 0.01
+  epochs: 100
+  train_batch: 24
+  test_batch: 24

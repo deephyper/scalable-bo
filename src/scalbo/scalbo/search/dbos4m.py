@@ -66,7 +66,7 @@ def execute(
 
     search = DBO(
         hp_problem,
-        run,
+        evaluator,
         sync_communication=sync,
         n_jobs=n_jobs,
         log_dir=search_log_dir,

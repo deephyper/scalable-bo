@@ -13,7 +13,8 @@ mpi4py.rc.recv_mprobe = False
 
 import numpy as np
 
-from deephyper.search.hps._dbo_s4m import DBO
+from deephyper.search.hps import DBO
+from deephyper.evaluator import distributed, SerialEvaluator
 
 from mpi4py import MPI
 
@@ -59,6 +60,7 @@ def execute(
 
     hp_problem = problem.hp_problem
     run = problem.run
+    evaluator = distributed(backend="s4m")(SerialEvaluator)(run)
 
     logging.info("Creation of the search instance...")
 
@@ -66,7 +68,6 @@ def execute(
         hp_problem,
         run,
         sync_communication=sync,
-        sync_communication_freq=1,
         n_jobs=n_jobs,
         log_dir=search_log_dir,
         random_state=rs,

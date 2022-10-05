@@ -14,6 +14,7 @@ mpi4py.rc.recv_mprobe = False
 import numpy as np
 
 from deephyper.search.hps import DBO
+from deephyper.evaluator import distributed, SerialEvaluator
 
 from mpi4py import MPI
 
@@ -46,7 +47,6 @@ def execute(
 
     pathlib.Path(search_log_dir).mkdir(parents=False, exist_ok=True)
 
-    # if rank == 0:
     path_log_file = os.path.join(search_log_dir, f"deephyper.{rank}.log")
     logging.basicConfig(
         filename=path_log_file,
@@ -59,14 +59,14 @@ def execute(
 
     hp_problem = problem.hp_problem
     run = problem.run
+    evaluator = distributed(backend="mpi")(SerialEvaluator)(run)
 
     logging.info("Creation of the search instance...")
 
     search = DBO(
         hp_problem,
-        run,
+        evaluator,
         sync_communication=sync,
-        sync_communication_freq=1,
         n_jobs=n_jobs,
         log_dir=search_log_dir,
         random_state=rs,

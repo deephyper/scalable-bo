@@ -37,6 +37,7 @@ SEARCHES = {
     "TPEHB": "scalbo.search.tpehb",  # TPEHB
     "TPESHA": "scalbo.search.tpesha", # TPESHA
     "DBOSHA": "scalbo.search.dbosha", # DBOSHA
+    "DBOS4MSHA": "scalbo.search.dbos4msha", # DBOSHA
 }
 
 

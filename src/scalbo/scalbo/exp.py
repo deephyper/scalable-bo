@@ -34,9 +34,9 @@ SEARCHES = {
     "CBO": "scalbo.search.cbo",  # Centralized Model-Based Search (Master-Worker)
     "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
     "DBOS4M": "scalbo.search.dbos4m",  # Fully Distributed Model-Based Search
-    "HB": "scalbo.search.hb",  # Hyperband
-    "ASHA": "scalbo.search.asha",  # ASHA
-    "TPEASHA": "scalbo.search.tpe_asha",  # TPE-ASHA
+    "TPEHB": "scalbo.search.tpehb",  # TPEHB
+    "TPESHA": "scalbo.search.tpesha", # TPESHA
+    "DBOSHA": "scalbo.search.dbosha", # DBOSHA
 }
 
 

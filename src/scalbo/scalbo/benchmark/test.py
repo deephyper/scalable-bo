@@ -1,4 +1,4 @@
-import numpy as np
+import time
 
 from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
@@ -82,5 +82,25 @@ hp_problem.add_hyperparameter(
 
 
 @profile
-def run(config):
-    return np.random.random()
+def run(config, optuna_trial=None):
+    max_steps = 50
+    const = config["dense_0"]
+    score = 0
+    pruned = False
+    for step in range(1, max_steps+1):
+
+        time.sleep(0.25)
+        score += const
+
+        if optuna_trial:
+            optuna_trial.report(score, step=step)
+
+            # Prune trial if needed
+            if optuna_trial.should_prune():
+                pruned = True
+                break
+        
+    if optuna_trial:
+        return {"objective": score, "pruned": pruned, "step": step}
+    else:
+        return score

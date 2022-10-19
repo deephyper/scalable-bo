@@ -11,6 +11,8 @@ PROBLEMS = {
     "fast_ackley_2": "scalbo.benchmark.fast_ackley_2",
     "fastest_ackley_2": "scalbo.benchmark.fastest_ackley_2",
     "hb_sim": "scalbo.benchmark.hb_sim",
+    "dackley_2": "scalbo.benchmark.dackley_2",
+    "dackley_5": "scalbo.benchmark.dackley_5",
     "ackley_5": "scalbo.benchmark.ackley_5",
     "ackley_10": "scalbo.benchmark.ackley_10",
     "ackley_30": "scalbo.benchmark.ackley_30",
@@ -61,7 +63,7 @@ def create_parser():
     parser.add_argument(
         "--model",
         type=str,
-        choices=["RF", "GP", "DUMMY"],
+        choices=["RF", "GP", "DUMMY", "MF"],
         required=False,
         default="RF",
         help="Surrogate model used by the Bayesian optimizer.",

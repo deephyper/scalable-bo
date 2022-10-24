@@ -84,7 +84,7 @@ def create_parser():
         "--strategy",
         type=str,
         default="boltzmann",
-        choices=["cl_max", "topk", "boltzmann", "qUCB"],
+        choices=["cl_max", "topk", "boltzmann", "qUCB", "qEI"],
         help="The strategy for multi-point acquisition.",
     )
     parser.add_argument(

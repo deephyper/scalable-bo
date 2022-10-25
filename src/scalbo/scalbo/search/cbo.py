@@ -104,7 +104,8 @@ def execute(
                 log_dir=search_log_dir,
                 random_state=rank_seed,
                 acq_func=acq_func,
-                surrogate_model=model
+                surrogate_model=model,
+                filter_duplicated=False,
             )
             logging.info("Creation of the search done")
 

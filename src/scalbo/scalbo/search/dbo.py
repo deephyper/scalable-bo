@@ -72,7 +72,8 @@ def execute(
         random_state=rs,
         acq_func=acq_func,
         surrogate_model=model,
-    )  # sampling boltzmann!
+        filter_duplicated=False,
+    )
     logging.info("Creation of the search done")
 
     results = None

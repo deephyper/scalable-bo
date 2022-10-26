@@ -134,9 +134,9 @@ def execute_optuna(
     logging.info(f"storage={storage}")
 
     if "TPE" in method:
-        sampler = optuna.samplers.TPESampler(seed=random_state)
+        sampler = optuna.samplers.TPESampler(seed=rank_seed)
     else:
-        sampler = optuna.samplers.RandomSampler(seed=random_state)
+        sampler = optuna.samplers.RandomSampler(seed=rank_seed)
 
     if "SHA" in method:
         pruner = optuna.pruners.SuccessiveHalvingPruner(

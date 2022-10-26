@@ -18,7 +18,7 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 
-width = 5
+width = 10 # 5
 height = width / 1.618
 # height = width * 0.5
 
@@ -176,23 +176,54 @@ def best_objective(values):
     return res
 
 
-def count_better(values, baseline_perf):
+# def count_better(values, baseline_perf):
 
-    count = 0
-    res = []
+#     count = 0
+#     res = []
+
+#     if MODE == "max":
+#         for value in values:
+#             if value > baseline_perf:
+#                 count += 1
+#             res.append(count)
+#     else:
+#         for value in values:
+#             if value < baseline_perf:
+#                 count += 1
+#             res.append(count)
+
+#     return res
+
+def count_better(df, baseline_perf):
+    
+    hp_names = [cname for cname in df.columns if "p:" in cname]
+    df_str = df.astype({k:str for k in hp_names})
+    df_str["hash"] = df_str[hp_names].agg('-'.join, axis=1)
+    df_str = df_str[["hash", "objective", "timestamp_end"]]
+
+    earliest_timestamps = (df_str.groupby("hash")
+                       .agg({"timestamp_end": "min"})
+                       .reset_index()["timestamp_end"]
+                       .values)
+    all_timestamps = df_str["timestamp_end"].values
+    indices = np.where(np.in1d(earliest_timestamps, all_timestamps))[0]
+
+    df_str.loc[:, ("earliest-occurence",)] = 0
+    df_str.loc[indices, ("earliest-occurence",)] = 1
+    df_str = df_str.sort_values("timestamp_end")
+    df_str = df_str.reset_index(drop=True)
 
     if MODE == "max":
-        for value in values:
-            if value > baseline_perf:
-                count += 1
-            res.append(count)
+        select_better_than_baseline = (df_str["objective"] >= baseline_perf)
     else:
-        for value in values:
-            if value < baseline_perf:
-                count += 1
-            res.append(count)
+        select_better_than_baseline = (df_str["objective"] <= baseline_perf)
 
-    return res
+    df_str.loc[:, ("better-than-baseline",)] = 0
+    df_str.loc[select_better_than_baseline, ("better-than-baseline",)] = 1
+    df_str.loc[:, ("count",)] = (df_str["earliest-occurence"] & df_str["better-than-baseline"]).astype(int)
+    df_str.loc[:, ("count",)] = df_str["count"].cumsum()
+
+    return df_str["timestamp_end"].to_numpy(), df_str["count"].to_numpy()
 
 
 def plot_objective_multi(df, exp_config, output_dir, show):
@@ -681,8 +712,8 @@ def plot_count_better_than_best(df, exp_config, output_dir):
         else:
             exp_df = exp_df.sort_values("timestamp_end")
 
-            x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
-            y = count_better(y, exp_config["baseline_best"])
+            # x,  = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
+            x, y = count_better(exp_df, exp_config["baseline_best"])
 
             plt.plot(
                 x,

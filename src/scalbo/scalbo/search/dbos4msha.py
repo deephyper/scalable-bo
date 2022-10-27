@@ -90,6 +90,12 @@ def execute(
 
     logging.info("Creation of the search instance...")
 
+    scheduler = {
+        "type": "periodic-exp-decay",
+        "periode": 25,
+        "rate": 0.1
+    }
+
     search = DBO(
         hp_problem,
         evaluator,
@@ -100,6 +106,7 @@ def execute(
         acq_func=acq_func,
         surrogate_model=model,
         filter_duplicated=False,
+        scheduler=scheduler,
     )  
     logging.info("Creation of the search done")
 

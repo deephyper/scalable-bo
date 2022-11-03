@@ -184,15 +184,16 @@ def execute_optuna(
             evaluator.submit([config])
             local_results, _ = evaluator.gather("ALL")
             y = local_results[0].result
+            step = local_results[0].budget
 
             evaluator.dump_evals(log_dir=log_dir)
 
-            if isinstance(y, dict) and "step" in y:  # pruner is used
-                trial.report(y["objective"], step=y["step"])
+            if isinstance(y, dict) and step is not None:  # pruner is used
+                trial.report(y["objective"], step=step)
                 if y["pruned"]:
                     study.tell(trial, state=optuna.trial.TrialState.PRUNED)
                 else:
-                    study.tell(trial, y["objective"])
+                    study.tell(trial, y)
             else:
                 study.tell(trial, y)
 

@@ -33,11 +33,14 @@ def execute(
     acq_func,
     strategy,
     timeout,
+    max_evals,
     random_state,
     log_dir,
     cache_dir,
     n_jobs,
     model,
+    filter_duplicated=False,
+    **kwargs,
 ):
     """Execute the CBO algorithm.
 
@@ -105,12 +108,13 @@ def execute(
                 random_state=rank_seed,
                 acq_func=acq_func,
                 surrogate_model=model,
-                filter_duplicated=False,
+                filter_duplicated=filter_duplicated,
+                objective_scaler="identity",
             )
             logging.info("Creation of the search done")
 
             logging.info("Starting the search...")
-            results = search.search(timeout=timeout)
+            results = search.search(max_evals=max_evals, timeout=timeout)
             logging.info("Search is done")
 
             results.to_csv(os.path.join(search_log_dir, f"results.csv"))

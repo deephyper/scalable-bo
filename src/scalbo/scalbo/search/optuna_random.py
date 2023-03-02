@@ -19,6 +19,7 @@ def execute(
         random_state=random_state,
         log_dir=log_dir,
         cache_dir=cache_dir,
-        method="TPE",
+        method="RANDOM",
         pruning_strategy=pruning_strategy,
+        **kwargs,
     )

@@ -90,6 +90,7 @@ def execute_optuna(
     cache_dir,
     method,  # in TPE
     pruning_strategy=None,  # SHA, HB
+    max_steps=None,
     **kwargs,
 ):
     """Execute the HB algorithm.
@@ -145,13 +146,13 @@ def execute_optuna(
         pruner = optuna.pruners.NopPruner()
     elif pruning_strategy == "SHA":
         pruner = optuna.pruners.SuccessiveHalvingPruner(
-            min_resource=1, reduction_factor=3
+            min_resource=1, reduction_factor=4
         )
     elif pruning_strategy == "HB":
         pruner = optuna.pruners.HyperbandPruner(
             min_resource=1,
-            max_resource=100,  #! careful!
-            reduction_factor=3,
+            max_resource=max_steps,  #! careful!
+            reduction_factor=4,
         )
     elif pruning_strategy == "MED":
         pruner = optuna.pruners.MedianPruner(

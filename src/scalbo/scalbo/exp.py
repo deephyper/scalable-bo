@@ -33,13 +33,21 @@ PROBLEMS = {
     "dhb_navalpropulsion": "scalbo.benchmark.dhb_navalpropulsion",
     "dhb_proteinstructure": "scalbo.benchmark.dhb_proteinstructure",
     "dhb_parkinsonstelemonitoring": "scalbo.benchmark.dhb_parkinsonstelemonitoring",
+    "dhb_pow3": "scalbo.benchmark.dhb_pow3",
+    "dhb_loglin2": "scalbo.benchmark.dhb_loglin2",
+    "dhb_lcdb_6": "scalbo.benchmark.dhb_lcdb_6",
+    "dhb_lcdb_293": "scalbo.benchmark.dhb_lcdb_293",
+    "dhb_lcdb_351": "scalbo.benchmark.dhb_lcdb_351",
+    "dhb_lcdb_354": "scalbo.benchmark.dhb_lcdb_354",
+    "dhb_lcdb_41150": "scalbo.benchmark.dhb_lcdb_41150",
     "test": "scalbo.benchmark.test",
 }
 
 SEARCHES = {
     "CBO": "scalbo.search.cbo",  # Centralized Model-Based Search (Master-Worker)
     "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
-    "TPE": "scalbo.search.tpe",  # TPE
+    "OPT-TPE": "scalbo.search.optuna_tpe",  # TPE
+    "OPT-RDM": "scalbo.search.optuna_random",  # RANDOM
 }
 
 
@@ -153,6 +161,8 @@ def create_parser():
         default=False,
     )
     parser.add_argument("--objective-scaler", type=str, default="identity")
+    parser.add_argument("--max-steps", type=int, default=None)
+    parser.add_argument("--interval-steps", type=int, default=1)
     return parser
 
 

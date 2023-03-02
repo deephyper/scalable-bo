@@ -14,10 +14,14 @@ mpi4py.rc.recv_mprobe = False
 
 import numpy as np
 
-from deephyper.search.hps import DBO
-from deephyper.evaluator import distributed, SerialEvaluator
-from deephyper.evaluator.storage import RedisStorage
-from deephyper.stopper import SuccessiveHalvingStopper, MedianStopper
+from deephyper.search.hps import MPIDistributedBO
+from deephyper.stopper import (
+    SuccessiveHalvingStopper,
+    MedianStopper,
+    LCModelStopper,
+    IdleStopper,
+    ConstantStopper,
+)
 
 from mpi4py import MPI
 
@@ -40,16 +44,16 @@ def execute(
     cache_dir,
     n_jobs,
     model,
-    distributed_backend="mpi",
     pruning_strategy=None,
     scheduler=False,
     scheduler_periode=25,
     scheduler_rate=0.1,
     filter_duplicated=False,
     objective_scaler="identity",
+    max_steps=None,
+    interval_steps=1,
     **kwargs,
 ):
-
     # define where the outputs are saved live (in cache-dir if possible)
     if cache_dir is not None and os.path.exists(cache_dir):
         search_log_dir = os.path.join(cache_dir, "search")
@@ -71,31 +75,45 @@ def execute(
     hp_problem = problem.hp_problem
     run = problem.run
 
-    DistributedEvaluator = distributed(backend=distributed_backend)(SerialEvaluator)
+    evaluator = MPIDistributedBO.bootstrap_evaluator(
+        run,
+        evaluator_type="serial",  # one worker to evaluate the run-function per rank
+        storage_type="redis",
+        storage_kwargs={
+            "host": os.environ["DEEPHYPER_DB_HOST"],
+            "port": 6379,
+        },
+        comm=comm,
+        root=0,
+    )
 
-    storage = RedisStorage()
-    storage.connect()
-    evaluator = DistributedEvaluator(run, storage=storage)
     if pruning_strategy:
 
-        # Optuna Pruner
-        # username = getpass.getuser()
-        # host = os.environ["OPTUNA_DB_HOST"]
-
-        # storage = f"postgresql://{username}@{host}:5432/hpo"
 
         if pruning_strategy == "SHA":
             stopper = SuccessiveHalvingStopper(
-                min_fully_completed=5, min_budget=3, reduction_factor=3
+                max_steps=max_steps,
+                min_steps=1,
+                min_fully_completed=1,
+                reduction_factor=4,  # 4 is the default param. value in Optuna
             )
         elif pruning_strategy == "MED":
             stopper = MedianStopper(
-                min_fully_completed=5, min_budget=30, interval_steps=10
+                max_steps=max_steps,
+                min_steps=1,
+                min_fully_completed=1,
+                interval_steps=interval_steps,
             )
         elif pruning_strategy == "NONE":
-            stopper = None
+            stopper = IdleStopper(max_steps=max_steps)
+        elif pruning_strategy[:5] == "CONST":  # CONST4
+            stop_step = int(pruning_strategy[5:])
+            stopper = ConstantStopper(max_steps=max_steps, stop_step=stop_step)
         else:
-            raise ValueError(f"Wrong pruning strategy '{pruning_strategy}'")
+            stopper = LCModelStopper(
+                max_steps=max_steps,
+                lc_model=pruning_strategy.lower(),
+            )
     else:
         stopper = None
 
@@ -110,10 +128,9 @@ def execute(
     else:
         scheduler = None
 
-    search = DBO(
+    search = MPIDistributedBO(
         hp_problem,
         evaluator,
-        sync_communication=sync,
         n_jobs=n_jobs,
         log_dir=search_log_dir,
         random_state=rs,

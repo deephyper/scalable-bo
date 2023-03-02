@@ -1,0 +1,100 @@
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/local/dhb/navalpropulsion/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/local/dhb/navalpropulsion/figures
+show: False
+mode: min
+plots:
+  - scatter-iter
+  - scatter-budget
+  - objective-iter
+  - objective-budget
+experiments:
+  Stopper-Comparison:
+    title: ""
+    xlim: [0, 200]
+    # ylim: [0, 5]
+    ylabel: "RMSE"
+    yscale: "log"
+    xscale: "log"
+    default_budget: 100
+    data:
+      dhb_navalpropulsion-RANDOM-NONE-200:
+        num_workers: 1
+        label: "IDLE"
+        color: "black"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-RANDOM-MED-200:
+        num_workers: 1
+        label: "MED"
+        color: "orange"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-RANDOM-SHA-200:
+        num_workers: 1
+        label: "SHA"
+        color: "purple"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-RANDOM-MMF4-200:
+        num_workers: 1
+        label: "LC"
+        color: "navy"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-RANDOM-UMMF4-200:
+        num_workers: 1
+        label: "ULC"
+        color: "cyan"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+  Optimizer-Comparison:
+    title: ""
+    xlim: [0, 200]
+    # ylim: [0, 5]
+    ylabel: "RMSE"
+    yscale: "log"
+    xscale: "log"
+    default_budget: 100
+    data:
+      dhb_navalpropulsion-RANDOM-NONE-200:
+        num_workers: 1
+        label: "IDLE"
+        color: "grey"
+        linestyle: "--"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-DBO-NONE-RF-alc-UCB-minmaxlog-scheduler-48-0.1-delay-200:
+        num_workers: 1
+        label: "DBO+IDLE"
+        color: "black"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-DBO-MED-RF-alc-UCB-minmaxlog-scheduler-48-0.1-delay-200:
+        num_workers: 1
+        label: "DBO+MED"
+        color: "lime"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-DBO-SHA-RF-alc-UCB-minmaxlog-scheduler-48-0.1-delay-200:
+        num_workers: 1
+        label: "DBO+SHA"
+        color: "purple"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-DBO-MMF4-RF-alc-UCB-minmaxlog-scheduler-48-0.1-delay-200:
+        num_workers: 1
+        label: "DBO+LC"
+        color: "navy"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]
+      dhb_navalpropulsion-DBO-UMMF4-RF-alc-UCB-minmaxlog-scheduler-48-0.1-delay-200:
+        num_workers: 1
+        label: "DBO+ULC"
+        color: "cyan"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876, 787846414, 3143890026, 3348747335, 2571218620, 2563451924, 670094950, 1914837113]
+      dhb_navalpropulsion-TPE-SHA-200:
+        num_workers: 1
+        label: "TPE+SHA"
+        color: "red"
+        linestyle: "-"
+        rep: [1608637542, 3421126067, 4083286876,  787846414, 3143890026, 3348747335, 2571218620, 2563451924,  670094950, 1914837113]

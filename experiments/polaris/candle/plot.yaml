@@ -1,0 +1,164 @@
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/candle/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/candle/figures
+show: False
+negative: False
+mode: max
+experiments:
+  1-candle-combo-scaling:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-16-4-10800-42:
+        label: "64"
+        color: "pink"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "128"
+        color: "plum"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-64-4-10800-42:
+        label: "256"
+        color: "purple"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "512"
+        color: "navy"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-256-4-10800-42:
+        label: "1024"
+        color: "cyan"
+        linestyle: "-"
+  1-candle-combo-scaling-s4m-vs-mpi:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      candle_combo-DBO-async-RF-qUCB-qUCB-16-4-10800-42:
+        label: "64"
+        color: "pink"
+        linestyle: "--"
+      candle_combo-DBO-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "128"
+        color: "plum"
+        linestyle: "--"
+      candle_combo-DBO-async-RF-qUCB-qUCB-64-4-10800-42:
+        label: "256"
+        color: "purple"
+        linestyle: "--"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-16-4-10800-42:
+        label: "64"
+        color: "cyan"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "128"
+        color: "blue"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-64-4-10800-42:
+        label: "256"
+        color: "navy"
+        linestyle: "-"
+  1-candle-combo-scaling-mpi:
+    title: ""
+    t_max: 10000
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      candle_combo-DBO-async-RF-qUCB-qUCB-16-4-10800-42:
+        label: "64"
+        color: "pink"
+        linestyle: "-"
+      candle_combo-DBO-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "128"
+        color: "plum"
+        linestyle: "-"
+      candle_combo-DBO-async-RF-qUCB-qUCB-64-4-10800-42:
+        label: "256"
+        color: "purple"
+        linestyle: "-"
+      # candle_combo-DBO-async-RF-qUCB-qUCB-128-4-10800-42:
+      #   label: "512"
+      #   color: "navy"
+      #   linestyle: "-"
+      # candle_combo-DBO-async-RF-qUCB-qUCB-256-4-10800-42:
+      #   label: "1024"
+      #   color: "cyan"
+      #   linestyle: "-"
+  1-candle-combo-ablation:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "ADBO+qUCB"
+        color: "black"
+        linestyle: "--"
+      candle_combo-DBO-sync-RF-qUCB-qUCB-128-4-10800-42:
+        label: "Async.$\\rightarrow$Sync."
+        color: "cyan"
+        linestyle: "-"
+      candle_combo-CBO-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "Dist.$\\rightarrow$Cent."
+        color: "pink"
+        linestyle: "-"
+      candle_combo-DBOS4M-async-RF-UCB-boltzmann-128-4-10800-42:
+        label: "qUCB$\\rightarrow$bUCB"
+        color: "lime"
+        linestyle: "-"
+  1-candle-combo-algorithm:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      candle_combo-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "ADBO+qUCB"
+        color: "black"
+        linestyle: "--"
+      candle_combo-CBO-async-DUMMY-UCB-cl_max-128-4-10800-42:
+        label: "RD ACBO"
+        color: "cyan"
+        linestyle: "-"
+      candle_combo-HB-async-DUMMY-UCB-cl_max-128-4-10800-42:
+        label: "HB ACBO"
+        color: "orange"
+        linestyle: "-"
+      candle_combo-CBO-async-GP-UCB-cl_max-128-4-10800-42:
+        label: "GP ACBO"
+        color: "lime"
+        linestyle: "-"
+      # candle_combo-CBO-async-GP-UCB-cl_max-32-4-10800-42:
+      #   label: "GP ACBO (32)"
+      #   color: "red"
+      #   linestyle: "-"
+      # candle_combo-CBO-async-RF-UCB-cl_max-32-4-10800-42:
+      #   label: "RF ACBO (32)"
+      #   color: "pink"
+      #   linestyle: "-"
+      candle_combo-TPEASHA-async-DUMMY-UCB-cl_max-128-4-10800-42:
+        label: "TPE-ASHA"
+        color: "red"
+        linestyle: "-"
+      candle_combo-ASHA-async-DUMMY-UCB-cl_max-128-4-10800-42:
+        label: "ASHA"
+        color: "purple"
+        linestyle: "-"
+  2-candle-attn:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 1.0]
+    baseline_best: 0.97
+    ylabel: "Validation ROC-AUC"
+    data:
+      candle_attn-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "ADBO+qUCB"
+        color: "black"
+        linestyle: "--"

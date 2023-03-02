@@ -1,0 +1,6 @@
+The config objective is: -0.0005399304791353643
+The best config is {'p:activation': 'gelu', 'p:alpha': 0.0713803616024727, 'p:hidden_dim': 50, 'p:lr': 0.009112203892205, 'p:num_layers': 12, 'objective': '-0.0005399304791353643', 'job_id': 383, 'm:timestamp_submit': 26184.98286652565, 'm:timestamp_gather': 26274.531222343445, 'm:timestamp_start': 1674624498.234779, 'm:timestamp_end': 1674624587.782676}
+The config objective is: -0.0005399304791353643
+The best config is {'p:activation': 'gelu', 'p:alpha': 0.0713803616024727, 'p:hidden_dim': 50, 'p:lr': 0.009112203892205, 'p:num_layers': 12, 'objective': '-0.0005399304791353643', 'job_id': 383, 'm:timestamp_submit': 26184.98286652565, 'm:timestamp_gather': 26274.531222343445, 'm:timestamp_start': 1674624498.234779, 'm:timestamp_end': 1674624587.782676}
+validation objective is:  0.0005399305
+The test score is 0.0006112948238057368

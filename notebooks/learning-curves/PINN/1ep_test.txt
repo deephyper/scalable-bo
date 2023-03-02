@@ -1,0 +1,50 @@
+Top 1
+The config objective is: -0.1441845297813415
+The best config is {'p:activation': 'tanh', 'p:alpha': 2.7947932724316145, 'p:hidden_dim': 47, 'p:lr': 0.0094410707102608, 'p:num_layers': 19, 'objective': -0.1441845297813415, 'job_id': 448, 'm:timestamp_submit': 852.5372536182404, 'm:timestamp_gather': 854.2824606895447, 'm:timestamp_start': 1674599165.789171, 'm:timestamp_end': 1674599167.5340967}
+validation objective is:  0.36154312
+The test score is 0.36669694037327005
+Top 2
+The config objective is: -0.1465161144733429
+The best config is {'p:activation': 'tanh', 'p:alpha': 3.151597532987309, 'p:hidden_dim': 47, 'p:lr': 0.0096644371439298, 'p:num_layers': 19, 'objective': -0.1465161144733429, 'job_id': 409, 'm:timestamp_submit': 763.6227731704712, 'm:timestamp_gather': 765.3663625717163, 'm:timestamp_start': 1674599076.8747072, 'm:timestamp_end': 1674599078.6179645}
+validation objective is:  0.1848228
+The test score is 0.18753577900319876
+Top 3
+The config objective is: -0.1482401937246322
+The best config is {'p:activation': 'tanh', 'p:alpha': 2.752059929228799, 'p:hidden_dim': 47, 'p:lr': 0.0091548738766343, 'p:num_layers': 19, 'objective': -0.1482401937246322, 'job_id': 473, 'm:timestamp_submit': 904.2344834804536, 'm:timestamp_gather': 906.351889371872, 'm:timestamp_start': 1674599217.4864058, 'm:timestamp_end': 1674599219.6035278}
+validation objective is:  0.36153245
+The test score is 0.3666539357624952
+Top 4
+The config objective is: -0.1494192630052566
+The best config is {'p:activation': 'tanh', 'p:alpha': 2.845238875747917, 'p:hidden_dim': 47, 'p:lr': 0.0079270099428507, 'p:num_layers': 19, 'objective': -0.1494192630052566, 'job_id': 463, 'm:timestamp_submit': 884.3588573932648, 'm:timestamp_gather': 886.0868816375732, 'm:timestamp_start': 1674599197.610777, 'm:timestamp_end': 1674599199.338516}
+validation objective is:  0.15364476
+The test score is 0.15687768100211275
+Top 5
+The config objective is: -0.1498761177062988
+The best config is {'p:activation': 'tanh', 'p:alpha': 2.923391436748401, 'p:hidden_dim': 47, 'p:lr': 0.0076563144430917, 'p:num_layers': 19, 'objective': -0.1498761177062988, 'job_id': 490, 'm:timestamp_submit': 944.1105923652648, 'm:timestamp_gather': 945.8897144794464, 'm:timestamp_start': 1674599257.3625088, 'm:timestamp_end': 1674599259.141342}
+validation objective is:  1.2439098
+The test score is 1.2632346182827376
+Top  6
+The config objective is: -0.1500376015901565
+The best config is {'p:activation': 'tanh', 'p:alpha': 3.2676559040323583, 'p:hidden_dim': 11, 'p:lr': 0.0097960525551856, 'p:num_layers': 18, 'objective': -0.1500376015901565, 'job_id': 317, 'm:timestamp_submit': 573.5504050254822, 'm:timestamp_gather': 575.1918303966522, 'm:timestamp_start': 1674598886.802325, 'm:timestamp_end': 1674598888.443468}
+validation objective is:  0.105650514
+The test score is 0.10716873865152582
+Top  7
+The config objective is: -0.1525050103664398
+The best config is {'p:activation': 'tanh', 'p:alpha': 3.483971856134533, 'p:hidden_dim': 11, 'p:lr': 0.0097089182447324, 'p:num_layers': 18, 'objective': -0.1525050103664398, 'job_id': 368, 'm:timestamp_submit': 684.5445249080658, 'm:timestamp_gather': 686.3853583335876, 'm:timestamp_start': 1674598997.7964578, 'm:timestamp_end': 1674598999.6369915}
+validation objective is:  0.10096738
+The test score is 0.10365394122311057
+Top  8
+The config objective is: -0.1535067409276962
+The best config is {'p:activation': 'tanh', 'p:alpha': 2.726695655671103, 'p:hidden_dim': 47, 'p:lr': 0.0096268752981206, 'p:num_layers': 19, 'objective': -0.1535067409276962, 'job_id': 435, 'm:timestamp_submit': 825.4105784893036, 'm:timestamp_gather': 827.1610271930695, 'm:timestamp_start': 1674599138.6624973, 'm:timestamp_end': 1674599140.412667}
+validation objective is:  1.9763694
+The test score is 2.0042068044779198
+Top  9
+The config objective is: -0.1559061557054519
+The best config is {'p:activation': 'tanh', 'p:alpha': 3.1003103422341503, 'p:hidden_dim': 47, 'p:lr': 0.0070335093192024, 'p:num_layers': 19, 'objective': -0.1559061557054519, 'job_id': 424, 'm:timestamp_submit': 801.406266450882, 'm:timestamp_gather': 803.1557157039642, 'm:timestamp_start': 1674599114.6581864, 'm:timestamp_end': 1674599116.4073534}
+validation objective is:  0.18439232
+The test score is 0.18750179429388106
+Top  10
+The config objective is: -0.1560664772987365
+The best config is {'p:activation': 'tanh', 'p:alpha': 3.933424359942987, 'p:hidden_dim': 11, 'p:lr': 0.0094854222934277, 'p:num_layers': 18, 'objective': -0.1560664772987365, 'job_id': 397, 'm:timestamp_submit': 741.3019723892212, 'm:timestamp_gather': 742.9594397544861, 'm:timestamp_start': 1674599054.5538917, 'm:timestamp_end': 1674599056.2110617}
+validation objective is:  0.1450143
+The test score is 0.14761773033209133

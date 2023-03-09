@@ -29,17 +29,25 @@ PROBLEMS = {
     "candle_attn_sim": "scalbo.benchmark.candle_attn_sim",
     "candle_combo": "scalbo.benchmark.candle_combo",
     "dhb_combo": "scalbo.benchmark.dhb_combo",
+    "dhb_slicelocalization": "scalbo.benchmark.dhb_slicelocalization",
+    "dhb_navalpropulsion": "scalbo.benchmark.dhb_navalpropulsion",
+    "dhb_proteinstructure": "scalbo.benchmark.dhb_proteinstructure",
+    "dhb_parkinsonstelemonitoring": "scalbo.benchmark.dhb_parkinsonstelemonitoring",
+    "dhb_pow3": "scalbo.benchmark.dhb_pow3",
+    "dhb_loglin2": "scalbo.benchmark.dhb_loglin2",
+    "dhb_lcdb_6": "scalbo.benchmark.dhb_lcdb_6",
+    "dhb_lcdb_293": "scalbo.benchmark.dhb_lcdb_293",
+    "dhb_lcdb_351": "scalbo.benchmark.dhb_lcdb_351",
+    "dhb_lcdb_354": "scalbo.benchmark.dhb_lcdb_354",
+    "dhb_lcdb_41150": "scalbo.benchmark.dhb_lcdb_41150",
     "test": "scalbo.benchmark.test",
 }
 
 SEARCHES = {
     "CBO": "scalbo.search.cbo",  # Centralized Model-Based Search (Master-Worker)
     "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
-    "DBOS4M": "scalbo.search.dbos4m",  # Fully Distributed Model-Based Search
-    "TPEHB": "scalbo.search.tpehb",  # TPEHB
-    "TPESHA": "scalbo.search.tpesha", # TPESHA
-    "DBOSHA": "scalbo.search.dbosha", # DBOSHA
-    "DBOS4MSHA": "scalbo.search.dbos4msha", # DBOSHA
+    "OPT-TPE": "scalbo.search.optuna_tpe",  # TPE
+    "OPT-RDM": "scalbo.search.optuna_random",  # RANDOM
 }
 
 
@@ -64,14 +72,13 @@ def create_parser():
         "--model",
         type=str,
         choices=["RF", "GP", "DUMMY", "MF"],
-        required=False,
-        default="RF",
+        default=None,
         help="Surrogate model used by the Bayesian optimizer.",
     )
     parser.add_argument(
         "--sync",
-        type=int,
-        default=0,
+        type=bool,
+        default=False,
         help="If the search workers must be syncronized or not.",
     )
     parser.add_argument(
@@ -83,14 +90,14 @@ def create_parser():
     parser.add_argument(
         "--strategy",
         type=str,
-        default="boltzmann",
-        choices=["cl_max", "topk", "boltzmann", "qUCB", "qEI"],
+        default="cl_max",
+        # choices=["cl_max", "topk", "boltzmann", "qUCB", "qEI"],
         help="The strategy for multi-point acquisition.",
     )
     parser.add_argument(
         "--timeout",
         type=int,
-        default=10,
+        default=None,
         help="Search maximum duration (in min.) for each optimization.",
     )
     parser.add_argument(
@@ -117,44 +124,59 @@ def create_parser():
         default=None,
         help="Path to use to cache logged outputs (e.g., /dev/shm/).",
     )
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        type=bool,
-        default=False,
-        help="Wether to activate or not the verbose mode.",
-    )
+    # parser.add_argument(
+    #     "-v",
+    #     "--verbose",
+    #     type=bool,
+    #     default=False,
+    #     help="Wether to activate or not the verbose mode.",
+    # )
     parser.add_argument(
         "--n-jobs",
         type=int,
         default=4,
         help="The number of parallel processes to use to fit the surrogate model.",
     )
-
+    parser.add_argument(
+        "--distributed-backend",
+        type=str,
+        default="mpi",
+        help="Communication backend to use when using DBO",
+    )
+    parser.add_argument(
+        "--pruning-strategy",
+        type=str,
+        default=None,
+    )
+    parser.add_argument(
+        "--scheduler",
+        type=bool,
+        default=False,
+    )
+    parser.add_argument("--scheduler-periode", type=int, default=25)
+    parser.add_argument("--scheduler-rate", type=float, default=0.1)
+    parser.add_argument(
+        "--filter-duplicated",
+        type=bool,
+        default=False,
+    )
+    parser.add_argument("--objective-scaler", type=str, default="identity")
+    parser.add_argument("--max-steps", type=int, default=None)
+    parser.add_argument("--interval-steps", type=int, default=1)
     return parser
 
 
 def main(args):
 
+    args = vars(args)
+
     # load the problem
-    problem = importlib.import_module(PROBLEMS.get(args.problem))
-    search = importlib.import_module(SEARCHES.get(args.search))
-    sync = bool(args.sync)
+    args["problem"] = importlib.import_module(PROBLEMS.get(args["problem"]))
+    search = importlib.import_module(SEARCHES.get(args.pop("search")))
 
-    pathlib.Path(args.log_dir).mkdir(parents=True, exist_ok=True)
+    pathlib.Path(args["log_dir"]).mkdir(parents=True, exist_ok=True)
 
-    search.execute(
-        problem,
-        sync,
-        args.acq_func,
-        args.strategy,
-        args.timeout,
-        args.random_state,
-        args.log_dir,
-        args.cache_dir,
-        args.n_jobs,
-        args.model,
-    )
+    search.execute(**args)
 
 
 if __name__ == "__main__":

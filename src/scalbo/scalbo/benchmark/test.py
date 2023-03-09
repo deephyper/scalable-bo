@@ -4,103 +4,48 @@ from deephyper.problem import HpProblem
 from deephyper.evaluator import profile
 
 hp_problem = HpProblem()
-
-# Model hyperparameters
-ACTIVATIONS = [
-    "elu",
-    "gelu",
-    "hard_sigmoid",
-    "linear",
-    "relu",
-    "selu",
-    "sigmoid",
-    "softplus",
-    "softsign",
-    "swish",
-    "tanh",
-]
-default_dense = [1000, 1000, 1000]
-default_dense_feature_layers = [1000, 1000, 1000]
-
-for i in range(len(default_dense)):
-
-    hp_problem.add_hyperparameter(
-        (10, 1024, "log-uniform"),
-        f"dense_{i}",
-        default_value=default_dense[i],
-    )
-
-    hp_problem.add_hyperparameter(
-        (10, 1024, "log-uniform"),
-        f"dense_feature_layers_{i}",
-        default_value=default_dense_feature_layers[i],
-    )
-
-hp_problem.add_hyperparameter(ACTIVATIONS, "activation", default_value="relu")
-
-# Optimization hyperparameters
-hp_problem.add_hyperparameter(
-    [
-        "sgd",
-        "rmsprop",
-        "adagrad",
-        "adadelta",
-        "adam",
-    ],
-    "optimizer",
-    default_value="sgd",
-)
-
-hp_problem.add_hyperparameter((0, 0.5), "dropout", default_value=0.0)
-hp_problem.add_hyperparameter((8, 512, "log-uniform"), "batch_size", default_value=32)
-
-hp_problem.add_hyperparameter(
-    (1e-5, 1e-2, "log-uniform"), "learning_rate", default_value=0.001
-)
-hp_problem.add_hyperparameter(
-    (1e-5, 1e-2, "log-uniform"), "base_lr", default_value=0.001
-)
-hp_problem.add_hyperparameter([True, False], "residual", default_value=False)
-
-hp_problem.add_hyperparameter([True, False], "early_stopping", default_value=False)
-hp_problem.add_hyperparameter((5, 20), "early_stopping_patience", default_value=5)
-
-hp_problem.add_hyperparameter([True, False], "reduce_lr", default_value=False)
-hp_problem.add_hyperparameter((0.1, 1.0), "reduce_lr_factor", default_value=0.5)
-hp_problem.add_hyperparameter((5, 20), "reduce_lr_patience", default_value=5)
-
-hp_problem.add_hyperparameter([True, False], "warmup_lr", default_value=False)
-hp_problem.add_hyperparameter([True, False], "batch_normalization", default_value=False)
-
-hp_problem.add_hyperparameter(
-    ["mse", "mae", "logcosh", "mape", "msle", "huber"], "loss", default_value="mse"
-)
-
-hp_problem.add_hyperparameter(
-    ["std", "minmax", "maxabs"], "scaling", default_value="std"
-)
+hp_problem.add_hyperparameter((-10.0, 10.0), "x0")
+hp_problem.add_hyperparameter((0, 5), "x1")
+hp_problem.add_hyperparameter(list(range(100)), "x2")
 
 
 @profile
-def run(config, optuna_trial=None):
-    max_steps = 50
-    const = config["dense_0"]
-    score = 0
-    pruned = False
-    for step in range(1, max_steps+1):
+def run(job, optuna_trial=None):
 
-        time.sleep(0.25)
-        score += const
+    config = job.parameters
 
-        if optuna_trial:
-            optuna_trial.report(score, step=step)
+    min_b, max_b = 1, 50
+    const = config["x0"] + config["x1"] + config["x2"]
+    objective_i = 0
 
-            # Prune trial if needed
-            if optuna_trial.should_prune():
-                pruned = True
-                break
-        
+    other_metadata = {}
+
     if optuna_trial:
-        return {"objective": score, "pruned": pruned, "step": step}
+        for budget_i in range(min_b, max_b + 1):
+            time.sleep(0.25)
+            objective_i += const
+            optuna_trial.report(objective_i, step=budget_i)
+            if optuna_trial.should_prune():
+                break
+        objective = objective_i
     else:
-        return score
+        for budget_i in range(min_b, max_b + 1):
+            time.sleep(0.25)
+            objective_i += const
+            job.record(budget_i, objective_i)
+            if job.stopped():
+                break
+        objective = objective_i
+
+        if hasattr(job, "stopper") and hasattr(job.stopper, "infos_stopped"):
+            other_metadata["infos_stopped"] = job.stopper.infos_stopped
+
+    metadata = {
+        "budget": budget_i,
+        "stopped": budget_i < max_b,
+    }
+    metadata.update(other_metadata)
+    return {
+        "objective": objective,
+        "metadata": metadata,
+    }

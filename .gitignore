@@ -141,6 +141,7 @@ core
 *.tar.gz
 paper/
 output*/
+figures*/
 gpustat.txt
 *.pdf
 *.png
@@ -152,3 +153,6 @@ src/scalbo/scalbo/benchmark/autoformer/data/PEMS_bay/adj_mx_bay.pkl
 src/scalbo/scalbo/benchmark/autoformer/data/PEMS_bay/pems-bay_r1_d1_w1_astcgn.npz
 src/scalbo/scalbo/benchmark/autoformer/data/PEMS_bay/pems-bay.h5
 *db/
+context.yaml
+*.rdb
+*stderr*.txt

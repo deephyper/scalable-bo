@@ -1,0 +1,4 @@
+THe config objective is: -0.0033016205
+The best config is {'p:activation': 'tanh', 'p:alpha': 0.0838861310333266, 'p:hidden_dim': 12, 'p:lr': 0.0021977431445454, 'p:num_layers': 15, 'objective': -0.0033016205, 'job_id': 450, 'm:timestamp_submit': 5155.318133831024, 'm:timestamp_gather': 5200.669605016708, 'm:timestamp_start': 1674591899.3460655, 'm:timestamp_end': 1674591944.6966605, 'm:budget': 1000, 'm:stopped': False, 'm:infos_stopped': 'max steps reached'}
+validation objective is:  0.0033016205
+The testing MSE is 0.0034813182877348036

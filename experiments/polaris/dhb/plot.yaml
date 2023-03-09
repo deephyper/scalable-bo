@@ -1,0 +1,300 @@
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhb/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhb/figures
+show: False
+negative: False
+mode: max
+experiments:
+  1-candle-combo-scaling:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      # dhb_combo-DBOS4M-async-RF-qUCB-qUCB-16-4-10800-42:
+      #   label: "64"
+      #   color: "pink"
+      #   linestyle: "-"
+      dhb_combo-DBOS4M-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "128"
+        color: "plum"
+        linestyle: "-"
+      # dhb_combo-DBOS4M-async-RF-qUCB-qUCB-64-4-10800-42:
+      #   label: "256"
+      #   color: "purple"
+      #   linestyle: "-"
+      dhb_combo-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "512"
+        color: "navy"
+        linestyle: "-"
+      # dhb_combo-DBOS4M-async-RF-qUCB-qUCB-256-4-10800-42:
+      #   label: "1024"
+      #   color: "cyan"
+      #   linestyle: "-"
+  1-candle-combo-scaling-s4m-vs-mpi:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      # dhb_combo-DBO-async-RF-qUCB-qUCB-16-4-10800-42:
+      #   label: "64"
+      #   color: "pink"
+      #   linestyle: "--"
+      # dhb_combo-DBO-async-RF-qUCB-qUCB-32-4-10800-42:
+      #   label: "128"
+      #   color: "plum"
+      #   linestyle: "--"
+      # dhb_combo-DBO-async-RF-qUCB-qUCB-64-4-10800-42:
+      #   label: "256"
+      #   color: "purple"
+      #   linestyle: "--"
+      # dhb_combo-DBOS4M-async-RF-qUCB-qUCB-16-4-10800-42:
+      #   label: "64"
+      #   color: "cyan"
+      #   linestyle: "-"
+      dhb_combo-DBOS4M-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "128"
+        color: "blue"
+        linestyle: "-"
+      # dhb_combo-DBOS4M-async-RF-qUCB-qUCB-64-4-10800-42:
+      #   label: "256"
+      #   color: "navy"
+      #   linestyle: "-"
+  # 1-candle-combo-ablation:
+  #   title: ""
+  #   t_max: 10800
+  #   ylim: [0.88, 0.935]
+  #   baseline_best: 0.875
+  #   ylabel: "Validation $R^2$"
+  #   data:
+  #     dhb_combo-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+  #       label: "ADBO+qUCB"
+  #       color: "black"
+  #       linestyle: "--"
+  #     dhb_combo-DBO-sync-RF-qUCB-qUCB-128-4-10800-42:
+  #       label: "Async.$\\rightarrow$Sync."
+  #       color: "cyan"
+  #       linestyle: "-"
+  #     dhb_combo-CBO-async-RF-qUCB-qUCB-128-4-10800-42:
+  #       label: "Dist.$\\rightarrow$Cent."
+  #       color: "pink"
+  #       linestyle: "-"
+  #     dhb_combo-DBOS4M-async-RF-UCB-boltzmann-128-4-10800-42:
+  #       label: "qUCB$\\rightarrow$bUCB"
+  #       color: "lime"
+  #       linestyle: "-"
+  1-candle-combo-algorithm:
+    title: ""
+    t_max: 10800
+    ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      dhb_combo-DBOS4M-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "ADBO"
+        color: "lime"
+        linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-FD:
+        label: "ADBO+qUCB+SHA"
+        color: "cyan"
+        linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42:
+      #   label: "ADBO+qUCB+SHA"
+      #   color: "red"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qEI-qEI-128-4-10800-42-FD:
+      #   label: "ADBO+qEI+SHA"
+      #   color: "orange"
+      #   linestyle: "-"
+      # dhb_combo-CBO-async-DUMMY-UCB-cl_max-128-4-10800-42:
+      #   label: "RD ACBO"
+      #   color: "cyan"
+      #   linestyle: "-"
+      # dhb_combo-HB-async-DUMMY-UCB-cl_max-128-4-10800-42:
+      #   label: "HB ACBO"
+      #   color: "orange"
+      #   linestyle: "-"
+      # dhb_combo-CBO-async-GP-UCB-cl_max-128-4-10800-42:
+      #   label: "GP ACBO"
+      #   color: "lime"
+      #   linestyle: "-"
+      # dhb_combo-CBO-async-GP-UCB-cl_max-32-4-10800-42:
+      #   label: "GP ACBO (32)"
+      #   color: "red"
+      #   linestyle: "-"
+      # dhb_combo-CBO-async-RF-UCB-cl_max-32-4-10800-42:
+      #   label: "RF ACBO (32)"
+      #   color: "pink"
+      #   linestyle: "-"
+      # dhb_combo-TPESHA-async-RF-qUCB-qUCB-128-4-10800-42:
+      #   label: "TPE+SHA"
+      #   color: "purple"
+      #   linestyle: "-"
+      dhb_combo-DBOS4M-async-DUMMY-qUCB-qUCB-128-4-10800-42-FD:
+        label: "RDM"
+        color: "pink"
+        linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-DUMMY-qUCB-qUCB-128-4-10800-42:
+      #   label: "RDM+SHA"
+      #   color: "pink"
+      #   linestyle: "--"
+  2-pruning-4-nodes:
+    title: ""
+    t_max: 3600
+    # ylim: [0.88, 0.935]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      dhb_combo-DBOS4M-async-RF-qUCB-qUCB-4-4-3600-42:
+        label: "ADBO"
+        color: "cyan"
+        linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-4-4-3600-42:
+        label: "ADBO+SHA"
+        color: "navy"
+        linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-4-4-3600-42-minmaxlog:
+        label: "ADBO+SHA (minmaxlog)"
+        color: "purple"
+        linestyle: "-"
+      # dhb_combo-TPESHA-async-RF-qUCB-qUCB-4-4-3600-42:
+      #   label: "TPE+SHA"
+      #   color: "lime"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-MF-qUCB-qUCB-4-4-3600-42:
+      #   label: "ADBO+SHA+MF"
+      #   color: "orange"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4M-async-MF-qUCB-qUCB-4-4-3600-42:
+      #   label: "ADBO+MF"
+      #   color: "navy"
+      #   linestyle: "-"
+  2-pruning-32-nodes:
+    title: ""
+    t_max: 10800
+    ylim: [0.7, 0.93]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      # dhb_combo-DBOS4M-async-RF-qUCB-qUCB-32-4-10800-42:
+      #   label: "ADBO+RF"
+      #   color: "plum"
+      #   linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-32-4-10800-42-FD:
+        label: "ADBO+SHA (filtered)"
+        color: "purple"
+        linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-32-4-10800-42-k1.96:
+      #   label: "ADBO+SHA+RF+1.96"
+      #   color: "orange"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-32-4-10800-42-k0.5:
+      #   label: "ADBO+SHA+RF+0.5"
+      #   color: "cyan"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-32-4-10800-42-decay-0.1:
+      #   label: "ADBO+SHA+RF+decay"
+      #   color: "brown"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-32-4-10800-42-minmaxlog:
+      #   label: "ADBO+SHA (minmaxlog)"
+      #   color: "lime"
+      #   linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-32-4-10800-42-identity:
+        label: "ADBO+SHA (identity)"
+        color: "green"
+        linestyle: "-"  
+      # dhb_combo-DBOS4MSHA-async-MF-qUCB-qUCB-32-4-10800-42:
+      #   label: "ADBO+SHA+MF"
+      #   color: "orange"
+      #   linestyle: "-"
+      dhb_combo-TPESHA-async-RF-qUCB-qUCB-32-4-10800-42:
+        label: "TPE+SHA"
+        color: "red"
+        linestyle: "-"
+  2-pruning-128-nodes:
+    title: ""
+    t_max: 10800
+    ylim: [0.7, 0.93]
+    baseline_best: 0.875
+    ylabel: "Validation $R^2$"
+    data:
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-FD:
+      #   label: "ADBO+SHA+RF+1.96 (filtered)"
+      #   color: "purple"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-k1.96:
+      #   label: "ADBO+SHA+RF+kappa=1.96"
+      #   color: "orange"
+      #   linestyle: "-"
+      # dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-k0.5:
+      #   label: "ADBO+SHA+kappa=0.5"
+      #   color: "cyan"
+      #   linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.2:
+        label: "ADBO+SHA+decay=0.2"
+        color: "cyan"
+        linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.1:
+        label: "ADBO+SHA+decay=0.1"
+        color: "brown"
+        linestyle: "-"
+      dhb_combo-TPESHA-async-RF-qUCB-qUCB-128-4-10800-42:
+        label: "TPE+SHA"
+        color: "red"
+        linestyle: "-"
+      dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-identity:
+        label: "ADBO+SHA (identity)"
+        color: "green"
+        linestyle: "-"  
+  # 2-pruning-128-nodes-decay:
+  #   title: ""
+  #   t_max: 10800
+  #   ylim: [0.7, 0.93]
+  #   baseline_best: 0.875
+  #   ylabel: "Validation $R^2$"
+  #   data:
+  #     dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.1:
+  #       label: "step: 25, decay: 0.1"
+  #       color: "navy"
+  #       linestyle: "-"
+  #     dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.2:
+  #       label: "step: 25, decay: 0.2"
+  #       color: "cyan"
+  #       linestyle: "-"
+  #     dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.3:
+  #       label: "step: 25, decay: 0.3"
+  #       color: "purple"
+  #       linestyle: "-"
+  # 2-pruning-128-nodes-acq-function:
+  #   title: ""
+  #   t_max: 10800
+  #   ylim: [0.7, 0.93]
+  #   baseline_best: 0.875
+  #   ylabel: "Validation $R^2$"
+  #   data:
+  #     dhb_combo-DBOS4MSHA-async-RF-qEI-qEI-128-4-10800-42-decay-0.2:
+  #       label: "qEI"
+  #       color: "navy"
+  #       linestyle: "-"
+  #     dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.2:
+  #       label: "qUCB"
+  #       color: "cyan"
+  #       linestyle: "-"
+  # 2-pruning-128-nodes-model:
+  #   title: ""
+  #   t_max: 10800
+  #   ylim: [0.7, 0.93]
+  #   baseline_best: 0.875
+  #   ylabel: "Validation $R^2$"
+  #   data:
+  #     dhb_combo-DBOS4MSHA-async-MF-qUCB-qUCB-128-4-10800-42-decay-0.2:
+  #       label: "MF"
+  #       color: "navy"
+  #       linestyle: "-"
+  #     dhb_combo-DBOS4MSHA-async-RF-qUCB-qUCB-128-4-10800-42-decay-0.2:
+  #       label: "RF"
+  #       color: "cyan"
+  #       linestyle: "-"

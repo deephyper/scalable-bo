@@ -84,10 +84,14 @@ def convert_to_optuna_space(cs_space):
 def execute_optuna(
     problem,
     timeout,
+    max_evals,
     random_state,
     log_dir,
     cache_dir,
-    method,  # in TPESHA, TPEHB
+    method,  # in TPE
+    pruning_strategy=None,  # SHA, HB
+    max_steps=None,
+    **kwargs,
 ):
     """Execute the HB algorithm.
 
@@ -138,18 +142,24 @@ def execute_optuna(
     else:
         sampler = optuna.samplers.RandomSampler(seed=rank_seed)
 
-    if "SHA" in method:
+    if pruning_strategy is None or pruning_strategy == "NONE":
+        pruner = optuna.pruners.NopPruner()
+    elif pruning_strategy == "SHA":
         pruner = optuna.pruners.SuccessiveHalvingPruner(
-            min_resource=1, reduction_factor=3
+            min_resource=1, reduction_factor=4
         )
-    elif "HB" in method:
+    elif pruning_strategy == "HB":
         pruner = optuna.pruners.HyperbandPruner(
             min_resource=1,
-            max_resource=50,
-            reduction_factor=3,
+            max_resource=max_steps,  #! careful!
+            reduction_factor=4,
+        )
+    elif pruning_strategy == "MED":
+        pruner = optuna.pruners.MedianPruner(
+            n_startup_trials=5, n_warmup_steps=30, interval_steps=10
         )
     else:
-        pruner = None
+        raise ValueError(f"Wrong pruning strategy '{pruning_strategy}'")
 
     study_name = os.path.basename(log_dir)
     study_params = dict(
@@ -176,17 +186,23 @@ def execute_optuna(
     evaluator = distributed(backend)(SerialEvaluator)(run)
 
     def execute_search():
+        num_evals = 0
         while True:
             trial = study.ask(optuna_space)
             config = {p: trial.params[p] for p in trial.params}
-            evaluator.run_function_kwargs["optuna_trial"] = trial
+            if pruning_strategy is not None:
+                evaluator.run_function_kwargs["optuna_trial"] = trial
 
             evaluator.submit([config])
-            local_results, _ = evaluator.gather("ALL")
-            y = local_results[0].result
-            step = local_results[0].budget
+            local_results, other_results = evaluator.gather("ALL")
+            num_evals += len(local_results) + len(other_results)
+            y = local_results[0].objective
+            step = local_results[0].metadata["budget"]
 
             evaluator.dump_evals(log_dir=log_dir)
+
+            if max_evals > 0 and num_evals >= max_evals:
+                break
 
             if isinstance(y, dict) and step is not None:  # pruner is used
                 trial.report(y["objective"], step=step)

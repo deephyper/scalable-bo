@@ -14,6 +14,7 @@ mpi4py.rc.thread_level = "multiple"
 import numpy as np
 
 from deephyper.evaluator import Evaluator
+from deephyper.evaluator.storage import Storage
 from deephyper.search.hps import CBO
 from deephyper.evaluator.callback import ProfilingCallback
 
@@ -82,13 +83,20 @@ def execute(
         # Evaluator creation
         logging.info("Creation of the Evaluator...")
 
-    profiler = ProfilingCallback()
+
+    storage = Storage.create(
+        method="redis",
+        method_kwargs={
+            "host": os.environ["DEEPHYPER_DB_HOST"],
+            "port": 6379,
+        },
+    )
 
     with Evaluator.create(
         run,
         method="mpicomm",
         method_kwargs={
-            "callbacks": [profiler],
+            "storage": storage,
         },
     ) as evaluator:
         if evaluator is not None:

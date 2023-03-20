@@ -95,7 +95,7 @@ def execute(
                 max_steps=max_steps,
                 min_steps=1,
                 min_fully_completed=1,
-                reduction_factor=4,  # 4 is the default param. value in Optuna
+                reduction_factor=3,  # 4 is the default param. value in Optuna
             )
         elif pruning_strategy == "MED":
             stopper = MedianStopper(
@@ -137,6 +137,7 @@ def execute(
         acq_func=acq_func,
         surrogate_model=model,
         filter_duplicated=filter_duplicated,
+        filter_failures="min",
         scheduler=scheduler,
         objective_scaler=objective_scaler,
         stopper=stopper,

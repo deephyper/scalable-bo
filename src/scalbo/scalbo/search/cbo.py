@@ -16,7 +16,13 @@ import numpy as np
 from deephyper.evaluator import Evaluator
 from deephyper.evaluator.storage import Storage
 from deephyper.search.hps import CBO
-from deephyper.evaluator.callback import ProfilingCallback
+from deephyper.stopper import (
+    SuccessiveHalvingStopper,
+    MedianStopper,
+    LCModelStopper,
+    IdleStopper,
+    ConstantStopper,
+)
 
 from mpi4py import MPI
 
@@ -40,7 +46,11 @@ def execute(
     cache_dir,
     n_jobs,
     model,
+    pruning_strategy=None,
     filter_duplicated=False,
+    objective_scaler="identity",
+    max_steps=None,
+    interval_steps=1,
     **kwargs,
 ):
     """Execute the CBO algorithm.
@@ -83,6 +93,35 @@ def execute(
         # Evaluator creation
         logging.info("Creation of the Evaluator...")
 
+    if pruning_strategy:
+
+        if pruning_strategy == "SHA":
+            stopper = SuccessiveHalvingStopper(
+                max_steps=max_steps,
+                min_steps=1,
+                min_fully_completed=1,
+                reduction_factor=3, 
+            )
+        elif pruning_strategy == "MED":
+            stopper = MedianStopper(
+                max_steps=max_steps,
+                min_steps=1,
+                min_fully_completed=1,
+                interval_steps=interval_steps,
+            )
+        elif pruning_strategy == "NONE":
+            stopper = IdleStopper(max_steps=max_steps)
+        elif pruning_strategy[:5] == "CONST":  # CONST4
+            stop_step = int(pruning_strategy[5:])
+            stopper = ConstantStopper(max_steps=max_steps, stop_step=stop_step)
+        else:
+            stopper = LCModelStopper(
+                max_steps=max_steps,
+                lc_model=pruning_strategy.lower(),
+            )
+    else:
+        stopper = None
+
 
     storage = Storage.create(
         method="redis",
@@ -116,8 +155,10 @@ def execute(
                 random_state=rank_seed,
                 acq_func=acq_func,
                 surrogate_model=model,
+                filter_failures="min",
                 filter_duplicated=filter_duplicated,
-                objective_scaler="identity",
+                objective_scaler=objective_scaler,
+                stopper=stopper,
             )
             logging.info("Creation of the search done")
 

@@ -1,0 +1,73 @@
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhbv2/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhbv2/figures
+show: False
+negative: False
+mode: max
+experiments:
+  1-scaling-cbo:
+    title: ""
+    t_max: 7200
+    ylim: [0.5, 0.935]
+    baseline_best: 0.875
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation $R^2$"
+    data:
+      dhb_combo-CBO-RF-UCB-10-10800-42:
+        label: "CBO-40"
+        color: "pink"
+        linestyle: "-"
+        num_workers: 40
+      dhb_combo-CBO-RF-UCB-40-10800-42:
+        label: "CBO-160"
+        color: "plum"
+        linestyle: "-"
+        num_workers: 160 
+      dhb_combo-CBO-RF-UCB-160-10800-42:
+        label: "CBO-640"
+        color: "purple"
+        linestyle: "-"
+        num_workers: 640 
+  2-scaling-dbo:
+    title: ""
+    t_max: 7200
+    ylim: [0.5, 0.935]
+    baseline_best: 0.875
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation $R^2$"
+    data:
+      dhb_combo-DBO-RF-UCB-10-10800-42:
+        label: "DBO-40"
+        color: "cyan"
+        linestyle: "-"
+        num_workers: 40
+      dhb_combo-DBO-RF-UCB-40-10800-42:
+        label: "DBO-160"
+        color: "deepskyblue"
+        linestyle: "-"
+        num_workers: 160
+      dhb_combo-DBO-RF-UCB-160-10800-42:
+        label: "DBO-640"
+        color: "navy"
+        linestyle: "-"
+        num_workers: 640
+  3-cbo-vs-dbo:
+    title: ""
+    t_max: 7200
+    ylim: [0.5, 0.935]
+    baseline_best: 0.875
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation $R^2$"
+    data:
+      dhb_combo-CBO-RF-UCB-160-10800-42:
+        label: "CBO-640"
+        color: "purple"
+        linestyle: "-"
+        num_workers: 640
+      dhb_combo-DBO-RF-UCB-160-10800-42:
+        label: "DBO-640"
+        color: "navy"
+        linestyle: "-"
+        num_workers: 640

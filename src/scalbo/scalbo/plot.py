@@ -79,8 +79,16 @@ def load_results(exp_root: str, exp_config: dict) -> dict:
                 data[exp_prefix] = dfs
         else:
             exp_results_path = os.path.join(exp_root, f"{exp_prefix}/results.csv")
-            df = pd.read_csv(exp_results_path)
-            df = rename_column(df)
+            df = pd.read_csv(exp_results_path, index_col=0)
+            subdf = df.dropna().reset_index(drop=True)
+
+            print(f"Rows dropped with NA: {(len(df) - len(subdf))/len(df)*100}%")
+            df = rename_column(subdf)
+            df = df.astype({"objective": "float64"})
+
+            df["timestamp_end"] = df["timestamp_end"] - df.loc[0, "timestamp_start"]
+            df["timestamp_start"] = df["timestamp_start"] - df.loc[0, "timestamp_start"]
+            df["duration"] = df["timestamp_end"] - df["timestamp_start"]
             data[exp_prefix] = df
     return data
 
@@ -354,6 +362,7 @@ def count_better(df, baseline_perf):
 
 
 def plot_objective_multi(df, exp_config, output_dir, show):
+    """Plot multiple objective curves with respect to time."""
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
     output_path = os.path.join(output_dir, output_file_name)
 
@@ -429,6 +438,143 @@ def plot_objective_multi(df, exp_config, output_dir, show):
         plt.legend(loc="lower right")
 
     plt.ylabel(exp_config.get("ylabel", "Objective"))
+    plt.xlabel("Search time (min.)")
+
+    if exp_config.get("ylim"):
+        plt.ylim(*exp_config.get("ylim"))
+
+    if exp_config.get("xlim"):
+        plt.xlim(*exp_config.get("xlim"))
+    else:
+        plt.xlim(0, exp_config["t_max"])
+
+    if exp_config.get("yscale"):
+        plt.yscale(exp_config.get("yscale"))
+
+    plt.grid()
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=360)
+    if show:
+        plt.show()
+    plt.close()
+
+
+def process_for_test_objective(df, 
+                               mode="max", 
+                               max_budget=None):
+    assert mode in ["min", "max"]
+    
+    if df.objective.dtype != np.float64:
+        m = df.objective.str.startswith("F")
+        df.loc[m,"objective"] = df.loc[m,"objective"].replace("F", "-1000000")
+        df = df.astype({"objective": float})
+        
+    if mode == "min":
+        df["objective"] = np.negative(df["objective"])
+        if "m:objective_val" in df.columns:
+            df["m:objective_val"] = np.negative(df["m:objective_val"])
+        df["m:objective_test"] = np.negative(df["m:objective_test"])
+
+
+    if mode == "max":
+        df["objective_cummax"] = df["objective"].cummax()
+    else:
+        df["objective_cummax"] = df["objective"].cummin()
+        
+    df["m:budget_cumsum"] = df["m:budget"].cumsum()
+    df["idx"] = df.index
+    df = df.merge(df.groupby("objective_cummax")[["idx"]].first().reset_index(), on="objective_cummax")
+    df.rename(columns={"idx_y": "max_idx"}, inplace=True)
+    df.index  = df.idx_x.values
+    del df["idx_x"]
+    
+    for idx in df["max_idx"]:
+        if df.loc[idx, "m:budget"] < max_budget:
+            df.loc[idx, "m:budget_cumsum"] = df.loc[idx, "m:budget_cumsum"] + max_budget
+                
+    return df
+
+
+def plot_test_objective_multi(df, exp_config, output_dir, show):
+    """Plot multiple test objective curves with respect to time."""
+    output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
+    output_path = os.path.join(output_dir, output_file_name)
+
+    plt.figure()
+
+    for exp_name, exp_df in df.items():
+
+        if "rep" in exp_config["data"][exp_name]:
+
+            exp_dfs = exp_df
+
+            T = np.linspace(0, exp_config["t_max"], 50000)
+
+            y_list = []
+            for i, df_i in enumerate(exp_dfs):
+                df_i = df_i.sort_values("timestamp_end")
+                x, y = df_i.timestamp_end.to_numpy(), df_i.objective.cummin().to_numpy()
+                f = interp1d(x, y, kind="previous", fill_value="extrapolate")
+                y = f(T)
+                y_list.append(y)
+
+            y_list = np.asarray(y_list)
+            y_mean = y_list.mean(axis=0)
+            y_std = y_list.std(axis=0)
+            y_se = y_std / np.sqrt(y_list.shape[0])
+
+            plt.plot(
+                T,
+                y_mean,
+                label=exp_config["data"][exp_name]["label"],
+                color=exp_config["data"][exp_name]["color"],
+                linestyle=exp_config["data"][exp_name].get("linestyle", "-"),
+            )
+            plt.fill_between(
+                T,
+                y_mean - 1.96 * y_se,
+                y_mean + 1.96 * y_se,
+                facecolor=exp_config["data"][exp_name]["color"],
+                alpha=0.3,
+            )
+
+        else:
+
+            exp_df = process_for_test_objective(
+                exp_df.sort_values("timestamp_end"),
+                mode=MODE,
+                max_budget=exp_config["max_budget"],
+                )
+            x = exp_df.loc[exp_df["max_idx"]]["timestamp_end"].values
+            y = exp_df.loc[exp_df["max_idx"]][exp_config["test_objective"]].values
+
+            x = np.concatenate([x, [exp_config["t_max"]]])
+            y = np.concatenate([y, [y[-1]]])
+
+            plt.plot(
+                x,
+                y,
+                label=exp_config["data"][exp_name]["label"],
+                color=exp_config["data"][exp_name]["color"],
+                marker=exp_config["data"][exp_name].get("marker", None),
+                markevery=len(x) // 5,
+                linestyle=exp_config["data"][exp_name].get("linestyle", "-"),
+            )
+
+    ax = plt.gca()
+    ticker_freq = exp_config["t_max"] / 5
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(ticker_freq))
+    ax.xaxis.set_major_formatter(minute_major_formatter)
+
+    if exp_config.get("title") and PRINT_TITLE:
+        plt.title(exp_config.get("title"))
+
+    if MODE == "min":
+        plt.legend(loc="upper right")
+    else:
+        plt.legend(loc="lower right")
+
+    plt.ylabel("Test Objective")
     plt.xlabel("Search time (min.)")
 
     if exp_config.get("ylim"):
@@ -640,104 +786,6 @@ def plot_objective_multi_budget(df, exp_config, output_dir, show):
     plt.close()
 
 
-def plot_objective_test_multi_budget(df, exp_config, output_dir, show):
-    output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
-    output_path = os.path.join(output_dir, output_file_name)
-
-    default_budget = exp_config.get("default_budget", 1)
-
-    plt.figure()
-
-    for exp_name, exp_df in df.items():
-
-        if "rep" in exp_config["data"][exp_name]:
-
-            exp_dfs = exp_df
-
-            x_space = np.arange(1, 200 * default_budget)
-
-            y_list = []
-            x_max_i = 0
-            for i, df_i in enumerate(exp_dfs):
-                df_i = df_i.sort_values("timestamp_end")
-
-                if "m:budget" not in df_i.columns:
-                    df_i["m:budget"] = default_budget
-                x = df_i["m:budget"].cumsum().to_numpy()
-                x_max_i = max(x[-1], x_max_i)
-
-                y = df_i.objective.cummax().to_numpy()
-                f = interp1d(x, y, kind="previous", fill_value="extrapolate")
-                y = f(x_space)
-
-                y = -y if MODE == "min" else y
-                y_list.append(y)
-
-            y_list = np.asarray(y_list)
-            y_list = y_list[:, :x_max_i]
-            y_mean = y_list.mean(axis=0)
-            y_stde = y_list.std(axis=0) / np.sqrt(len(y_list))
-
-            plt_kwargs = dict(
-                color=exp_config["data"][exp_name]["color"],
-                linestyle=exp_config["data"][exp_name].get("linestyle", "-"),
-            )
-
-            plt_kwargs["label"] = exp_config["data"][exp_name]["label"]
-
-            plt.plot(x_space[:x_max_i], y_mean, **plt_kwargs)
-            plt.fill_between(
-                x_space[:x_max_i],
-                y_mean - y_stde,
-                y_mean + y_stde,
-                alpha=0.25,
-                color=exp_config["data"][exp_name]["color"],
-            )
-
-        else:
-            exp_df = exp_df.sort_values("timestamp_end")
-            if "m:budget" not in exp_df.columns:
-                exp_df["m:budget"] = default_budget
-            x = exp_df["m:budget"].cumsum()
-
-            y = exp_df.objective.cummax().to_numpy()
-
-            y = -y if MODE == "min" else y
-
-            plt.plot(
-                x,
-                y,
-                label=exp_config["data"][exp_name]["label"],
-                color=exp_config["data"][exp_name]["color"],
-                linestyle=exp_config["data"][exp_name].get("linestyle", "-"),
-            )
-
-    if exp_config.get("title") and PRINT_TITLE:
-        plt.title(exp_config.get("title"))
-
-    plt.legend()
-    plt.ylabel(exp_config.get("ylabel", "Objective"))
-    plt.xlabel("Budget")
-
-    if exp_config.get("ylim"):
-        plt.ylim(*exp_config.get("ylim"))
-
-    # plt.xlim(0)
-
-    if exp_config.get("xscale"):
-        plt.xscale(exp_config.get("xscale"))
-        # plt.xlim(10)
-
-    if exp_config.get("yscale"):
-        plt.yscale(exp_config.get("yscale"))
-
-    plt.grid()
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=360)
-    if show:
-        plt.show()
-    plt.close()
-
 
 def plot_objective_multi_duration(df, exp_config, output_dir, show):
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
@@ -755,7 +803,7 @@ def plot_objective_multi_duration(df, exp_config, output_dir, show):
             for i, df_i in enumerate(exp_dfs):
                 exp_dfs[i] = df_i.sort_values("timestamp_end")
 
-                x = exp_dfs[i]["m:duration"].cumsum().to_numpy()
+                x = exp_dfs[i]["duration"].cumsum().to_numpy()
                 x_space.append(x)
 
             x_space = np.sort(np.concatenate(x_space))
@@ -763,7 +811,7 @@ def plot_objective_multi_duration(df, exp_config, output_dir, show):
             y_list = []
             for i, df_i in enumerate(exp_dfs):
 
-                x = df_i["m:duration"].cumsum().to_numpy()
+                x = df_i["duration"].cumsum().to_numpy()
                 y = df_i.objective.cummax().to_numpy()
 
                 x = np.concatenate([[0.001], x])
@@ -798,7 +846,7 @@ def plot_objective_multi_duration(df, exp_config, output_dir, show):
         else:
             exp_df = exp_df.sort_values("timestamp_end")
 
-            x = exp_df["m:duration"].cumsum().to_numpy()
+            x = exp_df["duration"].cumsum().to_numpy()
             y = exp_df.objective.cummax().to_numpy()
 
             y = -y if MODE == "min" else y
@@ -888,7 +936,7 @@ def plot_utilization_multi(df, exp_config, output_dir, show):
 
     for exp_name, exp_df in df.items():
 
-        num_workers = compute_num_workers(exp_name)
+        num_workers = compute_num_workers(exp_name, exp_config)
 
         if "rep" in exp_config["data"][exp_name]:
             exp_dfs = exp_df
@@ -963,68 +1011,6 @@ def plot_utilization_multi(df, exp_config, output_dir, show):
     if show:
         plt.show()
     plt.close()
-
-
-# def plot_strong_scaling(df, exp_config, output_dir, show):
-#     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
-#     output_path = os.path.join(output_dir, output_file_name)
-
-#     infos = {}
-#     base_exp_name = None
-
-#     plt.figure()
-
-#     for exp_name, exp_df in df.items():
-
-#         if "rep" in exp_config["data"][exp_name]:
-#             exp_dfs = exp_df
-#         else:
-#             infos[exp_name] = {}
-
-#             infos[exp_name]["num_evaluations"] = len(exp_df)
-
-#             num_workers = compute_num_workers(exp_name)
-#             infos[exp_name]["num_workers"] = num_workers
-
-#             # available compute time
-#             T_avail = exp_config["t_max"] * num_workers
-#             T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
-#             infos[exp_name]["utilization"] = T_eff/T_avail
-
-#             if exp_config.get("baseline", False):
-#                 base_exp_name = exp_name
-
-#     # baseline
-#     base_num_workers = infos[base_exp_name]["num_workers"]
-#     base_num_evaluations = infos[base_exp_name]["num_evaluations"] / base_num_workers
-#     num_workers = [2**i for i in range(13)]
-#     linear_scaling = [base_num_evaluations*w for w in num_workers]
-
-#     plt.plot(num_workers, linear_scaling, linestyle="--", color="black", label="baseline")
-
-#     for exp_name, exp_infos in df.items():
-
-#             infos[exp_name] = {}
-
-#             infos[exp_name]["num_evaluations"] = len(exp_df)
-
-#             num_workers = compute_num_workers(exp_name)
-#             infos[exp_name]["num_workers"] = num_workers
-
-#             # available compute time
-#             T_avail = exp_config["t_max"] * num_workers
-#             T_eff = float((exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum())
-#             infos[exp_name]["utilization"] = T_eff/T_avail
-
-#             if exp_config.get("baseline", False):
-#                 base_exp = exp_name
-
-#     plt.grid()
-#     plt.tight_layout()
-#     plt.savefig(output_path, dpi=360)
-#     if show:
-#         plt.show()
-#     plt.close()
 
 
 def write_infos(df, exp_config, output_dir):
@@ -1109,9 +1095,7 @@ def write_infos(df, exp_config, output_dir):
 
             # available compute time
             T_avail = t_max * num_workers
-            T_eff = float(
-                (exp_df.timestamp_end - exp_df.timestamp_start).to_numpy().sum()
-            )
+            T_eff = float(exp_df.duration.to_numpy().sum())
             infos[exp_name]["utilization"] = T_eff / T_avail
 
             # compute best objective found
@@ -1125,15 +1109,6 @@ def write_infos(df, exp_config, output_dir):
 
             infos[exp_name]["best_objective"] = float(obj_best)
             infos[exp_name]["best_objective_timestamp"] = float(obj_best_timestamp)
-
-    #         if exp_config.get("baseline", False):
-    #             base_exp_name = exp_name
-
-    # # baseline
-    # base_num_workers = infos[base_exp_name]["num_workers"]
-    # base_num_evaluations = infos[base_exp_name]["num_evaluations"] / base_num_workers
-    # num_workers = [2**i for i in range(13)]
-    # linear_scaling = [base_num_evaluations*w for w in num_workers]
 
     yaml_dump(output_path, infos)
 
@@ -1201,14 +1176,15 @@ def generate_figures(config):
     FILE_EXTENSION = config.get("format", "png")
 
     plots = {
-        "scatter-iter": plot_scatter_multi_iter,
-        "scatter-budget": plot_scatter_multi_budget,
+        # "scatter-iter": plot_scatter_multi_iter,
+        # "scatter-budget": plot_scatter_multi_budget,
         "scatter-time": plot_scatter_multi,
-        "objective-iter": plot_objective_multi_iter,
+        # "objective-iter": plot_objective_multi_iter,
         "objective-time": plot_objective_multi,
-        "objective-budget": plot_objective_multi_budget,
-        "objective-test-budget": plot_objective_test_multi_budget,
-        "objective-duration": plot_objective_multi_duration,
+        "test-objective-time": plot_test_objective_multi,
+        # "objective-budget": plot_objective_multi_budget,
+        # "objective-test-budget": plot_objective_test_multi_budget,
+        # "objective-duration": plot_objective_multi_duration,
         "utilization": plot_utilization_multi,
     }
     plot_functions = {plots[k] for k in config.get("plots", plots.keys())}

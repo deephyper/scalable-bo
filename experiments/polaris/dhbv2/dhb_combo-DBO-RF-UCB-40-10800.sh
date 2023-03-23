@@ -63,6 +63,6 @@ mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --log-dir $log_dir \
     --pruning-strategy $pruning_strategy \
     --timeout $timeout \
-    --max-steps 100 \
+    --max-steps 50 \
     --interval-steps 1 \
     --filter-duplicated 1

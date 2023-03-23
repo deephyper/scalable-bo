@@ -43,8 +43,8 @@ popd
 
 sleep 5
 
-export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
-mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
+# export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
+# mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
 
 export RANKS_HOSTS=$(python ../get_hosts_polaris.py $PBS_NODEFILE)
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=10:system=polaris
+#PBS -l select=40:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=03:10:00
 #PBS -q prod
@@ -20,7 +20,7 @@ export model="RF"
 export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
-export pruning_strategy="NONE"
+export pruning_strategy="SHA"
 export objective_scaler="minmaxlog"
 export timeout=10800
 export random_state=42
@@ -44,8 +44,8 @@ popd
 
 sleep 5
 
-export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
-mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
+# export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
+# mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
 
 mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --depth=${NDEPTH} \

@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=10:system=polaris
+#PBS -l select=496:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=03:10:00
 #PBS -q prod
@@ -44,8 +44,8 @@ popd
 
 sleep 5
 
-export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
-mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
+# export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
+# mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
 
 mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --depth=${NDEPTH} \

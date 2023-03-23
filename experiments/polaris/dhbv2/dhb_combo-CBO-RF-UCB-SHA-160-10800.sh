@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=10:system=polaris
+#PBS -l select=160:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=03:10:00
 #PBS -q prod
@@ -15,12 +15,12 @@ source ../../../build/activate-dhenv.sh
 
 #!!! CONFIGURATION - START
 export problem="dhb_combo"
-export search="DBO"
+export search="CBO"
 export model="RF"
 export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
-export pruning_strategy="NONE"
+export pruning_strategy="SHA"
 export objective_scaler="minmaxlog"
 export timeout=10800
 export random_state=42
@@ -29,9 +29,8 @@ export random_state=42
 export NDEPTH=16
 export NRANKS_PER_NODE=4
 export NNODES=`wc -l < $PBS_NODEFILE`
-export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
+export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE + 1))
 export OMP_NUM_THREADS=$NDEPTH
-
 
 export log_dir="output/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state"
 mkdir -p $log_dir
@@ -44,12 +43,12 @@ popd
 
 sleep 5
 
-export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
-mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
+# export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
+# mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
 
-mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
-    --depth=${NDEPTH} \
-    --cpu-bind depth \
+export RANKS_HOSTS=$(python ../get_hosts_polaris.py $PBS_NODEFILE)
+
+mpiexec -n ${NTOTRANKS} -host ${RANKS_HOSTS} \
     --envall \
     ../set_affinity_gpu_polaris.sh python -m scalbo.exp --problem $problem \
     --search $search \

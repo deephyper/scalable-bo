@@ -1,41 +1,76 @@
 import argparse
+import inspect
 import os
 import pathlib
 
 import matplotlib
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-import yaml
-import pandas as pd
-import inspect
-from scipy import stats
-from scipy.interpolate import interp1d
 import numpy as np
+import pandas as pd
+import yaml
+from scipy.interpolate import interp1d
 
 try:
-    from yaml import CLoader as Loader
     from yaml import CDumper as Dumper
+    from yaml import CLoader as Loader
 except ImportError:
-    from yaml import Loader, Dumper
+    from yaml import Dumper, Loader
 
-# width = 10
-width = 5
-height = width / 1.618
-# height = width * 0.5
+def set_size(width, fraction=1):
+    """Set figure dimensions to avoid scaling in LaTeX.
+    
+    From: https://jwalton.info/Embed-Publication-Matplotlib-Latex/
+    
+    Parameters
+    ----------
+    width: float
+            Document textwidth or columnwidth in pts
+    fraction: float, optional
+            Fraction of the width which you wish the figure to occupy
 
-matplotlib.rcParams.update(
-    {
-        "font.size": 10,
-        "figure.figsize": (width, height),
-        "figure.facecolor": "white",
-        "savefig.dpi": 360,
-        # "figure.subplot.bottom": 0.125,
-        "figure.edgecolor": "white",
-        "xtick.labelsize": 10,
-        "ytick.labelsize": 10,
-        "legend.fontsize": 8,
-    }
-)
+    Returns
+    -------
+    fig_dim: tuple
+            Dimensions of figure in inches
+    """
+    # Width of figure (in pts)
+    fig_width_pt = width * fraction
+
+    # Convert from pt to inches
+    inches_per_pt = 1 / 72.27
+
+    # Golden ratio to set aesthetic figure height
+    # https://disq.us/p/2940ij3
+    golden_ratio = (5**.5 - 1) / 2
+
+    # Figure width in inches
+    fig_width_in = fig_width_pt * inches_per_pt
+    # Figure height in inches
+    fig_height_in = fig_width_in * golden_ratio
+
+    fig_dim = (fig_width_in, fig_height_in)
+
+    return fig_dim
+
+width, height = set_size(252, fraction=1.0)
+print(f"{width=}, {height=}")
+
+font = 9
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+plt.rcParams.update({
+    'font.size': font,
+    'figure.figsize': (width, height), 
+    'figure.facecolor': 'white', 
+    'savefig.dpi': 300, 
+    'figure.subplot.bottom': 0.125, 
+    'figure.edgecolor': 'white',
+    'xtick.labelsize': font,
+    'ytick.labelsize': font,
+    'legend.fontsize': font,
+})
+
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FILE_EXTENSION = "pdf"
@@ -127,7 +162,7 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
                 x, y = exp_df.timestamp_end.to_numpy(), -exp_df.objective.to_numpy()
 
                 plt_kwargs = dict(
-                    color=exp_config["data"][exp_name]["color"], s=10, alpha=0.5
+                    color=exp_config["data"][exp_name]["color"], s=2, alpha=0.5
                 )
                 if i == 0:
                     plt_kwargs["label"] = exp_config["data"][exp_name]["label"]
@@ -136,23 +171,31 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
         else:
             x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
 
+            x = x + 1
+            y = 1 - y
+
             plt.scatter(
                 x,
                 y,
                 color=exp_config["data"][exp_name]["color"],
                 label=exp_config["data"][exp_name]["label"],
-                s=10,
-                alpha=0.5,
+                s=1,
+                alpha=0.2,
             )
 
     ax = plt.gca()
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(360))
+    ticker_freq = exp_config["t_max"] / 5
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(ticker_freq))
     ax.xaxis.set_major_formatter(minute_major_formatter)
 
     if exp_config.get("title") and PRINT_TITLE:
         plt.title(exp_config.get("title"))
 
-    plt.legend()
+    lgnd = plt.legend()
+    for i in range(len(lgnd.legend_handles)):
+        lgnd.legend_handles[i]._sizes = [10]
+        lgnd.legend_handles[i]._alpha = 1
+
     plt.ylabel(exp_config.get("ylabel", "Objective"))
     plt.xlabel("Search time (min.)")
 
@@ -495,6 +538,18 @@ def process_for_test_objective(df,
     return df
 
 
+def aulc(x, y):
+    """Compute the area under the learning curve (AULC)."""
+    assert len(x) == len(y)
+    a = 0
+    # # x_min = 10 * 60 # average duration of random architecture
+    x_min = 0
+    x_max = x.max()
+    for i in range(0,len(x)-1):
+        if x[i] >= x_min:
+            a += (x[i+1] - x[i])/(x_max-x_min) * y[i] 
+    return round(a, 3)
+
 def plot_test_objective_multi(df, exp_config, output_dir, show):
     """Plot multiple test objective curves with respect to time."""
     output_file_name = f"{inspect.stack()[0][3]}.{FILE_EXTENSION}"
@@ -548,12 +603,22 @@ def plot_test_objective_multi(df, exp_config, output_dir, show):
             x = exp_df.loc[exp_df["max_idx"]]["timestamp_end"].values
             y = exp_df.loc[exp_df["max_idx"]][exp_config["test_objective"]].values
 
-            x = np.concatenate([x, [exp_config["t_max"]]])
-            y = np.concatenate([y, [y[-1]]])
+            idx = np.unique(x, return_index=True, axis=0)[1]
 
-            plt.plot(
-                x,
-                y,
+            x = x[idx]
+            y = y[idx]
+
+            x = np.clip(np.concatenate([[0], x, [exp_config["t_max"]]]), 0, exp_config["t_max"])
+            y = np.clip(1 - np.concatenate([[0], y, [y[-1]]]), 0, 1)
+            
+            area = aulc(x, y)
+            exp_config["data"][exp_name]["AULC"] = area
+            
+            
+            plt.step(
+                x[:],
+                y[:],
+                where="post",
                 label=exp_config["data"][exp_name]["label"],
                 color=exp_config["data"][exp_name]["color"],
                 marker=exp_config["data"][exp_name].get("marker", None),
@@ -569,12 +634,13 @@ def plot_test_objective_multi(df, exp_config, output_dir, show):
     if exp_config.get("title") and PRINT_TITLE:
         plt.title(exp_config.get("title"))
 
-    if MODE == "min":
-        plt.legend(loc="upper right")
-    else:
-        plt.legend(loc="lower right")
+    # if MODE == "min":
+    #     plt.legend(loc="upper right")
+    # else:
+    #     plt.legend(loc="lower right")
+    plt.legend(loc=exp_config.get("legend", "best"))
 
-    plt.ylabel("Test Objective")
+    plt.ylabel("Test Regret")
     plt.xlabel("Search time (min.)")
 
     if exp_config.get("ylim"):
@@ -588,7 +654,8 @@ def plot_test_objective_multi(df, exp_config, output_dir, show):
     if exp_config.get("yscale"):
         plt.yscale(exp_config.get("yscale"))
 
-    plt.grid()
+    plt.grid(which="minor", color="gray", linestyle=":")
+    plt.grid(which="major", linestyle="-")
     plt.tight_layout()
     plt.savefig(output_path, dpi=360)
     if show:
@@ -653,9 +720,10 @@ def plot_objective_multi_iter(df, exp_config, output_dir, show):
 
             y = -y if MODE == "min" else y
 
-            plt.plot(
+            plt.step(
                 x,
                 y,
+                where="post",
                 label=exp_config["data"][exp_name]["label"],
                 color=exp_config["data"][exp_name]["color"],
                 linestyle=exp_config["data"][exp_name].get("linestyle", "-"),
@@ -995,7 +1063,7 @@ def plot_utilization_multi(df, exp_config, output_dir, show):
         plt.title(exp_config.get("title"))
 
     plt.legend(loc="lower left")
-    plt.ylabel("Workers Evaluating $f(x)$ (%)")
+    plt.ylabel("Effective Utilization (%)")
     plt.xlabel("Search time (min.)")
 
     if exp_config.get("xlim"):
@@ -1086,17 +1154,30 @@ def write_infos(df, exp_config, output_dir):
             else:
                 t_max = exp_df.timestamp_end.max()
 
-            exp_df = exp_df[exp_df.timestamp_end <= t_max]
+            # Completed evaluations
+            completed_cond = exp_df["timestamp_end"] <= t_max
 
-            infos[exp_name]["num_evaluations"] = len(exp_df)
+
+            infos[exp_name]["num_evaluations"] = int(completed_cond.sum())
 
             num_workers = compute_num_workers(exp_name, exp_config)
             infos[exp_name]["num_workers"] = num_workers
 
             # available compute time
             T_avail = t_max * num_workers
-            T_eff = float(exp_df.duration.to_numpy().sum())
-            infos[exp_name]["utilization"] = T_eff / T_avail
+
+            # Time consumed by workers with finished evaluations
+            T_eff0 = float(exp_df.loc[completed_cond, "duration"].to_numpy().sum())
+
+            # Time consumed by workers with unfinished evaluations
+            incomplete_cond = (exp_df["timestamp_start"] <= t_max) & (exp_df["timestamp_end"] > t_max)
+            start_times = exp_df.loc[incomplete_cond, "timestamp_start"].to_numpy()
+            end_times = exp_df.loc[incomplete_cond, "timestamp_end"].to_numpy()
+            end_times[:] = t_max
+            T_eff1 = float((end_times - start_times).sum())
+            infos[exp_name]["utilization"] = (T_eff0 + T_eff1) / T_avail
+            
+            exp_df = exp_df[completed_cond]
 
             # compute best objective found
             if MODE == "max":
@@ -1104,11 +1185,20 @@ def write_infos(df, exp_config, output_dir):
             else:
                 idx_best = exp_df.objective.argmin()
 
-            obj_best = exp_df.objective.iloc[idx_best]
+            obj_best = 1 - exp_df.objective.iloc[idx_best]
             obj_best_timestamp = exp_df.timestamp_end.iloc[idx_best]
-
+            
             infos[exp_name]["best_objective"] = float(obj_best)
+            if "test_objective" in exp_config:
+                obj_best_test = 1 - exp_df[exp_config["test_objective"]].iloc[idx_best]
+                infos[exp_name]["best_objective_test"] = round(float(obj_best_test), 3)
             infos[exp_name]["best_objective_timestamp"] = float(obj_best_timestamp)
+
+            infos[exp_name]["time_to_baseline"] = float(exp_df[exp_df["objective"] > exp_config["baseline_best"]].timestamp_end.min()/60)
+
+            infos[exp_name]["aulc"] = round(float(exp_config["data"][exp_name]["AULC"]), 3)
+            infos[exp_name]["mean_duration"] = round(float(exp_df.duration.mean()), 0)
+            infos[exp_name]["std_duration"] = round(float(exp_df.duration.std()), 0)
 
     yaml_dump(output_path, infos)
 
@@ -1180,7 +1270,7 @@ def generate_figures(config):
         # "scatter-budget": plot_scatter_multi_budget,
         "scatter-time": plot_scatter_multi,
         # "objective-iter": plot_objective_multi_iter,
-        "objective-time": plot_objective_multi,
+        # "objective-time": plot_objective_multi,
         "test-objective-time": plot_test_objective_multi,
         # "objective-budget": plot_objective_multi_budget,
         # "objective-test-budget": plot_objective_test_multi_budget,
@@ -1197,10 +1287,10 @@ def generate_figures(config):
 
         df = load_results(exp_root, exp_config)
 
-        write_infos(df, exp_config, output_dir)
-
         for plot_func in plot_functions:
             plot_func(df, exp_config, output_dir, show)
+        
+        write_infos(df, exp_config, output_dir)
 
         if "baseline_best" in exp_config:
             plot_count_better_than_best(df, exp_config, output_dir)

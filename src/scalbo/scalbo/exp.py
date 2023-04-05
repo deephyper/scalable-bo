@@ -40,10 +40,12 @@ PROBLEMS = {
     "dhb_lcdb_351": "scalbo.benchmark.dhb_lcdb_351",
     "dhb_lcdb_354": "scalbo.benchmark.dhb_lcdb_354",
     "dhb_lcdb_41150": "scalbo.benchmark.dhb_lcdb_41150",
+    "dhb_lcbench": "scalbo.benchmark.dhb_lcbench",
     "test": "scalbo.benchmark.test",
 }
 
 SEARCHES = {
+    "BO": "scalbo.search.bo",  # Serial Bayesian Optimization
     "CBO": "scalbo.search.cbo",  # Centralized Model-Based Search (Master-Worker)
     "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
     "OPT-TPE": "scalbo.search.optuna_tpe",  # TPE

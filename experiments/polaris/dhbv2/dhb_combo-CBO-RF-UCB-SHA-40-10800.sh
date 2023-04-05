@@ -32,7 +32,7 @@ export NNODES=`wc -l < $PBS_NODEFILE`
 export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE + 1))
 export OMP_NUM_THREADS=$NDEPTH
 
-export log_dir="output/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state"
+export log_dir="output/$problem-$search-$model-$acq_func-$pruning_strategy-$NNODES-$timeout-$random_state"
 mkdir -p $log_dir
 
 # Setup Redis Database

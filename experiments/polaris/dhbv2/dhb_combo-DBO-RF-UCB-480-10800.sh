@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=40:system=polaris
+#PBS -l select=480:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=03:10:00
 #PBS -q prod
@@ -20,7 +20,7 @@ export model="RF"
 export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
-export pruning_strategy="SHA"
+export pruning_strategy="NONE"
 export objective_scaler="minmaxlog"
 export timeout=10800
 export random_state=42
@@ -33,7 +33,7 @@ export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
 export OMP_NUM_THREADS=$NDEPTH
 
 
-export log_dir="output/$problem-$search-$model-$acq_func-$pruning_strategy-$NNODES-$timeout-$random_state"
+export log_dir="output/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state"
 mkdir -p $log_dir
 
 # Setup Redis Database

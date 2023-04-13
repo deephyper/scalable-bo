@@ -1,15 +1,9 @@
 #!/bin/bash
-#PBS -l select=1:system=polaris
-#PBS -l place=scatter
-#PBS -l walltime=0:20:00
-#PBS -q debug 
-#PBS -A datascience
-
-# cd ${PBS_O_WORKDIR}
 
 set -xe
 
-module load llvm
+module load PrgEnv-gnu/8.3.3
+module load llvm/release-15.0.0
 module load conda/2022-09-08
 
 conda create -p dhenv --clone base -y
@@ -32,7 +26,7 @@ spack install
 # Clone DeepHyper (develop)
 git clone -b develop git@github.com:deephyper/deephyper.git
 
-# Install DeepHyper with Redis
+# Install DeepHyper with MPI and Redis backends
 pip install -e "deephyper/[default,mpi,redis]"
 
 # Install Benchmarks
@@ -59,4 +53,4 @@ cp ../install/env/redis.conf redis.confg
 cat $(spack find --path redisjson | grep -o "/.*/redisjson.*")/redis.conf >> redis.conf
 
 # Install the Combo Benchmark
-python -c "from deephyper_benchmark import *; install("ECP-Candle/Pilot1/Combo");"
+python -c "from deephyper_benchmark import *; install('ECP-Candle/Pilot1/Combo');"

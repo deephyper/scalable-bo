@@ -1,0 +1,1129 @@
+CRAY_LMOD_MPI=cray-mpich/8.0
+SLURM_MPI_TYPE=cray_shasta
+LMOD_FAMILY_CRAYPE_NETWORK_VERSION=false
+CONDA_SHLVL=1
+PBS_ENVIRONMENT=PBS_INTERACTIVE
+MPICH_GPU_SUPPORT_ENABLED=1
+LD_LIBRARY_PATH=/soft/compilers/cudatoolkit/cuda-11.6.2/extras/CUPTI/lib64:/soft/compilers/cudatoolkit/cuda-11.6.2/lib64:/soft/libraries/trt/TensorRT-8.4.3.1.Linux.x86_64-gnu.cuda-11.6.cudnn8.4/lib:/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/lib:/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib:/soft/compilers/llvm/release-16.0.0/lib:/opt/cray/pe/gcc/11.2.0/snos/lib64:/opt/cray/pe/papi/6.0.0.14/lib64:/opt/cray/libfabric/1.11.0.4.125/lib64
+CRAYPE_LINK_TYPE=dynamic
+LS_COLORS=no=00:fi=00:di=01;34:ln=00;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=41;33;01:ex=00;32:*.cmd=00;32:*.exe=01;32:*.com=01;32:*.bat=01;32:*.btm=01;32:*.dll=01;32:*.tar=00;31:*.tbz=00;31:*.tgz=00;31:*.rpm=00;31:*.deb=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.lzma=00;31:*.zip=00;31:*.zoo=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.tb2=00;31:*.tz2=00;31:*.tbz2=00;31:*.xz=00;31:*.avi=01;35:*.bmp=01;35:*.dl=01;35:*.fli=01;35:*.gif=01;35:*.gl=01;35:*.jpg=01;35:*.jpeg=01;35:*.mkv=01;35:*.mng=01;35:*.mov=01;35:*.mp4=01;35:*.mpg=01;35:*.pcx=01;35:*.pbm=01;35:*.pgm=01;35:*.png=01;35:*.ppm=01;35:*.svg=01;35:*.tga=01;35:*.tif=01;35:*.webm=01;35:*.webp=01;35:*.wmv=01;35:*.xbm=01;35:*.xcf=01;35:*.xpm=01;35:*.aiff=00;32:*.ape=00;32:*.au=00;32:*.flac=00;32:*.m4a=00;32:*.mid=00;32:*.mp3=00;32:*.mpc=00;32:*.ogg=00;32:*.voc=00;32:*.wav=00;32:*.wma=00;32:*.wv=00;32:
+CONDA_EXE=/soft/datascience/conda/2022-09-08/mconda3/bin/conda
+HOSTTYPE=x86_64
+CRAY_DSMML_ROOTDIR=/opt/cray/pe/dsmml/0.2.2
+REDIS_CONF=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/redis.conf
+PBS_O_LANG=en_US.UTF-8
+MPI4JAX_USE_CUDA_MPI=1
+LMOD_FAMILY_CRAYPE_ACCEL=craype-accel-nvidia80
+CRAY_DSMML_DIR=/opt/cray/pe/dsmml/0.2.2/dsmml
+__LMOD_REF_COUNT_PATH=/soft/compilers/cudatoolkit/cuda-11.6.2/bin:1;/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/include:1;/opt/cray/pe/pals/1.1.7/bin:1;/opt/cray/pe/craype/2.7.15/bin:1;/soft/compilers/llvm/release-16.0.0/share/clang:1;/soft/compilers/llvm/release-16.0.0/bin:1;/opt/cray/pe/gcc/11.2.0/bin:1;/opt/cray/pe/perftools/22.05.0/bin:1;/opt/cray/pe/papi/6.0.0.14/bin:1;/opt/cray/libfabric/1.11.0.4.125/bin:1;/opt/clmgr/sbin:1;/opt/clmgr/bin:1;/opt/sgi/sbin:1;/opt/sgi/bin:1;/usr/local/bin:1;/usr/bin:1;/bin:2;/opt/c3/bin:1;/usr/lib/mit/bin:1;/usr/lib/mit/sbin:1;/opt/pbs/bin:1;/sbin:1;/home/USER/bin:1;/opt/cray/pe/bin:1
+_ModuleTable002_=Z251LzguMy4zLmx1YSIsWyJmdWxsTmFtZSJdPSJQcmdFbnYtZ251LzguMy4zIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJQcmdFbnYtZ251Iix9LGNvbmRhPXtbImZuIl09Ii9zb2Z0L21vZHVsZWZpbGVzL2NvbmRhLzIwMjItMDktMDgubHVhIixbImZ1bGxOYW1lIl09ImNvbmRhLzIwMjItMDktMDgiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY29uZGEvMjAyMi0wOS0wOCIsfSxbImNyYXktZHNtbWwiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1
+PE_MPICH_GTL_DIR_amd_gfx90a=-L/opt/cray/pe/mpich/8.1.16/gtl/lib
+SPACK_PYTHON=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/dhenv/bin/python3
+LESSCLOSE=lessclose.sh %s %s
+CRAY_LD_LIBRARY_PATH=/opt/cray/pe/pmi/6.1.2/lib:/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1/lib:/opt/cray/pe/mpich/8.1.16/gtl/lib:/opt/cray/pe/dsmml/0.2.2/dsmml/lib:/opt/cray/pe/perftools/22.05.0/lib64
+XKEYSYMDB=/usr/X11R6/lib/X11/XKeysymDB
+PE_ENV=GNU
+__LMOD_REF_COUNT_PE_DSMML_PKGCONFIG_LIBS=dsmml:1
+__LMOD_REF_COUNT_PE_FORTRAN_PKGCONFIG_LIBS=mpichf90:1
+LMOD_FAMILY_CRAYPE_CPU=craype-x86-rome
+CRAYPAT_LD_LIBRARY_PATH=/opt/cray/pe/gcc-libs:/opt/cray/gcc-libs:/opt/cray/pe/perftools/22.05.0/lib64
+GCC_PREFIX=/opt/cray/pe/gcc/11.2.0
+CRAY_LMOD_COMPILER=gnu/8.0
+CRAY_DSMML_PREFIX=/opt/cray/pe/dsmml/0.2.2/dsmml
+PE_PRODUCT_LIST=CRAY_PMI:CRAYPE:CRAYPE_X86_ROME:PERFTOOLS:CRAYPAT:CRAY_ACCEL
+LMOD_FAMILY_MPI_VERSION=8.1.16
+CRAYPAT_ROOT=/opt/cray/pe/perftools/22.05.0
+_=/usr/bin/env
+PE_PERFTOOLS_MPICH_LIBDIR=/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1/lib
+PE_MPICH_GTL_DIR_amd_gfx906=-L/opt/cray/pe/mpich/8.1.16/gtl/lib
+LANG=en_US.UTF-8
+TZ=Etc/UTC
+PE_MPICH_GTL_DIR_amd_gfx908=-L/opt/cray/pe/mpich/8.1.16/gtl/lib
+PE_DSMML_MODULE_NAME=cray-dsmml
+WINDOWMANAGER=xterm
+_ModuleTable008_=L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdC9jcmF5cGUteDg2LXJvbWUubHVhIixbImZ1bGxOYW1lIl09ImNyYXlwZS14ODYtcm9tZSIsWyJsb2FkT3JkZXIiXT0xLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZS14ODYtcm9tZSIsfSxnY2M9e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9nY2MvMTEuMi4wLmx1YSIsWyJmdWxsTmFtZSJdPSJnY2MvMTEuMi4wIixbImxvYWRPcmRlciJdPTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iZ2NjLzExLjIuMCIsfSxsaWJmYWJyaWM9e1si
+LESS=-M -I -R
+PE_MPICH_GTL_LIBS_nvidia70=-lmpi_gtl_cuda
+LMOD_FAMILY_COMPILER_VERSION=11.2.0
+HOSTNAME=x3111c0s13b0n0
+LMOD_SYSTEM_DEFAULT_MODULES=craype-x86-rome:craype-network-ofi:perftools-base:PrgEnv-nvhpc:craype-accel-nvidia80
+OLDPWD=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo
+PBS_O_HOME=/home/USER
+__LMOD_REF_COUNT__LMFILES_=/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-x86-rome.lua:1;/soft/modulefiles/libfabric/1.11.0.4.125:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-network-ofi.lua:1;/opt/cray/pe/lmod/modulefiles/core/perftools-base/22.05.0.lua:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-accel-nvidia80.lua:1;/opt/cray/pe/lmod/modulefiles/core/gcc/11.2.0.lua:1;/soft/modulefiles/llvm/release-16.0.0.lua:1;/opt/cray/pe/lmod/modulefiles/core/craype/2.7.15.lua:1;/opt/cray/pe/lmod/modulefiles/core/cray-dsmml/0.2.2.lua:1;/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0/cray-mpich/8.1.16.lua:1;/opt/cray/pe/lmod/modulefiles/core/cray-pmi/6.1.2.lua:1;/opt/cray/pe/lmod/modulefiles/core/cray-pmi-lib/6.0.17.lua:1;/opt/cray/pe/lmod/modulefiles/core/cray-pals/1.1.7.lua:1;/opt/cray/pe/lmod/modulefiles/core/cray-libpals/1.1.7.lua:1;/opt/cray/pe/lmod/modulefiles/core/PrgEnv-gnu/8.3.3.lua:1;/soft/modulefiles/conda/2022-09-08.lua:1
+CSHEDIT=emacs
+PBS_JOBID=479626.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov
+GPG_TTY=/dev/pts/0
+LESS_ADVANCED_PREPROCESSOR=no
+__LMOD_REF_COUNT_PE_MPICH_GENCOMPILERS_GNU=9.1:1
+COLORTERM=1
+SPACK_ENV=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson
+PBS_JOBNAME=STDIN
+_ModuleTable007_=ODAiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5cGUtYWNjZWwtbnZpZGlhODAiLH0sWyJjcmF5cGUtbmV0d29yay1vZmkiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jcmF5cGUtdGFyZ2V0cy9kZWZhdWx0L2NyYXlwZS1uZXR3b3JrLW9maS5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheXBlLW5ldHdvcmstb2ZpIixbImxvYWRPcmRlciJdPTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3JheXBlLW5ldHdvcmstb2ZpIix9LFsiY3JheXBlLXg4Ni1yb21lIl09e1siZm4iXT0iL29wdC9jcmF5
+CRAY_PERFTOOLS_VERSION=22.05.0
+NCPUS=1
+CONDA_PREFIX=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/dhenv
+ENV_NAME=conda/2022-09-08
+LMOD_FAMILY_CRAYPE_NETWORK=craype-network-ofi
+LMOD_FAMILY_CRAYPE_VERSION=2.7.15
+APP2_STATE=22.05.0
+MACHTYPE=x86_64-suse-linux
+__LMOD_REF_COUNT_LD_LIBRARY_PATH=/soft/compilers/cudatoolkit/cuda-11.6.2/extras/CUPTI/lib64:1;/soft/compilers/cudatoolkit/cuda-11.6.2/lib64:1;/soft/libraries/trt/TensorRT-8.4.3.1.Linux.x86_64-gnu.cuda-11.6.cudnn8.4/lib:1;/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/lib:1;/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib:1;/soft/compilers/llvm/release-16.0.0/lib:1;/opt/cray/pe/gcc/11.2.0/snos/lib64:1;/opt/cray/pe/papi/6.0.0.14/lib64:1;/opt/cray/libfabric/1.11.0.4.125/lib64:1
+__LMOD_REF_COUNT_PKG_CONFIG_PATH=/opt/cray/pe/pals/1.1.7/lib/pkgconfig:1;/opt/cray/pe/pmi/6.1.2/lib/pkgconfig:1;/opt/cray/pe/dsmml/0.2.2/dsmml/lib/pkgconfig:1;/opt/cray/pe/craype/2.7.15/pkg-config:1;/opt/cray/libfabric/1.11.0.4.125/lib64/pkgconfig:1
+PBS_O_PATH=/opt/cray/pe/pals/1.1.7/bin:/opt/cray/pe/craype/2.7.15/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/21.9/compilers/extras/qd/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/21.9/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/21.9/cuda/bin:/opt/cray/pe/perftools/22.05.0/bin:/opt/cray/pe/papi/6.0.0.14/bin:/opt/cray/libfabric/1.11.0.4.125/bin:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/usr/local/bin:/usr/bin:/bin:/opt/c3/bin:/dbhome/db2cat/sqllib/bin:/dbhome/db2cat/sqllib/adm:/dbhome/db2cat/sqllib/misc:/dbhome/db2cat/sqllib/gskit/bin:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/sbin:/opt/cray/pe/bin:/home/USER/bin
+GNU_VERSION=11.2.0
+PE_PKGCONFIG_PRODUCTS=PE_PALS:PE_PMI:PE_MPICH:PE_DSMML
+CRAY_MPICH_BASEDIR=/opt/cray/pe/mpich/8.1.16/ofi
+LIBOMP_USE_HIDDEN_HELPER_TASK=0
+PE_MPICH_GTL_DIR_nvidia80=-L/opt/cray/pe/mpich/8.1.16/gtl/lib
+_ModuleTable004_=e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29tbmV0L2dudS84LjAvb2ZpLzEuMC9jcmF5LW1waWNoLzguMS4xNi5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheS1tcGljaC84LjEuMTYiLFsibG9hZE9yZGVyIl09MTAscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3JheS1tcGljaCIsfSxbImNyYXktcGFscyJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheS1wYWxzLzEuMS43Lmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5LXBhbHMvMS4xLjciLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsi
+MINICOM=-c on
+PAT_BUILD_PAPI_LIBDIR=/opt/cray/pe/papi/6.0.0.14/lib64
+C3_RSH=ssh -oConnectTimeout=10 -oForwardX11=no
+PE_MPICH_PKGCONFIG_VARIABLES=PE_MPICH_GTL_DIR_@accelerator@:PE_MPICH_GTL_LIBS_@accelerator@
+_CE_M=
+PE_MPICH_PKGCONFIG_LIBS=mpich
+LMOD_FAMILY_PYTHON=conda
+QT_SYSTEM_DIR=/usr/share/desktop-data
+OSTYPE=linux
+XLA_PYTHON_CLIENT_PREALLOCATE=false
+LIBOMPTARGET_MAP_FORCE_ATOMIC=FALSE
+CRAY_DSMML_VER=0.2.2
+PBS_O_WORKDIR=/home/USER
+USER=USER
+PAGER=less
+LMOD_FAMILY_PRGENV_VERSION=8.3.3
+LMOD_FAMILY_PYTHON_VERSION=2022-09-08
+_ModuleTable012_=bGVzIiwiL29wdC9tb2R1bGVmaWxlcyIsIi9vcHQvY3JheS9tb2R1bGVmaWxlcyIsfSxbInN5c3RlbUJhc2VNUEFUSCJdPSIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmU6L29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdDovc29mdC9tb2R1bGVmaWxlczovb3B0L21vZHVsZWZpbGVzOi9vcHQvY3JheS9tb2R1bGVmaWxlcyIsfQ==
+CRAY_CPU_TARGET=x86-rome
+PBS_NODEFILE=/var/spool/pbs/aux/479626.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov
+PKGCONFIG_ENABLED=1
+__LMOD_REF_COUNT_MODULEPATH=/opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0:1;/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0:1;/opt/cray/pe/lmod/modulefiles/mix_compilers:1;/opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0:1;/opt/cray/pe/lmod/modulefiles/perftools/22.05.0:1;/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:1;/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:1;/usr/share/modulefiles/Linux:1;/usr/share/modulefiles/Core:1;/usr/share/lmod/lmod/modulefiles/Core:1;/opt/cray/pe/lmod/modulefiles/core:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default:1;/soft/modulefiles:1;/opt/modulefiles:1;/opt/cray/modulefiles:1
+MORE=-sl
+CRAY_PERFTOOLS_PREFIX=/opt/cray/pe/perftools/22.05.0
+PE_FORTRAN_PKGCONFIG_LIBS=mpichf90
+__LMOD_REF_COUNT_LOADEDMODULES=craype-x86-rome:1;libfabric/1.11.0.4.125:1;craype-network-ofi:1;perftools-base/22.05.0:1;craype-accel-nvidia80:1;gcc/11.2.0:1;llvm/release-16.0.0:1;craype/2.7.15:1;cray-dsmml/0.2.2:1;cray-mpich/8.1.16:1;cray-pmi/6.1.2:1;cray-pmi-lib/6.0.17:1;cray-pals/1.1.7:1;cray-libpals/1.1.7:1;PrgEnv-gnu/8.3.3:1;conda/2022-09-08:1
+__LMOD_REF_COUNT_CRAY_LD_LIBRARY_PATH=/opt/cray/pe/pmi/6.1.2/lib:1;/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1/lib:1;/opt/cray/pe/mpich/8.1.16/gtl/lib:1;/opt/cray/pe/dsmml/0.2.2/dsmml/lib:1;/opt/cray/pe/perftools/22.05.0/lib64:1
+PBS_TASKNUM=1
+GCC_VERSION=11.2.0
+PWD=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/sc23-artifacts
+PE_MPICH_GTL_DIR_nvidia70=-L/opt/cray/pe/mpich/8.1.16/gtl/lib
+CRAY_TCMALLOC_MEMFS_FORCE=1
+HOME=/home/USER
+CRAY_PMI_INCLUDE_OPTS=-I/opt/cray/pe/pmi/6.1.2/include
+CONDA_PYTHON_EXE=/soft/datascience/conda/2022-09-08/mconda3/bin/python
+CRAY_ACCEL_VENDOR=nvidia
+PELOCAL_PRGENV=true
+__LMOD_REF_COUNT_PE_PALS_PKGCONFIG_LIBS=libpals:1
+CMAKE_PREFIX_PATH=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view
+HOST=x3111c0s13b0n0
+__LMOD_REF_COUNT_PE_PMI_PKGCONFIG_LIBS=cray-pmi:2
+__LMOD_REF_COUNT_PE_GNU_FIXED_PKGCONFIG_PATH=/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1/lib/pkgconfig:1
+LMOD_VERSION=8.3.1
+CUDA_HOME=/soft/compilers/cudatoolkit/cuda-11.6.2
+XNLSPATH=/usr/X11R6/lib/X11/nls
+PE_MPICH_FORTRAN_PKGCONFIG_LIBS=mpichf90
+PBS_MOMPORT=15003
+__LMOD_REF_COUNT_INFOPATH=/opt/cray/pe/gcc/11.2.0/snos/share/info:1
+CRAY_LMOD_CPU=x86-rome/1.0
+PE_MPICH_GTL_LIBS_nvidia80=-lmpi_gtl_cuda
+https_proxy=http://proxy.alcf.anl.gov:3128
+LMOD_FAMILY_CRAYPE_CPU_VERSION=false
+GCC_PATH=/opt/cray/pe/gcc/11.2.0
+BASH_ENV=/usr/share/lmod/lmod/init/bash
+XDG_DATA_DIRS=/usr/share
+PE_PALS_PKGCONFIG_LIBS=libpals
+__LMOD_REF_COUNT_PE_MPICH_FORTRAN_PKGCONFIG_LIBS=mpichf90:1
+PBS_ACCOUNT=datascience
+CRAY_LMOD_NET=ofi/1.0
+http_proxy=http://proxy.alcf.anl.gov:3128
+PE_PMI_PKGCONFIG_LIBS=cray-pmi
+__LMOD_REF_COUNT_PE_PKGCONFIG_PRODUCTS=PE_PALS:1;PE_PMI:2;PE_MPICH:1;PE_DSMML:1
+PE_MPICH_MODULE_NAME=cray-mpich
+_CE_CONDA=
+PBS_JOBCOOKIE=69C0636B395E9460229621C525EB09CD
+LMOD_FAMILY_CRAYPE_ACCEL_VERSION=false
+PBS_O_SHELL=/bin/bash
+__LMOD_REF_COUNT_PE_MPICH_FIXED_PRGENV=GNU:1
+PROFILEREAD=true
+TMPDIR=/var/tmp/pbs.479626.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov
+PERFTOOLS_VERSION=22.05.0
+LMOD_sys=Linux
+_ModuleTable010_=Y3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvcGVyZnRvb2xzLWJhc2UvMjIuMDUuMC5sdWEiLFsiZnVsbE5hbWUiXT0icGVyZnRvb2xzLWJhc2UvMjIuMDUuMCIsWyJsb2FkT3JkZXIiXT00LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InBlcmZ0b29scy1iYXNlIix9LH0sbXBhdGhBPXsiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvbXBpL2dudS84LjAvb2ZpLzEuMC9jcmF5LW1waWNoLzguMCIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvbW5ldC9nbnUvOC4wL29maS8xLjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9taXhfY29tcGlsZXJzIiwiL29wdC9jcmF5L3BlL2xt
+PE_PKGCONFIG_LIBS=mpich:dsmml
+CRAY_ACCEL_TARGET=nvidia80
+CRAY_PMI_PREFIX=/opt/cray/pe/pmi/6.1.2
+_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbIlByZ0VudiJdPSJQcmdFbnYtZ251IixbImNvbXBpbGVyIl09ImdjYyIsWyJjcmF5cGUiXT0iY3JheXBlIixbImNyYXlwZV9hY2NlbCJdPSJjcmF5cGUtYWNjZWwtbnZpZGlhODAiLFsiY3JheXBlX2NwdSJdPSJjcmF5cGUteDg2LXJvbWUiLFsiY3JheXBlX25ldHdvcmsiXT0iY3JheXBlLW5ldHdvcmstb2ZpIixbIm1waSJdPSJjcmF5LW1waWNoIixbInB5dGhvbiJdPSJjb25kYSIsfSxtVD17WyJQcmdFbnYtZ251Il09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9QcmdFbnYt
+LOADEDMODULES=craype-x86-rome:libfabric/1.11.0.4.125:craype-network-ofi:perftools-base/22.05.0:craype-accel-nvidia80:gcc/11.2.0:llvm/release-16.0.0:craype/2.7.15:cray-dsmml/0.2.2:cray-mpich/8.1.16:cray-pmi/6.1.2:cray-pmi-lib/6.0.17:cray-pals/1.1.7:cray-libpals/1.1.7:PrgEnv-gnu/8.3.3:conda/2022-09-08
+CRAYPE_NETWORK_TARGET=ofi
+_ModuleTable006_=LFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LXBtaS1saWIiLH0sY3JheXBlPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheXBlLzIuNy4xNS5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheXBlLzIuNy4xNSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZSIsfSxbImNyYXlwZS1hY2NlbC1udmlkaWE4MCJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQvY3JheXBlLWFjY2VsLW52aWRpYTgwLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5cGUtYWNjZWwtbnZpZGlh
+__LMOD_REF_COUNT_MANPATH=/opt/cray/pe/pals/1.1.7/man:1;/opt/cray/pe/pmi/6.1.2/man:1;/opt/cray/pe/mpich/8.1.16/ofi/man:1;/opt/cray/pe/mpich/8.1.16/man/mpich:1;/opt/cray/pe/dsmml/0.2.2/dsmml/man:1;/opt/cray/pe/craype/2.7.15/man:1;/soft/compilers/llvm/release-16.0.0/share/man:1;/opt/cray/pe/gcc/11.2.0/snos/share/man:1;/opt/cray/pe/perftools/22.05.0/man:1;/opt/cray/pe/papi/6.0.0.14/share/pdoc/man:1;/opt/cray/libfabric/1.11.0.4.125/share/man:1;/usr/share/lmod/lmod/share/man:1;/usr/local/man:1;/usr/share/man:1;/opt/c3/man:1;/opt/pbs/share/man:1;/opt/clmgr/man:1;/opt/sgi/share/man:1;/opt/clmgr/share/man:1;/opt/clmgr/lib/cm-cli/man:1
+_ModuleTable003_=bGVmaWxlcy9jb3JlL2NyYXktZHNtbWwvMC4yLjIubHVhIixbImZ1bGxOYW1lIl09ImNyYXktZHNtbWwvMC4yLjIiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LWRzbW1sIix9LFsiY3JheS1saWJwYWxzIl09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9jcmF5LWxpYnBhbHMvMS4xLjcubHVhIixbImZ1bGxOYW1lIl09ImNyYXktbGlicGFscy8xLjEuNyIsWyJsb2FkT3JkZXIiXT0xNCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LWxpYnBhbHMiLH0sWyJjcmF5LW1waWNoIl09
+LMOD_ROOT=/usr/share/lmod
+CONDA_PROMPT_MODIFIER=($(basename /lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/dhenv)) 
+PAT_RT_PERFCTR_DISABLE_COMPONENTS=cray_cassini,nvml,cuda
+FROM_HEADER=
+CRAY_MPICH_ROOTDIR=/opt/cray/pe/mpich/8.1.16
+PBS_O_QUEUE=debug
+MAIL=/var/spool/mail/USER
+LESSKEY=/etc/lesskey.bin
+SPACK_ROOT=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack
+_ModuleTable009_=Zm4iXT0iL3NvZnQvbW9kdWxlZmlsZXMvbGliZmFicmljLzEuMTEuMC40LjEyNSIsWyJmdWxsTmFtZSJdPSJsaWJmYWJyaWMvMS4xMS4wLjQuMTI1IixbImxvYWRPcmRlciJdPTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LGxsdm09e1siZm4iXT0iL3NvZnQvbW9kdWxlZmlsZXMvbGx2bS9yZWxlYXNlLTE2LjAuMC5sdWEiLFsiZnVsbE5hbWUiXT0ibGx2bS9yZWxlYXNlLTE2LjAuMCIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imxsdm0iLH0sWyJwZXJmdG9vbHMtYmFzZSJdPXtbImZuIl09Ii9vcHQv
+TERM=xterm-256color
+SHELL=/bin/bash
+CRAY_MPICH_VER=8.1.16
+PE_MPICH_FIXED_PRGENV=GNU
+PALS_TRANSFER=0
+LMOD_FAMILY_PRGENV=PrgEnv-gnu
+_ModuleTable_Sz_=12
+LS_OPTIONS=-N --color=tty -T 0
+XCURSOR_THEME=DMZ
+LMOD_FAMILY_COMPILER=gcc
+USE_PCM_DB=2
+CRAY_DSMML_BASEDIR=/opt/cray/pe/dsmml/0.2.2
+PE_MPICH_GENCOMPILERS_GNU=9.1
+SHLVL=3
+LANGUAGE=en_US.UTF-8
+PBS_O_HOST=polaris-login-02.hsn.cm.polaris.alcf.anl.gov
+G_FILENAME_ENCODING=@locale,UTF-8,ISO-8859-15,CP1252
+ACLOCAL_PATH=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/share/aclocal
+PBS_O_SYSTEM=Linux
+MANPATH=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/share/man:/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/man:/opt/cray/pe/pals/1.1.7/man:/opt/cray/pe/pmi/6.1.2/man:/opt/cray/pe/mpich/8.1.16/ofi/man:/opt/cray/pe/mpich/8.1.16/man/mpich:/opt/cray/pe/dsmml/0.2.2/dsmml/man:/opt/cray/pe/craype/2.7.15/man:/soft/compilers/llvm/release-16.0.0/share/man:/opt/cray/pe/gcc/11.2.0/snos/share/man:/opt/cray/pe/perftools/22.05.0/man:/opt/cray/pe/papi/6.0.0.14/share/pdoc/man:/opt/cray/libfabric/1.11.0.4.125/share/man:/usr/share/lmod/lmod/share/man:/usr/local/man:/usr/share/man:/opt/c3/man:/opt/pbs/share/man:/opt/clmgr/man:/opt/sgi/share/man:/opt/clmgr/share/man:/opt/clmgr/lib/cm-cli/man:
+CRAY_DSMML_VERSION=0.2.2
+MPICH_DIR=/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1
+OSCAR_HOME=/opt/oscar
+SPACK_LD_LIBRARY_PATH=/soft/compilers/cudatoolkit/cuda-11.6.2/extras/CUPTI/lib64:/soft/compilers/cudatoolkit/cuda-11.6.2/lib64:/soft/libraries/trt/TensorRT-8.4.3.1.Linux.x86_64-gnu.cuda-11.6.cudnn8.4/lib:/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/lib:/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib:/soft/compilers/llvm/release-16.0.0/lib:/opt/cray/pe/gcc/11.2.0/snos/lib64:/opt/cray/pe/papi/6.0.0.14/lib64:/opt/cray/libfabric/1.11.0.4.125/lib64
+PBS_O_LOGNAME=USER
+PBS_NODENUM=0
+MODULEPATH=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/share/spack/modules/linux-sles15-zen3:/opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0:/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0:/opt/cray/pe/lmod/modulefiles/mix_compilers:/opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0:/opt/cray/pe/lmod/modulefiles/perftools/22.05.0:/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/opt/cray/pe/lmod/modulefiles/core:/opt/cray/pe/lmod/modulefiles/craype-targets/default:/soft/modulefiles:/opt/modulefiles:/opt/cray/modulefiles
+PBS_JOBDIR=/home/USER
+XLA_FLAGS=--xla_gpu_force_compilation_parallelism=1 --xla_gpu_cuda_data_dir=/soft/compilers/cudatoolkit/cuda-11.6.2
+CRAY_MPICH_DIR=/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1
+LMOD_FAMILY_CRAYPE=craype
+LOGNAME=USER
+CRAY_PMI_VERSION=6.1.2
+CRAY_MPICH_VERSION=8.1.16
+MODULEPATH_ROOT=/usr/share/modulefiles
+PYTHONUSERBASE=/home/USER/.local/polaris/conda/2022-09-08
+PE_MPICH_GTL_LIBS_amd_gfx906=-lmpi_gtl_hsa
+PE_DSMML_PKGCONFIG_LIBS=dsmml
+XDG_CONFIG_DIRS=/etc/xdg
+PATH=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/bin:/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/bin:/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/dhenv/bin:/soft/datascience/conda/2022-09-08/mconda3/condabin:/soft/compilers/cudatoolkit/cuda-11.6.2/bin:/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/include:/opt/cray/pe/pals/1.1.7/bin:/opt/cray/pe/craype/2.7.15/bin:/soft/compilers/llvm/release-16.0.0/share/clang:/soft/compilers/llvm/release-16.0.0/bin:/opt/cray/pe/gcc/11.2.0/bin:/opt/cray/pe/perftools/22.05.0/bin:/opt/cray/pe/papi/6.0.0.14/bin:/opt/cray/libfabric/1.11.0.4.125/bin:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/usr/local/bin:/usr/bin:/bin:/opt/c3/bin:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/sbin:/home/USER/bin:/opt/cray/pe/bin
+PE_MPICH_GTL_LIBS_amd_gfx908=-lmpi_gtl_hsa
+__LMOD_REF_COUNT_PE_PRODUCT_LIST=CRAY_PMI:1;CRAYPE:1;CRAYPE_X86_ROME:1;PERFTOOLS:1;CRAYPAT:1;CRAY_ACCEL:1
+_LMFILES_=/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-x86-rome.lua:/soft/modulefiles/libfabric/1.11.0.4.125:/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-network-ofi.lua:/opt/cray/pe/lmod/modulefiles/core/perftools-base/22.05.0.lua:/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-accel-nvidia80.lua:/opt/cray/pe/lmod/modulefiles/core/gcc/11.2.0.lua:/soft/modulefiles/llvm/release-16.0.0.lua:/opt/cray/pe/lmod/modulefiles/core/craype/2.7.15.lua:/opt/cray/pe/lmod/modulefiles/core/cray-dsmml/0.2.2.lua:/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0/cray-mpich/8.1.16.lua:/opt/cray/pe/lmod/modulefiles/core/cray-pmi/6.1.2.lua:/opt/cray/pe/lmod/modulefiles/core/cray-pmi-lib/6.0.17.lua:/opt/cray/pe/lmod/modulefiles/core/cray-pals/1.1.7.lua:/opt/cray/pe/lmod/modulefiles/core/cray-libpals/1.1.7.lua:/opt/cray/pe/lmod/modulefiles/core/PrgEnv-gnu/8.3.3.lua:/soft/modulefiles/conda/2022-09-08.lua
+PBS_QUEUE=debug
+MODULESHOME=/usr/share/lmod/lmod
+CONDA_DEFAULT_ENV=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/dhenv
+PKG_CONFIG_PATH=/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/lib64/pkgconfig:/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/lib/pkgconfig:/lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/var/spack/environments/redisjson/.spack-env/view/share/pkgconfig:/opt/cray/pe/pals/1.1.7/lib/pkgconfig:/opt/cray/pe/pmi/6.1.2/lib/pkgconfig:/opt/cray/pe/dsmml/0.2.2/dsmml/lib/pkgconfig:/opt/cray/pe/craype/2.7.15/pkg-config:/opt/cray/libfabric/1.11.0.4.125/lib64/pkgconfig
+LMOD_SETTARG_FULL_SUPPORT=no
+INFOPATH=/opt/cray/pe/gcc/11.2.0/snos/share/info
+G_BROKEN_FILENAMES=1
+PE_GNU_FIXED_PKGCONFIG_PATH=/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1/lib/pkgconfig
+_ModuleTable011_=b2QvbW9kdWxlZmlsZXMvY29tcGlsZXIvZ251LzguMCIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL3BlcmZ0b29scy8yMi4wNS4wIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvbmV0L29maS8xLjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jcHUveDg2LXJvbWUvMS4wIiwiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eCIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZSIsIi91c3Ivc2hhcmUvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdCIsIi9zb2Z0L21vZHVsZWZp
+PE_MPICH_GTL_LIBS_amd_gfx90a=-lmpi_gtl_hsa
+HISTSIZE=1000
+CRAYPE_DIR=/opt/cray/pe/craype/2.7.15
+LMOD_PKG=/usr/share/lmod/lmod
+__LMOD_REF_COUNT_PE_MPICH_PKGCONFIG_LIBS=mpich:1
+OFFLOAD_INIT=on_start
+__LMOD_REF_COUNT_PE_PKGCONFIG_LIBS=mpich:1;dsmml:1
+CPU=x86_64
+CRAYPE_VERSION=2.7.15
+_ModuleTable005_=dXNlck5hbWUiXT0iY3JheS1wYWxzIix9LFsiY3JheS1wbWkiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlL2NyYXktcG1pLzYuMS4yLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5LXBtaS82LjEuMiIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LXBtaSIsfSxbImNyYXktcG1pLWxpYiJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheS1wbWktbGliLzYuMC4xNy5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheS1wbWktbGliLzYuMC4xNyIsWyJsb2FkT3JkZXIiXT0xMixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0y
+LMOD_CMD=/usr/share/lmod/lmod/libexec/lmod
+CRAY_PMI_POST_LINK_OPTS=-L/opt/cray/pe/pmi/6.1.2/lib
+CRAY_MPICH_PREFIX=/opt/cray/pe/mpich/8.1.16/ofi/gnu/9.1
+LESSOPEN=lessopen.sh %s
+OMP_NUM_THREADS=1
+PBS_O_MAIL=/var/spool/mail/USER
+CRAYPAT_OPTS_EXECUTABLE=libexec64/opts
+LMOD_DIR=/usr/share/lmod/lmod/libexec
+LMOD_FAMILY_MPI=cray-mpich
+BASH_FUNC___conda_hashr%%=() {  if [ -n "${ZSH_VERSION:+x}" ]; then
+ \rehash;
+ else
+ if [ -n "${POSH_VERSION:+x}" ]; then
+ :;
+ else
+ \hash -r;
+ fi;
+ fi
+}
+BASH_FUNC_module%%=() {  eval $($LMOD_CMD bash "$@") && eval $(${LMOD_SETTARG_CMD:-:} -s sh)
+}
+BASH_FUNC_spack%%=() {  : this is a shell function from: /lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/share/spack/setup-env.sh;
+ : the real spack script is here: /lus/grand/projects/datascience/USER/polaris/deephyper-scalable-bo/build/spack/bin/spack;
+ _spack_shell_wrapper "$@";
+ return $?
+}
+BASH_FUNC_conda%%=() {  \local cmd="${1-__missing__}";
+ case "$cmd" in 
+ activate | deactivate)
+ __conda_activate "$@"
+ ;;
+ install | update | upgrade | remove | uninstall)
+ __conda_exe "$@" || \return;
+ __conda_reactivate
+ ;;
+ *)
+ __conda_exe "$@"
+ ;;
+ esac
+}
+BASH_FUNC___conda_activate%%=() {  if [ -n "${CONDA_PS1_BACKUP:+x}" ]; then
+ PS1="$CONDA_PS1_BACKUP";
+ \unset CONDA_PS1_BACKUP;
+ fi;
+ \local ask_conda;
+ ask_conda="$(PS1="${PS1:-}" __conda_exe shell.posix "$@")" || \return;
+ \eval "$ask_conda";
+ __conda_hashr
+}
+BASH_FUNC__spack_shell_wrapper%%=() {  for var in LD_LIBRARY_PATH DYLD_LIBRARY_PATH DYLD_FALLBACK_LIBRARY_PATH;
+ do
+ eval "if [ -n \"\${${var}-}\" ]; then export SPACK_$var=\${${var}}; fi";
+ done;
+ if [ -n "${ZSH_VERSION:-}" ]; then
+ emulate -L sh;
+ fi;
+ _sp_flags="";
+ while [ ! -z ${1+x} ] && [ "${1#-}" != "${1}" ]; do
+ _sp_flags="$_sp_flags $1";
+ shift;
+ done;
+ if [ -n "$_sp_flags" ] && [ "${_sp_flags#*h}" != "${_sp_flags}" ] || [ "${_sp_flags#*V}" != "${_sp_flags}" ]; then
+ command spack $_sp_flags "$@";
+ return;
+ fi;
+ _sp_subcommand="";
+ if [ ! -z ${1+x} ]; then
+ _sp_subcommand="$1";
+ shift;
+ fi;
+ case $_sp_subcommand in 
+ "cd")
+ _sp_arg="";
+ if [ -n "$1" ]; then
+ _sp_arg="$1";
+ shift;
+ fi;
+ if [ "$_sp_arg" = "-h" ] || [ "$_sp_arg" = "--help" ]; then
+ command spack cd -h;
+ else
+ LOC="$(spack location $_sp_arg "$@")";
+ if [ -d "$LOC" ]; then
+ cd "$LOC";
+ else
+ return 1;
+ fi;
+ fi;
+ return
+ ;;
+ "env")
+ _sp_arg="";
+ if [ -n "$1" ]; then
+ _sp_arg="$1";
+ shift;
+ fi;
+ if [ "$_sp_arg" = "-h" ] || [ "$_sp_arg" = "--help" ]; then
+ command spack env -h;
+ else
+ case $_sp_arg in 
+ activate)
+ _a=" $@";
+ if [ -z ${1+x} ] || [ "${_a#* --sh}" != "$_a" ] || [ "${_a#* --csh}" != "$_a" ] || [ "${_a#* -h}" != "$_a" ] || [ "${_a#* --help}" != "$_a" ]; then
+ command spack env activate "$@";
+ else
+ stdout="$(command spack $_sp_flags env activate --sh "$@")" || return;
+ eval "$stdout";
+ fi
+ ;;
+ deactivate)
+ _a=" $@";
+ if [ "${_a#* --sh}" != "$_a" ] || [ "${_a#* --csh}" != "$_a" ]; then
+ command spack env deactivate "$@";
+ else
+ if [ -n "$*" ]; then
+ command spack env deactivate -h;
+ else
+ stdout="$(command spack $_sp_flags env deactivate --sh)" || return;
+ eval "$stdout";
+ fi;
+ fi
+ ;;
+ *)
+ command spack env $_sp_arg "$@"
+ ;;
+ esac;
+ fi;
+ return
+ ;;
+ "load" | "unload")
+ _a=" $@";
+ if [ "${_a#* --sh}" != "$_a" ] || [ "${_a#* --csh}" != "$_a" ] || [ "${_a#* -h}" != "$_a" ] || [ "${_a#* --list}" != "$_a" ] || [ "${_a#* --help}" != "$_a" ]; then
+ command spack $_sp_flags $_sp_subcommand "$@";
+ else
+ stdout="$(command spack $_sp_flags $_sp_subcommand --sh "$@")" || return;
+ eval "$stdout";
+ fi
+ ;;
+ *)
+ command spack $_sp_flags $_sp_subcommand "$@"
+ ;;
+ esac
+}
+BASH_FUNC___add_sys_prefix_to_path%%=() {  if [ -n "${_CE_CONDA}" ] && [ -n "${WINDIR+x}" ]; then
+ SYSP=$(\dirname "${CONDA_EXE}");
+ else
+ SYSP=$(\dirname "${CONDA_EXE}");
+ SYSP=$(\dirname "${SYSP}");
+ fi;
+ if [ -n "${WINDIR+x}" ]; then
+ PATH="${SYSP}/bin:${PATH}";
+ PATH="${SYSP}/Scripts:${PATH}";
+ PATH="${SYSP}/Library/bin:${PATH}";
+ PATH="${SYSP}/Library/usr/bin:${PATH}";
+ PATH="${SYSP}/Library/mingw-w64/bin:${PATH}";
+ PATH="${SYSP}:${PATH}";
+ else
+ PATH="${SYSP}/bin:${PATH}";
+ fi;
+ \export PATH
+}
+BASH_FUNC___conda_reactivate%%=() {  \local ask_conda;
+ ask_conda="$(PS1="${PS1:-}" __conda_exe shell.posix reactivate)" || \return;
+ \eval "$ask_conda";
+ __conda_hashr
+}
+BASH_FUNC_ml%%=() {  eval $($LMOD_DIR/ml_cmd "$@")
+}
++ lsb_release -a
+./collect_environment.sh: line 10: lsb_release: command not found
++ uname -a
+Linux x3111c0s13b0n0 5.3.18-57-default #1 SMP Wed Apr 28 10:54:41 UTC 2021 (ba3c2e9) x86_64 x86_64 x86_64 GNU/Linux
++ lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   48 bits physical, 48 bits virtual
+CPU(s):                          64
+On-line CPU(s) list:             0-63
+Thread(s) per core:              2
+Core(s) per socket:              32
+Socket(s):                       1
+NUMA node(s):                    4
+Vendor ID:                       AuthenticAMD
+CPU family:                      25
+Model:                           1
+Model name:                      AMD EPYC 7543P 32-Core Processor
+Stepping:                        1
+CPU MHz:                         2344.969
+BogoMIPS:                        5589.57
+Virtualization:                  AMD-V
+L1d cache:                       1 MiB
+L1i cache:                       1 MiB
+L2 cache:                        16 MiB
+L3 cache:                        256 MiB
+NUMA node0 CPU(s):               0-7,32-39
+NUMA node1 CPU(s):               8-15,40-47
+NUMA node2 CPU(s):               16-23,48-55
+NUMA node3 CPU(s):               24-31,56-63
+Vulnerability Itlb multihit:     Not affected
+Vulnerability L1tf:              Not affected
+Vulnerability Mds:               Not affected
+Vulnerability Meltdown:          Not affected
+Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disabled via prctl and seccomp
+Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:        Mitigation; Full AMD retpoline, IBPB conditional, IBRS_FW, STIBP always-on, RSB filling
+Vulnerability Srbds:             Not affected
+Vulnerability Tsx async abort:   Not affected
+Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 invpcid_single hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr wbnoinvd amd_ppin arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload vgif umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca
++ cat /proc/meminfo
+MemTotal:       527671404 kB
+MemFree:        503897976 kB
+MemAvailable:   514795156 kB
+Buffers:          552848 kB
+Cached:         13595576 kB
+SwapCached:            0 kB
+Active:          2327324 kB
+Inactive:       12005048 kB
+Active(anon):     358368 kB
+Inactive(anon):   576496 kB
+Active(file):    1968956 kB
+Inactive(file): 11428552 kB
+Unevictable:          80 kB
+Mlocked:              80 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:               112 kB
+Writeback:             0 kB
+AnonPages:        183304 kB
+Mapped:           121348 kB
+Shmem:            750888 kB
+KReclaimable:     582712 kB
+Slab:            3608924 kB
+SReclaimable:     582712 kB
+SUnreclaim:      3026212 kB
+KernelStack:       18896 kB
+PageTables:         7460 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    263835700 kB
+Committed_AS:    2216104 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:     1967480 kB
+VmallocChunk:          0 kB
+Percpu:            94720 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:     53248 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:    45234100 kB
+DirectMap2M:    401188864 kB
+DirectMap1G:    90177536 kB
++ inxi -F -c0
+./collect_environment.sh: line 14: inxi: command not found
++ lsblk -a
+NAME        MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+loop0         7:0    0  10.2G  1 loop  /root_ro
+loop1         7:1    0   2.5G  1 loop  /var/opt/cray/pe/pe_images/base-22.05
+loop2         7:2    0 133.6M  1 loop  /var/opt/cray/pe/pe_images/nvidia-22.05
+loop3         7:3    0     0B  0 loop  
+loop4         7:4    0     0B  0 loop  
+loop5         7:5    0     0B  0 loop  
+loop6         7:6    0     0B  0 loop  
+loop7         7:7    0     0B  0 loop  
+nvme0n1     259:1    0   1.5T  0 disk  
+└─nvme0n1p1 259:2    0   1.5T  0 part  
+  └─md127     9:127  0   2.9T  0 raid0 /local/scratch
+nvme1n1     259:4    0   1.5T  0 disk  
+└─nvme1n1p1 259:5    0   1.5T  0 part  
+  └─md127     9:127  0   2.9T  0 raid0 /local/scratch
++ lsscsi -s
++ module list
+++ /usr/share/lmod/lmod/libexec/lmod bash list
+
+Currently Loaded Modules:
+  1) craype-x86-rome          4) perftools-base/22.05.0   7) llvm/release-16.0.0  10) cray-mpich/8.1.16    13) cray-pals/1.1.7     16) conda/2022-09-08
+  2) libfabric/1.11.0.4.125   5) craype-accel-nvidia80    8) craype/2.7.15        11) cray-pmi/6.1.2       14) cray-libpals/1.1.7
+  3) craype-network-ofi       6) gcc/11.2.0               9) cray-dsmml/0.2.2     12) cray-pmi-lib/6.0.17  15) PrgEnv-gnu/8.3.3
+
+ 
+
++ eval '__LMOD_REF_COUNT_MODULEPATH=/lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/spack/share/spack/modules/linux-sles15-zen3:1\;/opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0:1\;/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0:1\;/opt/cray/pe/lmod/modulefiles/mix_compilers:1\;/opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0:1\;/opt/cray/pe/lmod/modulefiles/perftools/22.05.0:1\;/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:1\;/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:1\;/usr/share/modulefiles/Linux:1\;/usr/share/modulefiles/Core:1\;/usr/share/lmod/lmod/modulefiles/Core:1\;/opt/cray/pe/lmod/modulefiles/core:1\;/opt/cray/pe/lmod/modulefiles/craype-targets/default:1\;/soft/modulefiles:1\;/opt/modulefiles:1\;/opt/cray/modulefiles:1;' export '__LMOD_REF_COUNT_MODULEPATH;' 'MODULEPATH=/lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/spack/share/spack/modules/linux-sles15-zen3:/opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0:/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0:/opt/cray/pe/lmod/modulefiles/mix_compilers:/opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0:/opt/cray/pe/lmod/modulefiles/perftools/22.05.0:/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/opt/cray/pe/lmod/modulefiles/core:/opt/cray/pe/lmod/modulefiles/craype-targets/default:/soft/modulefiles:/opt/modulefiles:/opt/cray/modulefiles;' export 'MODULEPATH;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbIlByZ0VudiJdPSJQcmdFbnYtZ251IixbImNvbXBpbGVyIl09ImdjYyIsWyJjcmF5cGUiXT0iY3JheXBlIixbImNyYXlwZV9hY2NlbCJdPSJjcmF5cGUtYWNjZWwtbnZpZGlhODAiLFsiY3JheXBlX2NwdSJdPSJjcmF5cGUteDg2LXJvbWUiLFsiY3JheXBlX25ldHdvcmsiXT0iY3JheXBlLW5ldHdvcmstb2ZpIixbIm1waSJdPSJjcmF5LW1waWNoIixbInB5dGhvbiJdPSJjb25kYSIsfSxtVD17WyJQcmdFbnYtZ251Il09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9QcmdFbnYt;' export '_ModuleTable001_;' '_ModuleTable002_=Z251LzguMy4zLmx1YSIsWyJmdWxsTmFtZSJdPSJQcmdFbnYtZ251LzguMy4zIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJQcmdFbnYtZ251Iix9LGNvbmRhPXtbImZuIl09Ii9zb2Z0L21vZHVsZWZpbGVzL2NvbmRhLzIwMjItMDktMDgubHVhIixbImZ1bGxOYW1lIl09ImNvbmRhLzIwMjItMDktMDgiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY29uZGEvMjAyMi0wOS0wOCIsfSxbImNyYXktZHNtbWwiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1;' export '_ModuleTable002_;' '_ModuleTable003_=bGVmaWxlcy9jb3JlL2NyYXktZHNtbWwvMC4yLjIubHVhIixbImZ1bGxOYW1lIl09ImNyYXktZHNtbWwvMC4yLjIiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LWRzbW1sIix9LFsiY3JheS1saWJwYWxzIl09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9jcmF5LWxpYnBhbHMvMS4xLjcubHVhIixbImZ1bGxOYW1lIl09ImNyYXktbGlicGFscy8xLjEuNyIsWyJsb2FkT3JkZXIiXT0xNCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LWxpYnBhbHMiLH0sWyJjcmF5LW1waWNoIl09;' export '_ModuleTable003_;' '_ModuleTable004_=e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29tbmV0L2dudS84LjAvb2ZpLzEuMC9jcmF5LW1waWNoLzguMS4xNi5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheS1tcGljaC84LjEuMTYiLFsibG9hZE9yZGVyIl09MTAscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3JheS1tcGljaCIsfSxbImNyYXktcGFscyJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheS1wYWxzLzEuMS43Lmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5LXBhbHMvMS4xLjciLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsi;' export '_ModuleTable004_;' '_ModuleTable005_=dXNlck5hbWUiXT0iY3JheS1wYWxzIix9LFsiY3JheS1wbWkiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlL2NyYXktcG1pLzYuMS4yLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5LXBtaS82LjEuMiIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LXBtaSIsfSxbImNyYXktcG1pLWxpYiJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheS1wbWktbGliLzYuMC4xNy5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheS1wbWktbGliLzYuMC4xNyIsWyJsb2FkT3JkZXIiXT0xMixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0y;' export '_ModuleTable005_;' '_ModuleTable006_=LFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LXBtaS1saWIiLH0sY3JheXBlPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheXBlLzIuNy4xNS5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheXBlLzIuNy4xNSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZSIsfSxbImNyYXlwZS1hY2NlbC1udmlkaWE4MCJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQvY3JheXBlLWFjY2VsLW52aWRpYTgwLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5cGUtYWNjZWwtbnZpZGlh;' export '_ModuleTable006_;' '_ModuleTable007_=ODAiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5cGUtYWNjZWwtbnZpZGlhODAiLH0sWyJjcmF5cGUtbmV0d29yay1vZmkiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jcmF5cGUtdGFyZ2V0cy9kZWZhdWx0L2NyYXlwZS1uZXR3b3JrLW9maS5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheXBlLW5ldHdvcmstb2ZpIixbImxvYWRPcmRlciJdPTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3JheXBlLW5ldHdvcmstb2ZpIix9LFsiY3JheXBlLXg4Ni1yb21lIl09e1siZm4iXT0iL29wdC9jcmF5;' export '_ModuleTable007_;' '_ModuleTable008_=L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdC9jcmF5cGUteDg2LXJvbWUubHVhIixbImZ1bGxOYW1lIl09ImNyYXlwZS14ODYtcm9tZSIsWyJsb2FkT3JkZXIiXT0xLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZS14ODYtcm9tZSIsfSxnY2M9e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9nY2MvMTEuMi4wLmx1YSIsWyJmdWxsTmFtZSJdPSJnY2MvMTEuMi4wIixbImxvYWRPcmRlciJdPTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iZ2NjLzExLjIuMCIsfSxsaWJmYWJyaWM9e1si;' export '_ModuleTable008_;' '_ModuleTable009_=Zm4iXT0iL3NvZnQvbW9kdWxlZmlsZXMvbGliZmFicmljLzEuMTEuMC40LjEyNSIsWyJmdWxsTmFtZSJdPSJsaWJmYWJyaWMvMS4xMS4wLjQuMTI1IixbImxvYWRPcmRlciJdPTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LGxsdm09e1siZm4iXT0iL3NvZnQvbW9kdWxlZmlsZXMvbGx2bS9yZWxlYXNlLTE2LjAuMC5sdWEiLFsiZnVsbE5hbWUiXT0ibGx2bS9yZWxlYXNlLTE2LjAuMCIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imxsdm0iLH0sWyJwZXJmdG9vbHMtYmFzZSJdPXtbImZuIl09Ii9vcHQv;' export '_ModuleTable009_;' '_ModuleTable010_=Y3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvcGVyZnRvb2xzLWJhc2UvMjIuMDUuMC5sdWEiLFsiZnVsbE5hbWUiXT0icGVyZnRvb2xzLWJhc2UvMjIuMDUuMCIsWyJsb2FkT3JkZXIiXT00LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InBlcmZ0b29scy1iYXNlIix9LH0sbXBhdGhBPXsiL2x1cy9ncmFuZC9wcm9qZWN0cy9kYXRhc2NpZW5jZS9yZWdlbGUvcG9sYXJpcy9kZWVwaHlwZXItc2NhbGFibGUtYm8vYnVpbGQvc3BhY2svc2hhcmUvc3BhY2svbW9kdWxlcy9saW51eC1zbGVzMTUtemVuMyIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL21waS9nbnUvOC4wL29maS8xLjAvY3JheS1tcGljaC84;' export '_ModuleTable010_;' '_ModuleTable011_=LjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb21uZXQvZ251LzguMC9vZmkvMS4wIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvbWl4X2NvbXBpbGVycyIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvbXBpbGVyL2dudS84LjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9wZXJmdG9vbHMvMjIuMDUuMCIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL25ldC9vZmkvMS4wIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3B1L3g4Ni1yb21lLzEuMCIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXgiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmUiLCIvdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1;' export '_ModuleTable011_;' '_ModuleTable012_=bGVmaWxlcy9Db3JlIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZSIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQiLCIvc29mdC9tb2R1bGVmaWxlcyIsIi9vcHQvbW9kdWxlZmlsZXMiLCIvb3B0L2NyYXkvbW9kdWxlZmlsZXMiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZTovb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlOi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQ6L3NvZnQvbW9k;' export '_ModuleTable012_;' '_ModuleTable013_=dWxlZmlsZXM6L29wdC9tb2R1bGVmaWxlczovb3B0L2NyYXkvbW9kdWxlZmlsZXMiLH0=;' export '_ModuleTable013_;' '_ModuleTable_Sz_=13;' export '_ModuleTable_Sz_;'
+++ __LMOD_REF_COUNT_MODULEPATH='/lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/spack/share/spack/modules/linux-sles15-zen3:1;/opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0:1;/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0:1;/opt/cray/pe/lmod/modulefiles/mix_compilers:1;/opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0:1;/opt/cray/pe/lmod/modulefiles/perftools/22.05.0:1;/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:1;/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:1;/usr/share/modulefiles/Linux:1;/usr/share/modulefiles/Core:1;/usr/share/lmod/lmod/modulefiles/Core:1;/opt/cray/pe/lmod/modulefiles/core:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default:1;/soft/modulefiles:1;/opt/modulefiles:1;/opt/cray/modulefiles:1'
+++ export __LMOD_REF_COUNT_MODULEPATH
+++ MODULEPATH=/lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/spack/share/spack/modules/linux-sles15-zen3:/opt/cray/pe/lmod/modulefiles/mpi/gnu/8.0/ofi/1.0/cray-mpich/8.0:/opt/cray/pe/lmod/modulefiles/comnet/gnu/8.0/ofi/1.0:/opt/cray/pe/lmod/modulefiles/mix_compilers:/opt/cray/pe/lmod/modulefiles/compiler/gnu/8.0:/opt/cray/pe/lmod/modulefiles/perftools/22.05.0:/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/opt/cray/pe/lmod/modulefiles/core:/opt/cray/pe/lmod/modulefiles/craype-targets/default:/soft/modulefiles:/opt/modulefiles:/opt/cray/modulefiles
+++ export MODULEPATH
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbIlByZ0VudiJdPSJQcmdFbnYtZ251IixbImNvbXBpbGVyIl09ImdjYyIsWyJjcmF5cGUiXT0iY3JheXBlIixbImNyYXlwZV9hY2NlbCJdPSJjcmF5cGUtYWNjZWwtbnZpZGlhODAiLFsiY3JheXBlX2NwdSJdPSJjcmF5cGUteDg2LXJvbWUiLFsiY3JheXBlX25ldHdvcmsiXT0iY3JheXBlLW5ldHdvcmstb2ZpIixbIm1waSJdPSJjcmF5LW1waWNoIixbInB5dGhvbiJdPSJjb25kYSIsfSxtVD17WyJQcmdFbnYtZ251Il09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9QcmdFbnYt
+++ export _ModuleTable001_
+++ _ModuleTable002_=Z251LzguMy4zLmx1YSIsWyJmdWxsTmFtZSJdPSJQcmdFbnYtZ251LzguMy4zIixbImxvYWRPcmRlciJdPTE1LHByb3BUPXt9LFsicmVmX2NvdW50Il09MSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJQcmdFbnYtZ251Iix9LGNvbmRhPXtbImZuIl09Ii9zb2Z0L21vZHVsZWZpbGVzL2NvbmRhLzIwMjItMDktMDgubHVhIixbImZ1bGxOYW1lIl09ImNvbmRhLzIwMjItMDktMDgiLFsibG9hZE9yZGVyIl09MTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY29uZGEvMjAyMi0wOS0wOCIsfSxbImNyYXktZHNtbWwiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1
+++ export _ModuleTable002_
+++ _ModuleTable003_=bGVmaWxlcy9jb3JlL2NyYXktZHNtbWwvMC4yLjIubHVhIixbImZ1bGxOYW1lIl09ImNyYXktZHNtbWwvMC4yLjIiLFsibG9hZE9yZGVyIl09OSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LWRzbW1sIix9LFsiY3JheS1saWJwYWxzIl09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9jcmF5LWxpYnBhbHMvMS4xLjcubHVhIixbImZ1bGxOYW1lIl09ImNyYXktbGlicGFscy8xLjEuNyIsWyJsb2FkT3JkZXIiXT0xNCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LWxpYnBhbHMiLH0sWyJjcmF5LW1waWNoIl09
+++ export _ModuleTable003_
+++ _ModuleTable004_=e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29tbmV0L2dudS84LjAvb2ZpLzEuMC9jcmF5LW1waWNoLzguMS4xNi5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheS1tcGljaC84LjEuMTYiLFsibG9hZE9yZGVyIl09MTAscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3JheS1tcGljaCIsfSxbImNyYXktcGFscyJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheS1wYWxzLzEuMS43Lmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5LXBhbHMvMS4xLjciLFsibG9hZE9yZGVyIl09MTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MixbInN0YXR1cyJdPSJhY3RpdmUiLFsi
+++ export _ModuleTable004_
+++ _ModuleTable005_=dXNlck5hbWUiXT0iY3JheS1wYWxzIix9LFsiY3JheS1wbWkiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlL2NyYXktcG1pLzYuMS4yLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5LXBtaS82LjEuMiIsWyJsb2FkT3JkZXIiXT0xMSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0yLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LXBtaSIsfSxbImNyYXktcG1pLWxpYiJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheS1wbWktbGliLzYuMC4xNy5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheS1wbWktbGliLzYuMC4xNyIsWyJsb2FkT3JkZXIiXT0xMixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0y
+++ export _ModuleTable005_
+++ _ModuleTable006_=LFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LXBtaS1saWIiLH0sY3JheXBlPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvY3JheXBlLzIuNy4xNS5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheXBlLzIuNy4xNSIsWyJsb2FkT3JkZXIiXT04LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTIsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZSIsfSxbImNyYXlwZS1hY2NlbC1udmlkaWE4MCJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQvY3JheXBlLWFjY2VsLW52aWRpYTgwLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5cGUtYWNjZWwtbnZpZGlh
+++ export _ModuleTable006_
+++ _ModuleTable007_=ODAiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5cGUtYWNjZWwtbnZpZGlhODAiLH0sWyJjcmF5cGUtbmV0d29yay1vZmkiXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jcmF5cGUtdGFyZ2V0cy9kZWZhdWx0L2NyYXlwZS1uZXR3b3JrLW9maS5sdWEiLFsiZnVsbE5hbWUiXT0iY3JheXBlLW5ldHdvcmstb2ZpIixbImxvYWRPcmRlciJdPTMscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iY3JheXBlLW5ldHdvcmstb2ZpIix9LFsiY3JheXBlLXg4Ni1yb21lIl09e1siZm4iXT0iL29wdC9jcmF5
+++ export _ModuleTable007_
+++ _ModuleTable008_=L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdC9jcmF5cGUteDg2LXJvbWUubHVhIixbImZ1bGxOYW1lIl09ImNyYXlwZS14ODYtcm9tZSIsWyJsb2FkT3JkZXIiXT0xLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZS14ODYtcm9tZSIsfSxnY2M9e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9nY2MvMTEuMi4wLmx1YSIsWyJmdWxsTmFtZSJdPSJnY2MvMTEuMi4wIixbImxvYWRPcmRlciJdPTYscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0iZ2NjLzExLjIuMCIsfSxsaWJmYWJyaWM9e1si
+++ export _ModuleTable008_
+++ _ModuleTable009_=Zm4iXT0iL3NvZnQvbW9kdWxlZmlsZXMvbGliZmFicmljLzEuMTEuMC40LjEyNSIsWyJmdWxsTmFtZSJdPSJsaWJmYWJyaWMvMS4xMS4wLjQuMTI1IixbImxvYWRPcmRlciJdPTIscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MSxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ibGliZmFicmljIix9LGxsdm09e1siZm4iXT0iL3NvZnQvbW9kdWxlZmlsZXMvbGx2bS9yZWxlYXNlLTE2LjAuMC5sdWEiLFsiZnVsbE5hbWUiXT0ibGx2bS9yZWxlYXNlLTE2LjAuMCIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09Imxsdm0iLH0sWyJwZXJmdG9vbHMtYmFzZSJdPXtbImZuIl09Ii9vcHQv
+++ export _ModuleTable009_
+++ _ModuleTable010_=Y3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmUvcGVyZnRvb2xzLWJhc2UvMjIuMDUuMC5sdWEiLFsiZnVsbE5hbWUiXT0icGVyZnRvb2xzLWJhc2UvMjIuMDUuMCIsWyJsb2FkT3JkZXIiXT00LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09InBlcmZ0b29scy1iYXNlIix9LH0sbXBhdGhBPXsiL2x1cy9ncmFuZC9wcm9qZWN0cy9kYXRhc2NpZW5jZS9yZWdlbGUvcG9sYXJpcy9kZWVwaHlwZXItc2NhbGFibGUtYm8vYnVpbGQvc3BhY2svc2hhcmUvc3BhY2svbW9kdWxlcy9saW51eC1zbGVzMTUtemVuMyIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL21waS9nbnUvOC4wL29maS8xLjAvY3JheS1tcGljaC84
+++ export _ModuleTable010_
+++ _ModuleTable011_=LjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb21uZXQvZ251LzguMC9vZmkvMS4wIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvbWl4X2NvbXBpbGVycyIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvbXBpbGVyL2dudS84LjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9wZXJmdG9vbHMvMjIuMDUuMCIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL25ldC9vZmkvMS4wIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3B1L3g4Ni1yb21lLzEuMCIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXgiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmUiLCIvdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1
+++ export _ModuleTable011_
+++ _ModuleTable012_=bGVmaWxlcy9Db3JlIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZSIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQiLCIvc29mdC9tb2R1bGVmaWxlcyIsIi9vcHQvbW9kdWxlZmlsZXMiLCIvb3B0L2NyYXkvbW9kdWxlZmlsZXMiLH0sWyJzeXN0ZW1CYXNlTVBBVEgiXT0iL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZTovb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlOi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQ6L3NvZnQvbW9k
+++ export _ModuleTable012_
+++ _ModuleTable013_=dWxlZmlsZXM6L29wdC9tb2R1bGVmaWxlczovb3B0L2NyYXkvbW9kdWxlZmlsZXMiLH0=
+++ export _ModuleTable013_
+++ _ModuleTable_Sz_=13
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ nvidia-smi
+Thu Apr 13 10:05:37 2023       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.103.04   Driver Version: 470.103.04   CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A100-SXM...  On   | 00000000:07:00.0 Off |                    0 |
+| N/A   29C    P0    52W / 400W |      0MiB / 40536MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA A100-SXM...  On   | 00000000:46:00.0 Off |                    0 |
+| N/A   32C    P0    58W / 400W |      0MiB / 40536MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+|   2  NVIDIA A100-SXM...  On   | 00000000:85:00.0 Off |                    0 |
+| N/A   30C    P0    53W / 400W |      0MiB / 40536MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+|   3  NVIDIA A100-SXM...  On   | 00000000:C7:00.0 Off |                    0 |
+| N/A   32C    P0    53W / 400W |      0MiB / 40536MiB |      0%      Default |
+|                               |                      |             Disabled |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
++ lshw -short -quiet -sanitize
++ cat
+./collect_environment.sh: line 19: lshw: command not found
++ lspci
+00:00.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Root Complex
+00:00.2 IOMMU: Advanced Micro Devices, Inc. [AMD] Device 164f (rev 01)
+00:01.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:01.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+00:02.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:03.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:03.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+00:03.2 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+00:04.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:05.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:07.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:07.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+00:08.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+00:08.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+00:14.0 SMBus: Advanced Micro Devices, Inc. [AMD] FCH SMBus Controller (rev 61)
+00:14.3 ISA bridge: Advanced Micro Devices, Inc. [AMD] FCH LPC Bridge (rev 51)
+00:18.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1650
+00:18.1 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1651
+00:18.2 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1652
+00:18.3 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1653
+00:18.4 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1654
+00:18.5 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1655
+00:18.6 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1656
+00:18.7 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1657
+01:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Function
+01:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+02:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP
+02:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+02:00.3 USB controller: Advanced Micro Devices, Inc. [AMD] Starship USB 3.0 Host Controller
+03:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller PM173X
+04:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller PM173X
+05:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+05:00.1 Memory controller: PMC-Sierra Inc. Device 4068
+06:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+07:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+40:00.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Root Complex
+40:00.2 IOMMU: Advanced Micro Devices, Inc. [AMD] Device 164f (rev 01)
+40:01.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:01.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+40:02.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:03.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:03.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+40:04.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:05.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:07.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:07.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+40:08.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+40:08.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+41:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Function
+41:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+42:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP
+42:00.1 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Cryptographic Coprocessor PSPCPP
+42:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+42:00.3 USB controller: Advanced Micro Devices, Inc. [AMD] Starship USB 3.0 Host Controller
+43:00.0 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5]
+44:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+44:00.1 Memory controller: PMC-Sierra Inc. Device 4068
+45:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+46:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+80:00.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Root Complex
+80:00.2 IOMMU: Advanced Micro Devices, Inc. [AMD] Device 164f (rev 01)
+80:01.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:01.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+80:02.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:03.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:03.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+80:04.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:05.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:07.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:07.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+80:08.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+80:08.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+81:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Function
+81:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+82:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP
+82:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+83:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+83:00.1 Memory controller: PMC-Sierra Inc. Device 4068
+84:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+85:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+86:00.0 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
+86:00.1 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
+86:00.2 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
+86:00.3 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
+c0:00.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Root Complex
+c0:00.2 IOMMU: Advanced Micro Devices, Inc. [AMD] Device 164f (rev 01)
+c0:01.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:01.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+c0:02.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:03.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:03.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse GPP Bridge
+c0:04.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:05.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:05.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship PCIe GPP Bridge [1:0]
+c0:05.2 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship PCIe GPP Bridge [1:0]
+c0:07.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:07.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+c0:08.0 Host bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Host Bridge
+c0:08.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]
+c1:00.0 System peripheral: Hewlett-Packard Company Integrated Lights-Out Standard Slave Instrumentation & System Support (rev 07)
+c1:00.1 VGA compatible controller: Matrox Electronics Systems Ltd. MGA G200eH3 (rev 02)
+c1:00.2 System peripheral: Hewlett-Packard Company Integrated Lights-Out Standard Management Processor Support and Messaging (rev 07)
+c1:00.4 USB controller: Hewlett-Packard Company iLO5 Virtual USB Controller
+c2:00.0 Ethernet controller: Intel Corporation I350 Gigabit Network Connection (rev 01)
+c3:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PCIe Dummy Function
+c3:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+c4:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP
+c4:00.2 Encryption controller: Advanced Micro Devices, Inc. [AMD] Starship/Matisse PTDMA
+c5:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+c5:00.1 Memory controller: PMC-Sierra Inc. Device 4068
+c6:00.0 PCI bridge: PMC-Sierra Inc. Device 4068
+c7:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+c8:00.0 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5]
++ pip list
+Package                           Version             Editable project location
+--------------------------------- ------------------- ----------------------------------------------------------------------------------------------
+absl-py                           1.2.0
+accelerate                        0.12.0
+aim                               3.13.1
+aim-ui                            3.13.1
+aimrecords                        0.0.7
+aimrocks                          0.2.1
+aiofiles                          22.1.0
+aiohttp                           3.8.1
+aiohttp-cors                      0.7.0
+aiosignal                         1.2.0
+alabaster                         0.7.12
+alembic                           1.8.1
+altair                            4.2.0
+antlr4-python3-runtime            4.9.3
+argon2-cffi                       21.3.0
+argon2-cffi-bindings              21.2.0
+arviz                             0.12.1
+asgiref                           3.5.2
+astropy                           5.2.1
+asttokens                         2.0.8
+astunparse                        1.6.3
+async-timeout                     4.0.2
+attrs                             22.1.0
+Babel                             2.10.3
+backcall                          0.2.0
+backports.zoneinfo                0.2.1
+base58                            2.0.1
+beautifulsoup4                    4.11.1
+bleach                            5.0.1
+blessed                           1.20.0
+blinker                           1.5
+bokeh                             2.4.3
+brotlipy                          0.7.0
+cachetools                        5.2.0
+celerite                          0.4.2
+certifi                           2022.6.15
+cffi                              1.15.1
+cftime                            1.6.1
+chardet                           4.0.0
+charset-normalizer                2.0.4
+chex                              0.1.5
+click                             8.1.3
+cloudpickle                       2.2.0
+cmaes                             0.9.1
+colorama                          0.4.5
+coloredlogs                       15.0.1
+colorful                          0.5.5
+colorlog                          6.7.0
+commonmark                        0.9.1
+conda-package-handling            1.8.1
+ConfigSpace                       0.6.0
+copulas                           0.8.0
+cryptography                      37.0.1
+ctgan                             0.7.1
+cupy-cuda116                      10.6.0
+cycler                            0.11.0
+Cython                            0.29.32
+cytoolz                           0.11.0
+debugpy                           1.6.3
+decorator                         5.1.1
+deepecho                          0.4.0
+deephyper                         0.5.0               /lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/deephyper
+deephyper-benchmark               0.0.1               /lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/deephyper-benchmark
+deepspeed                         0.7.2
+defusedxml                        0.7.1
+dill                              0.3.5.1
+distlib                           0.3.6
+Django                            4.1.1
+dm-tree                           0.1.7
+docker-pycreds                    0.4.0
+docopt                            0.6.2
+docutils                          0.17.1
+entrypoints                       0.4
+etils                             0.7.1
+executing                         1.0.0
+Faker                             14.2.1
+fastapi                           0.67.0
+fastjsonschema                    2.16.1
+fastrlock                         0.8
+filelock                          3.6.0
+flatbuffers                       23.3.3
+flax                              0.6.0
+fonttools                         4.37.1
+frozenlist                        1.3.1
+fsspec                            2022.8.2
+future                            0.18.2
+gast                              0.4.0
+gitdb                             4.0.9
+GitPython                         3.1.27
+glob2                             0.7
+google-api-core                   2.11.0
+google-auth                       2.16.2
+google-auth-oauthlib              0.4.6
+google-pasta                      0.2.0
+googleapis-common-protos          1.56.4
+gpustat                           1.0.0
+gpustats                          0.0.1
+gpytorch                          1.9.0
+graphviz                          0.20.1
+greenlet                          1.1.3
+grpcio                            1.48.1
+gviz-api                          1.10.0
+h11                               0.13.0
+h5py                              3.7.0
+hiredis                           2.2.2
+hjson                             3.1.0
+horovod                           0.25.0
+huggingface-hub                   0.9.1
+humanfriendly                     10.0
+hydra-colorlog                    1.2.0
+hydra-core                        1.2.0
+idna                              3.3
+imageio                           2.21.2
+imagesize                         1.4.1
+importlib-metadata                4.12.0
+importlib-resources               5.9.0
+iniconfig                         1.1.1
+ipykernel                         6.15.2
+ipython                           8.5.0
+ipython-genutils                  0.2.0
+ipywidgets                        8.0.2
+jax                               0.4.5
+jaxlib                            0.4.4
+jedi                              0.18.1
+Jinja2                            2.11.3
+joblib                            1.1.0
+jsonpickle                        1.5.2
+jsonschema                        4.15.0
+jupyter                           1.0.0
+jupyter_client                    7.3.5
+jupyter-console                   6.4.4
+jupyter-contrib-core              0.4.0
+jupyter-contrib-nbextensions      0.5.1
+jupyter-core                      4.11.1
+jupyter-highlight-selected-word   0.2.0
+jupyter-latex-envs                1.4.6
+jupyter-nbextensions-configurator 0.5.0
+jupyterlab-widgets                3.0.3
+keras                             2.10.0
+Keras-Applications                1.0.8
+Keras-Preprocessing               1.1.2
+kiwisolver                        1.4.4
+libarchive-c                      2.9
+libclang                          14.0.6
+libensemble                       0.9.3
+libmambapy                        0.25.0
+line-profiler                     3.5.1
+linear-operator                   0.1.1
+llvmlite                          0.38.0
+lxml                              4.9.1
+Mako                              1.2.2
+Markdown                          3.4.1
+MarkupSafe                        2.1.1
+matplotlib                        3.5.3
+matplotlib-inline                 0.1.6
+matplotx                          0.3.10
+mistune                           0.8.4
+mkl-fft                           1.3.1
+mkl-random                        1.2.2
+mkl-service                       2.4.0
+mock                              4.0.3
+mpi4jax                           0.3.10.post1
+mpi4py                            3.1.3
+mpmath                            1.2.1
+msgpack                           1.0.4
+multidict                         6.0.2
+multipledispatch                  0.6.0
+munch                             2.5.0
+nbconvert                         5.6.1
+nbformat                          5.4.0
+nest-asyncio                      1.5.5
+netCDF4                           1.6.0
+networkx                          2.8.6
+ninja                             1.10.2.3
+nodeenv                           1.7.0
+notebook                          6.4.12
+numba                             0.55.1
+numpy                             1.21.5
+numpyro                           0.11.0
+nvidia-ml-py                      11.495.46
+oauthlib                          3.2.0
+omegaconf                         2.2.3
+onnx                              1.12.0
+onnx-tf                           1.10.0
+onnxruntime-gpu                   1.12.1
+opencensus                        0.11.1
+opencensus-context                0.1.3
+opencv-python-headless            4.6.0.66
+opt-einsum                        3.3.0
+optax                             0.1.3
+optuna                            3.1.0
+packaging                         21.3
+pandas                            1.4.4
+pandocfilters                     1.5.0
+parse                             1.19.0
+parso                             0.8.3
+pathtools                         0.1.2
+patsy                             0.5.3
+pexpect                           4.8.0
+pickleshare                       0.7.5
+Pillow                            9.2.0
+pip                               23.0.1
+pkginfo                           1.8.2
+pkgutil_resolve_name              1.3.10
+platformdirs                      3.1.0
+plotly                            5.13.1
+pluggy                            1.0.0
+portpicker                        1.5.2
+prometheus-client                 0.14.1
+promise                           2.3
+prompt-toolkit                    3.0.31
+protobuf                          3.19.6
+psutil                            5.9.2
+psycopg2-binary                   2.9.3
+ptyprocess                        0.7.0
+pure-eval                         0.2.2
+py                                1.11.0
+py-cpuinfo                        8.0.0
+py-spy                            0.3.14
+py3nvml                           0.2.7
+pyaml                             21.10.1
+pyarrow                           9.0.0
+pyasn1                            0.4.8
+pyasn1-modules                    0.2.8
+pycosat                           0.6.3
+pycparser                         2.21
+pydantic                          1.10.2
+pydeck                            0.8.0b2
+pyDeprecate                       0.3.2
+pydot                             1.4.2
+pyerfa                            2.0.0.1
+Pygments                          2.13.0
+pymongo                           4.2.0
+Pympler                           1.0.1
+pyOpenSSL                         22.0.0
+pyparsing                         3.0.9
+pyright                           1.1.270
+pyrsistent                        0.18.1
+PySocks                           1.7.1
+pytest                            7.1.3
+python-dateutil                   2.8.2
+pytorch-lightning                 1.7.5
+pytz                              2022.1
+pytz-deprecation-shim             0.1.0.post0
+PyWavelets                        1.3.0
+PyYAML                            6.0
+pyzmq                             23.2.1
+qtconsole                         5.3.2
+QtPy                              2.2.0
+ray                               2.3.0
+rdt                               1.3.0
+redis                             4.5.1
+regex                             2022.8.17
+requests                          2.28.1
+requests-oauthlib                 1.3.1
+RestrictedPython                  5.2
+rich                              11.2.0
+rsa                               4.9
+ruamel-yaml-conda                 0.15.100
+sacred                            0.8.2
+scalbo                            0.0.0               /lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/src/scalbo
+scikit-image                      0.19.3
+scikit-learn                      1.1.2
+scipy                             1.9.1
+sdmetrics                         0.9.2
+sdv                               0.18.0
+seaborn                           0.12.0
+semver                            2.13.0
+Send2Trash                        1.8.0
+sentry-sdk                        1.9.8
+setproctitle                      1.3.2
+setuptools                        63.4.1
+shortuuid                         1.0.9
+six                               1.16.0
+smart-open                        6.3.0
+smmap                             5.0.0
+snowballstemmer                   2.2.0
+soupsieve                         2.3.1
+Sphinx                            5.1.1
+sphinx-rtd-theme                  1.0.0
+sphinxcontrib-applehelp           1.0.2
+sphinxcontrib-devhelp             1.0.2
+sphinxcontrib-htmlhelp            2.0.0
+sphinxcontrib-jsmath              1.0.1
+sphinxcontrib-qthelp              1.0.3
+sphinxcontrib-serializinghtml     1.1.5
+SQLAlchemy                        1.4.41
+sqlparse                          0.4.2
+stack-data                        0.5.0
+starlette                         0.14.2
+statsmodels                       0.13.5
+streamlit                         1.12.2
+sympy                             1.11.1
+tenacity                          8.2.2
+tensorboard                       2.10.0
+tensorboard-data-server           0.6.1
+tensorboard-plugin-profile        2.8.0
+tensorboard-plugin-wit            1.8.1
+tensorflow                        2.10.0
+tensorflow-addons                 0.17.1
+tensorflow-datasets               4.6.0
+tensorflow-estimator              2.10.0
+tensorflow-io-gcs-filesystem      0.27.0
+tensorflow-metadata               1.10.0
+tensorflow-probability            0.17.0
+termcolor                         1.1.0
+terminado                         0.15.0
+testpath                          0.6.0
+tf2onnx                           1.12.0
+threadpoolctl                     3.1.0
+tifffile                          2022.8.12
+timm                              0.6.7
+tinydb                            4.7.0
+tokenizers                        0.12.1
+toml                              0.10.2
+tomli                             2.0.1
+toolz                             0.11.2
+torch                             1.12.0a0+git664058f
+torch-geometric                   2.1.0.post1
+torch-scatter                     2.0.9
+torch-sparse                      0.6.15
+torch-tb-profiler                 0.4.0
+torchinfo                         1.7.0
+torchmetrics                      0.9.3
+torchvision                       0.13.0a0+da3794e
+torchviz                          0.0.2
+tornado                           6.2
+tqdm                              4.64.0
+traitlets                         5.3.0
+transformers                      4.21.3
+typeguard                         2.13.3
+typing_extensions                 4.3.0
+tzdata                            2022.2
+tzlocal                           4.2
+urllib3                           1.26.11
+uvicorn                           0.18.3
+validators                        0.20.0
+virtualenv                        20.20.0
+wandb                             0.13.3
+watchdog                          2.1.9
+wcwidth                           0.2.5
+webencodings                      0.5.1
+Werkzeug                          2.2.2
+wheel                             0.37.1
+widgetsnbextension                4.0.3
+wrapt                             1.14.1
+xarray                            2022.6.0
+xarray-einstats                   0.3.0
+xmltodict                         0.13.0
+yarl                              1.8.1
+zipp                              3.8.1
++ spack find
++ : this is a shell function from: /lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/spack/share/spack/setup-env.sh
++ : the real spack script is here: /lus/grand/projects/datascience/regele/polaris/deephyper-scalable-bo/build/spack/bin/spack
++ _spack_shell_wrapper find
++ for var in LD_LIBRARY_PATH DYLD_LIBRARY_PATH DYLD_FALLBACK_LIBRARY_PATH
++ eval 'if [ -n "${LD_LIBRARY_PATH-}" ]; then export SPACK_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}; fi'
+++ '[' -n /soft/compilers/cudatoolkit/cuda-11.6.2/extras/CUPTI/lib64:/soft/compilers/cudatoolkit/cuda-11.6.2/lib64:/soft/libraries/trt/TensorRT-8.4.3.1.Linux.x86_64-gnu.cuda-11.6.cudnn8.4/lib:/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/lib:/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib:/soft/compilers/llvm/release-16.0.0/lib:/opt/cray/pe/gcc/11.2.0/snos/lib64:/opt/cray/pe/papi/6.0.0.14/lib64:/opt/cray/libfabric/1.11.0.4.125/lib64 ']'
+++ export SPACK_LD_LIBRARY_PATH=/soft/compilers/cudatoolkit/cuda-11.6.2/extras/CUPTI/lib64:/soft/compilers/cudatoolkit/cuda-11.6.2/lib64:/soft/libraries/trt/TensorRT-8.4.3.1.Linux.x86_64-gnu.cuda-11.6.cudnn8.4/lib:/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/lib:/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib:/soft/compilers/llvm/release-16.0.0/lib:/opt/cray/pe/gcc/11.2.0/snos/lib64:/opt/cray/pe/papi/6.0.0.14/lib64:/opt/cray/libfabric/1.11.0.4.125/lib64
+++ SPACK_LD_LIBRARY_PATH=/soft/compilers/cudatoolkit/cuda-11.6.2/extras/CUPTI/lib64:/soft/compilers/cudatoolkit/cuda-11.6.2/lib64:/soft/libraries/trt/TensorRT-8.4.3.1.Linux.x86_64-gnu.cuda-11.6.cudnn8.4/lib:/soft/libraries/nccl/nccl_2.14.3-1+cuda11.6_x86_64/lib:/soft/libraries/cudnn/cudnn-11.6-linux-x64-v8.4.1.50/lib:/soft/compilers/llvm/release-16.0.0/lib:/opt/cray/pe/gcc/11.2.0/snos/lib64:/opt/cray/pe/papi/6.0.0.14/lib64:/opt/cray/libfabric/1.11.0.4.125/lib64
++ for var in LD_LIBRARY_PATH DYLD_LIBRARY_PATH DYLD_FALLBACK_LIBRARY_PATH
++ eval 'if [ -n "${DYLD_LIBRARY_PATH-}" ]; then export SPACK_DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}; fi'
+++ '[' -n '' ']'
++ for var in LD_LIBRARY_PATH DYLD_LIBRARY_PATH DYLD_FALLBACK_LIBRARY_PATH
++ eval 'if [ -n "${DYLD_FALLBACK_LIBRARY_PATH-}" ]; then export SPACK_DYLD_FALLBACK_LIBRARY_PATH=${DYLD_FALLBACK_LIBRARY_PATH}; fi'
+++ '[' -n '' ']'
++ '[' -n '' ']'
++ _sp_flags=
++ '[' '!' -z x ']'
++ '[' find '!=' find ']'
++ '[' -n '' ']'
++ '[' '' '!=' '' ']'
++ _sp_subcommand=
++ '[' '!' -z x ']'
++ _sp_subcommand=find
++ shift
++ case $_sp_subcommand in
++ command spack find
++ spack find
+==> In environment redisjson
+==> Root specs
+redisjson
+
+==> Installed packages
+-- linux-sles15-zen3 / gcc@11.2.0 -------------------------------
+berkeley-db@18.1.40
+bzip2@1.0.8
+ca-certificates-mozilla@2023-01-10
+cmake@3.25.2
+diffutils@3.6
+expat@2.5.0
+gdbm@1.23
+gettext@0.21.1
+gmake@4.2.1
+libbsd@0.11.7
+libffi@3.4.4
+libgit2@1.5.0
+libiconv@1.17
+libmd@1.0.4
+libssh2@1.10.0
+libxcrypt@4.4.33
+libxml2@2.10.3
+ncurses@6.4
+ninja@1.11.1
+openssl@1.1.1t
+pcre@8.45
+perl@5.36.0
+pkg-config@0.29.2
+python@3.10.8
+re2c@2.2
+readline@8.2
+redis@7.0.5
+redisjson@2.4.3
+rust@1.65.0
+sqlite@3.40.1
+tar@1.30
+util-linux-uuid@2.38.1
+xz@5.4.1
+zlib@1.2.13
++ return 0

@@ -1,4 +1,3 @@
-import getpass
 import logging
 import pathlib
 import os
@@ -159,3 +158,6 @@ def execute(
             os.system(f"mv {search_log_dir}/results.csv {log_dir}")
 
             os.system(f"mv {path_log_file} {log_dir}")
+
+    comm.Barrier()
+    comm.Abort()

@@ -1,0 +1,41 @@
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/docker/navalpropulsion/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/docker/navalpropulsion/figures
+show: False
+negative: False
+mode: max
+experiments:
+  cbo-vs-dbo:
+    title: ""
+    t_max: 110
+    yscale: "log"
+    baseline_best: 0.0001
+    best_objective: 0.0
+    test_objective: "m:objective_test"
+    max_budget: 100
+    ylabel: "Validation Regret"
+    data:
+      dhb_navalpropulsion-CBO-DUMMY-UCB-NONE-8-120-42:
+        label: "Random"
+        color: "black"
+        linestyle: "-"
+        num_workers: 8
+      dhb_navalpropulsion-CBO-RF-UCB-NONE-8-120-42:
+        label: "Centralized"
+        color: "red"
+        linestyle: "-"
+        num_workers: 8
+      dhb_navalpropulsion-DBO-RF-UCB-NONE-8-120-42:
+        label: "Distributed"
+        color: "blue"
+        linestyle: "-"
+        num_workers: 8
+      dhb_navalpropulsion-CBO-RF-UCB-SHA-8-120-42:
+        label: "Cent. SHA"
+        color: "orange"
+        linestyle: "--"
+        num_workers: 8 
+      dhb_navalpropulsion-DBO-RF-UCB-SHA-8-120-42:
+        label: "Dist. SHA"
+        color: "cyan"
+        linestyle: "--"
+        num_workers: 8

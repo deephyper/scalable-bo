@@ -14,6 +14,7 @@ mpi4py.rc.thread_level = "multiple"
 import numpy as np
 
 from deephyper.evaluator import Evaluator
+from deephyper.evaluator.callback import TqdmCallback
 from deephyper.evaluator.storage import Storage
 from deephyper.search.hps import CBO
 from deephyper.stopper import (
@@ -136,6 +137,7 @@ def execute(
         method="mpicomm",
         method_kwargs={
             "storage": storage,
+            "callbacks": [TqdmCallback()],
         },
     ) as evaluator:
         if evaluator is not None:
@@ -170,3 +172,5 @@ def execute(
 
             if log_dir != search_log_dir:  # means the cache was used
                 os.system(f"mv {search_log_dir}/* {log_dir}")
+            
+            comm.Abort()

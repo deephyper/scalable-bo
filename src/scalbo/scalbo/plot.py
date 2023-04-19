@@ -172,7 +172,7 @@ def plot_scatter_multi(df, exp_config, output_dir, show):
             x, y = exp_df.timestamp_end.to_numpy(), exp_df.objective.to_numpy()
 
             x = x + 1
-            y = 1 - y
+            y = exp_config.get("best_objective", 1) - y
 
             plt.scatter(
                 x,
@@ -608,12 +608,11 @@ def plot_test_objective_multi(df, exp_config, output_dir, show):
             x = x[idx]
             y = y[idx]
 
-            x = np.clip(np.concatenate([[0], x, [exp_config["t_max"]]]), 0, exp_config["t_max"])
-            y = np.clip(1 - np.concatenate([[0], y, [y[-1]]]), 0, 1)
+            x = np.clip(np.concatenate([x, [exp_config["t_max"]]]), 0, exp_config["t_max"])
+            y = np.clip(exp_config.get("best_objective", 1) - np.concatenate([y, [y[-1]]]), 0, 1)
             
             area = aulc(x, y)
             exp_config["data"][exp_name]["AULC"] = area
-            
             
             plt.step(
                 x[:],
@@ -1185,12 +1184,12 @@ def write_infos(df, exp_config, output_dir):
             else:
                 idx_best = exp_df.objective.argmin()
 
-            obj_best = 1 - exp_df.objective.iloc[idx_best]
+            obj_best = exp_config.get("best_objective", 1) - exp_df.objective.iloc[idx_best]
             obj_best_timestamp = exp_df.timestamp_end.iloc[idx_best]
             
             infos[exp_name]["best_objective"] = float(obj_best)
             if "test_objective" in exp_config:
-                obj_best_test = 1 - exp_df[exp_config["test_objective"]].iloc[idx_best]
+                obj_best_test = exp_config.get("best_objective", 1) - exp_df[exp_config["test_objective"]].iloc[idx_best]
                 infos[exp_name]["best_objective_test"] = round(float(obj_best_test), 3)
             infos[exp_name]["best_objective_timestamp"] = float(obj_best_timestamp)
 

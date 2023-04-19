@@ -89,6 +89,11 @@ Now the plots should able to be generated with:
 python -m scalbo.plot --config plot.yaml
 ```
 
+## Run Simplified Experiments with Docker
 
+- Install Docker
 
-
+Build Docker Image:
+```console
+docker build -t romainegele/scalable-bo . --platform linux/x86_64
+```

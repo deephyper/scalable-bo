@@ -35,13 +35,13 @@ The script will install:
 
 ### Running Experiments on Polaris at ALCF
 
-On Polaris the experiments are run from `scalable-bo/experiments/polaris/dhbv2`. Go to the root directory of our experiments:
+On Polaris the experiments are run from `scalable-bo/experiments/polaris/dhb`. Go to the root directory of our experiments:
 
 ```console
-cd scalable-bo/experiments/polaris/dhbv2
+cd scalable-bo/experiments/polaris/dhb
 ```
 
-The outputs of the experiments will be stored in `scalable-bo/experiments/polaris/dhbv2/output` with a naming that is similar to job scripts. Create this directory: 
+The outputs of the experiments will be stored in `scalable-bo/experiments/polaris/dhb/output` with a naming that is similar to job scripts. Create this directory: 
 
 ```console
 mkdir output
@@ -50,7 +50,7 @@ mkdir output
 In all our job scripts (`*.sh`) the `-A datascience` project is used. Replace this value by your own project allocation (e.g., `myprojectname`) with the following command:
 
 ```console
-cd scalable-bo/experiments/polaris/dhbv2
+cd scalable-bo/experiments/polaris/dhb
 sed -i '' 's/#PBS -A datascience/#PBS -A myprojectname/' *.sh
 ```
 
@@ -91,9 +91,20 @@ python -m scalbo.plot --config plot.yaml
 
 ## Run Simplified Experiments with Docker
 
-- Install Docker
+In this section, we provide a small scale example to reproduce our results with a Docker image. However, it is important to note that the impact of the result is less due to the reduction in scale such as demonstrated in the original paper when using only 40 workers (here we are using even fewer workers).
 
-Build Docker Image:
+Start by [installing Docker](https://docs.docker.com/get-docker/). Once installed, start the Docker service.
+
+Then, the image can be built with `Dockerfile` at the root of our repository by using the following commands:
+
 ```console
+git clone https://github.com/deephyper/scalable-bo.git deephyper-scalable-bo
+cd deephyper-scalable-bo/
 docker build -t romainegele/scalable-bo . --platform linux/x86_64
+```
+
+Start the image:
+
+```console
+docker run --platform linux/x86_64 -ti romainegele/scalable-bo /bin/bash
 ```

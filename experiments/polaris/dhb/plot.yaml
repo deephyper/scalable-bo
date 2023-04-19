@@ -1,5 +1,5 @@
-data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhbv2/output
-figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhbv2/figures
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhb/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhb/figures
 show: False
 negative: False
 mode: max

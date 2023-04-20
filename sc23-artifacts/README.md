@@ -89,22 +89,12 @@ Now the plots should able to be generated with:
 python -m scalbo.plot --config plot.yaml
 ```
 
-## Run Simplified Experiments with Docker
+## Run Simplified Experiments 
 
-In this section, we provide a small scale example to reproduce our results with a Docker image. However, it is important to note that the impact of the result is less due to the reduction in scale such as demonstrated in the original paper when using only 40 workers (here we are using even fewer workers).
+In this section, we provide a small scale example to demonstrate the code execution. However, it is important to note that the impact of the result is less due to the reduction in scale such as demonstrated in the original paper when using only 40 workers (in this example we will be using even fewer workers).
 
-Start by [installing Docker](https://docs.docker.com/get-docker/). Once installed, start the Docker service.
-
-Then, the image can be built with `Dockerfile` at the root of our repository by using the following commands:
-
-```console
-git clone https://github.com/deephyper/scalable-bo.git deephyper-scalable-bo
-cd deephyper-scalable-bo/
-docker build -t romainegele/scalable-bo . --platform linux/x86_64
-```
-
-Start the image:
-
-```console
-docker run --platform linux/x86_64 -ti romainegele/scalable-bo /bin/bash
-```
+1. Start by installing the required packages.
+2. Go to `experiments/sc23-example/navalpropulsion`.
+3. Run the experiment `./auto.sh`.
+4. Edit the `plot.yaml` file for you setting.
+5. Generate the figures `python -m scalbo.plot plot.yaml` and observe them in `figures/`

@@ -173,4 +173,5 @@ def execute(
             if log_dir != search_log_dir:  # means the cache was used
                 os.system(f"mv {search_log_dir}/* {log_dir}")
             
-            comm.Abort()
+    comm.Barrier()
+    comm.Abort()

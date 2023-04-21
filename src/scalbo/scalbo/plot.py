@@ -107,8 +107,15 @@ def load_results(exp_root: str, exp_config: dict) -> dict:
                 exp_results_path = os.path.join(
                     exp_root, f"{exp_prefix}-{rep}/results.csv"
                 )
-                df = pd.read_csv(exp_results_path)
+                print(f"Loading {exp_results_path}")
+                df = pd.read_csv(exp_results_path, index_col=0)
+                df = df.dropna().reset_index(drop=True)
                 df = rename_column(df)
+                df = df.astype({"objective": "float64"})
+
+                df["timestamp_end"] = df["timestamp_end"] - df.loc[0, "timestamp_start"]
+                df["timestamp_start"] = df["timestamp_start"] - df.loc[0, "timestamp_start"]
+                df["duration"] = df["timestamp_end"] - df["timestamp_start"]
 
                 dfs.append(df)
                 data[exp_prefix] = dfs
@@ -567,10 +574,17 @@ def plot_test_objective_multi(df, exp_config, output_dir, show):
 
             y_list = []
             for i, df_i in enumerate(exp_dfs):
-                df_i = df_i.sort_values("timestamp_end")
-                x, y = df_i.timestamp_end.to_numpy(), df_i.objective.cummin().to_numpy()
+
+                df_i = process_for_test_objective(
+                    df_i.sort_values("timestamp_end"),
+                    mode=MODE,
+                    max_budget=exp_config["max_budget"],
+                )
+                x = df_i.loc[df_i["max_idx"]]["timestamp_end"].values
+                y = df_i.loc[df_i["max_idx"]][exp_config["test_objective"]].values
+
                 f = interp1d(x, y, kind="previous", fill_value="extrapolate")
-                y = f(T)
+                y = exp_config.get("best_objective", 1) - f(T)
                 y_list.append(y)
 
             y_list = np.asarray(y_list)

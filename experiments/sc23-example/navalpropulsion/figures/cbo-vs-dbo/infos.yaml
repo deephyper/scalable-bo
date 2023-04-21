@@ -1,0 +1,15 @@
+dhb_navalpropulsion-CBO-DUMMY-UCB-NONE-8-70:
+  best_objective: -0.00015376975297838654 +/- 3.492790971003574e-05
+  best_objective_timestamp: 30.339228439331055 +/- 8.81295618814322
+  num_evaluations: 118.4 +/- 4.340415463984986
+  utilization: 0.9454782237112521 +/- 0.00818379974227522
+dhb_navalpropulsion-CBO-RF-UCB-NONE-8-70:
+  best_objective: -4.6086440397630214e-05 +/- 6.834626693365012e-06
+  best_objective_timestamp: 44.51564998626709 +/- 5.3193576574856
+  num_evaluations: 94.3 +/- 15.445620790372912
+  utilization: 0.8520497030516466 +/- 0.021958677922361253
+dhb_navalpropulsion-DBO-RF-UCB-NONE-8-70:
+  best_objective: -3.7573603412965896e-05 +/- 4.475218878027529e-06
+  best_objective_timestamp: 42.915018153190616 +/- 6.9408526887645055
+  num_evaluations: 84.1 +/- 14.686796737205835
+  utilization: 0.8653012116750082 +/- 0.02254353857386359

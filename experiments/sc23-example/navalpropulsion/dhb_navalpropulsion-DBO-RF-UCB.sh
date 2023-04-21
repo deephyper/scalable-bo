@@ -2,15 +2,13 @@
 
 #!!! CONFIGURATION - START
 export problem="dhb_navalpropulsion"
-export search="CBO"
+export search="DBO"
 export model="RF"
 export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
 export pruning_strategy="NONE"
 export objective_scaler="minmaxlog"
-export timeout=120
-export random_state=42
 #!!! CONFIGURATION - END
 
 export log_dir="output/$problem-$search-$model-$acq_func-$pruning_strategy-$NUM_WORKERS-$timeout-$random_state"
@@ -24,7 +22,7 @@ popd
 
 sleep 1
 
-mpirun -np $(($NUM_WORKERS + 1)) --host localhost:$(($NUM_WORKERS + 1)) \
+mpirun -np $NUM_WORKERS  --host localhost:$NUM_WORKERS \
     python -m scalbo.exp --problem $problem \
     --search $search \
     --model $model \
@@ -41,6 +39,5 @@ mpirun -np $(($NUM_WORKERS + 1)) --host localhost:$(($NUM_WORKERS + 1)) \
     --interval-steps 1 \
     --filter-duplicated 0 \
     --n-jobs 1
-
 
 redis-cli shutdown

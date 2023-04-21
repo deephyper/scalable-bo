@@ -3,14 +3,12 @@
 #!!! CONFIGURATION - START
 export problem="dhb_navalpropulsion"
 export search="CBO"
-export model="RF"
+export model="DUMMY"
 export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
-export pruning_strategy="SHA"
+export pruning_strategy="NONE"
 export objective_scaler="minmaxlog"
-export timeout=120
-export random_state=42
 #!!! CONFIGURATION - END
 
 export log_dir="output/$problem-$search-$model-$acq_func-$pruning_strategy-$NUM_WORKERS-$timeout-$random_state"

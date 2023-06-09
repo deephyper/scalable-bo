@@ -146,7 +146,7 @@ def execute_optuna(
         pruner = optuna.pruners.NopPruner()
     elif pruning_strategy == "SHA":
         pruner = optuna.pruners.SuccessiveHalvingPruner(
-            min_resource=1, reduction_factor=4
+            min_resource=1, reduction_factor=3
         )
     elif pruning_strategy == "HB":
         pruner = optuna.pruners.HyperbandPruner(

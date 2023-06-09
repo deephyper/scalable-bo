@@ -177,7 +177,11 @@ def execute_optuna(
         optimize(timeout)
     except SearchTerminationError: pass
 
-    all_trials = study.get_trials(deepcopy=True, states=[optuna.trial.TrialState.COMPLETE])
+    all_trials = study.get_trials(deepcopy=True, states=[
+        optuna.trial.TrialState.COMPLETE, 
+        optuna.trial.TrialState.PRUNED,
+        optuna.trial.TrialState.FAIL,
+    ])
 
     pd.DataFrame([t.user_attrs["results"] for t in all_trials]).to_csv(os.path.join(search_log_dir, "results.csv"))
 

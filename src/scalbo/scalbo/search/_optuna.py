@@ -1,3 +1,4 @@
+import functools
 import getpass
 import logging
 import pathlib
@@ -18,6 +19,7 @@ import optuna
 import ConfigSpace as cs
 import ConfigSpace.hyperparameters as csh
 
+from deephyper.core.utils._timeout import terminate_on_timeout
 from deephyper.evaluator import RunningJob
 
 from mpi4py import MPI
@@ -165,9 +167,15 @@ def execute_optuna(
         
         return data["objective"]
 
+    functools.partial(
+                    terminate_on_timeout, time_left, new_job.run_function
+                )
 
     timestamp_start = time.time()
-    study.optimize(objective_wrapper, timeout=timeout)
+    optuna_optimize = functools.partial(
+        terminate_on_timeout, timeout, study.optimize
+    )
+    optuna_optimize(objective_wrapper, timeout=timeout)
 
     all_trials = study.get_trials(deep=True, states=[optuna.trial.TrialState.COMPLETE])
 

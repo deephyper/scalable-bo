@@ -2,7 +2,7 @@ import getpass
 import logging
 import pathlib
 import os
-import socket
+import time
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
@@ -13,13 +13,10 @@ mpi4py.rc.threads = True
 mpi4py.rc.thread_level = "multiple"
 
 import numpy as np
+import pandas as pd
 import optuna
 import ConfigSpace as cs
 import ConfigSpace.hyperparameters as csh
-
-from deephyper.evaluator import SerialEvaluator, distributed
-from deephyper.core.utils._timeout import terminate_on_timeout
-from deephyper.core.exceptions import SearchTerminationError
 
 from mpi4py import MPI
 
@@ -31,55 +28,28 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 
-def convert_to_optuna_distribution(cs_hp):
+def optuna_suggest_from_hp(trial, cs_hp):
     name = cs_hp.name
     if isinstance(cs_hp, csh.UniformIntegerHyperparameter):
-        if cs_hp.log:
-            dist = optuna.distributions.IntLogUniformDistribution(
-                low=cs_hp.lower, high=cs_hp.upper
-            )
-        else:
-            dist = optuna.distributions.IntUniformDistribution(
-                low=cs_hp.lower, high=cs_hp.upper
-            )
+        value = trial.suggest_int(name, cs_hp.lower, cs_hp.upper, log=cs_hp.log)
     elif isinstance(cs_hp, csh.UniformFloatHyperparameter):
-        if cs_hp.log:
-            dist = optuna.distributions.LogUniformDistribution(
-                low=cs_hp.lower, high=cs_hp.upper
-            )
-        else:
-            dist = optuna.distributions.UniformDistribution(
-                low=cs_hp.lower, high=cs_hp.upper
-            )
+        value = trial.suggest_float(name, cs_hp.lower, cs_hp.upper, log=cs_hp.log)
     elif isinstance(cs_hp, csh.CategoricalHyperparameter):
+        value = trial.suggest_categorical(name, cs_hp.choices)
         dist = optuna.distributions.CategoricalDistribution(choices=cs_hp.choices)
     elif isinstance(cs_hp, csh.OrdinalHyperparameter):
-        dist = optuna.distributions.CategoricalDistribution(choices=cs_hp.sequence)
+        value = trial.suggest_categorical(name, cs_hp.sequence)
     else:
         raise TypeError(f"Cannot convert hyperparameter of type {type(cs_hp)}")
 
-    return name, dist
+    return name, value
 
-
-def convert_to_optuna_space(cs_space):
-    # verify pre-conditions
-    if not (isinstance(cs_space, cs.ConfigurationSpace)):
-        raise TypeError("Input space should be of type ConfigurationSpace")
-
-    if len(cs_space.get_conditions()) > 0:
-        raise RuntimeError("Cannot convert a ConfigSpace with Conditions!")
-
-    if len(cs_space.get_forbiddens()) > 0:
-        raise RuntimeError("Cannot convert a ConfigSpace with Forbiddens!")
-
-    # convert the ConfigSpace to deephyper.skopt.space.Space
-    distributions = {}
+def optuna_suggest_from_configspace(trial, cs_space):
+    config = {}
     for cs_hp in cs_space.get_hyperparameters():
-        name, dist = convert_to_optuna_distribution(cs_hp)
-        distributions[name] = dist
-
-    return distributions
-
+        name, value = optuna_suggest_from_hp(trial, cs_hp)
+        config[name] = value
+    return config
 
 def execute_optuna(
     problem,
@@ -128,8 +98,6 @@ def execute_optuna(
         force=True,
     )
 
-    optuna_space = convert_to_optuna_space(hp_problem.space)
-
     username = getpass.getuser()
     host = os.environ["OPTUNA_DB_HOST"]
 
@@ -169,51 +137,38 @@ def execute_optuna(
         pruner=pruner,
     )
 
+    timestamp_start = None
     if rank == 0:
+        timestamp_start = time.time()
         study = optuna.create_study(direction="maximize", **study_params)
     comm.Barrier()
+    timestamp_start = comm.bcast(timestamp_start)
 
     if rank > 0:
         study = optuna.load_study(**study_params)
     comm.Barrier()
 
-    if (
-        os.environ.get("HOST") and os.environ["HOST"][0] == "x"
-    ):  # assume we are on Polaris
-        backend = "s4m"
-    else:
-        backend = "mpi"
-    evaluator = distributed(backend)(SerialEvaluator)(run)
+    def objective_wrapper(trial):
+        config = optuna_suggest_from_configspace(trial, hp_problem.space)
+        output = run(config)
 
-    def execute_search():
-        num_evals = 0
-        while True:
-            trial = study.ask(optuna_space)
-            config = {p: trial.params[p] for p in trial.params}
-            if pruning_strategy is not None:
-                evaluator.run_function_kwargs["optuna_trial"] = trial
+        data = {f"p:{k}": v for k, v in config.items()}
+        data["objective"] = output["objective"]
+        data["job_id"] = trial.numberA
+        data.update({f"m:{k}": v for k, v in output["metadata"].items()})
+        trial.set_user_attr("results", data)
 
-            evaluator.submit([config])
-            local_results, other_results = evaluator.gather("ALL")
-            num_evals += len(local_results) + len(other_results)
-            y = local_results[0].objective
-            step = local_results[0].metadata["budget"]
+        if data["m:stopped"]:
+            raise optuna.TrialPruned()
+        
+        return data["objective"]
 
-            evaluator.dump_evals(log_dir=log_dir)
 
-            if max_evals > 0 and num_evals >= max_evals:
-                break
+    timestamp_start = time.time()
+    study.optimize(objective_wrapper, timeout=timeout)
 
-            if isinstance(y, dict) and step is not None:  # pruner is used
-                trial.report(y["objective"], step=step)
-                if y["pruned"]:
-                    study.tell(trial, state=optuna.trial.TrialState.PRUNED)
-                else:
-                    study.tell(trial, y)
-            else:
-                study.tell(trial, y)
+    all_trials = study.get_trials(deep=True, states=[optuna.trial.TrialState.COMPLETE])
 
-    try:
-        terminate_on_timeout(timeout, execute_search)
-    except SearchTerminationError:
-        logging.info("Search is done")
+    pd.DataFrame([t.user_attrs["results"] for t in all_trials]).to_csv(os.path.join(search_log_dir, "results.csv"))
+
+    logging.info("Search is done")

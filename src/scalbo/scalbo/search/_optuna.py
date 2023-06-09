@@ -166,12 +166,13 @@ def execute_optuna(
             raise optuna.TrialPruned()
         
         return data["objective"]
+    
+    def optimize_wrapper(duration):
+        study.optimize(objective_wrapper, timeout=duration)
 
     timestamp_start = time.time()
-    optuna_optimize = functools.partial(
-        terminate_on_timeout, timeout, study.optimize
-    )
-    optuna_optimize(objective_wrapper, timeout=timeout)
+    optimize = functools.partial(terminate_on_timeout, timeout, optimize_wrapper)
+    optimize(timeout)
 
     all_trials = study.get_trials(deep=True, states=[optuna.trial.TrialState.COMPLETE])
 

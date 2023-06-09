@@ -19,6 +19,7 @@ import optuna
 import ConfigSpace as cs
 import ConfigSpace.hyperparameters as csh
 
+from deephyper.core.exceptions import SearchTerminationError
 from deephyper.core.utils._timeout import terminate_on_timeout
 from deephyper.evaluator import RunningJob
 
@@ -172,7 +173,9 @@ def execute_optuna(
 
     timestamp_start = time.time()
     optimize = functools.partial(terminate_on_timeout, timeout, optimize_wrapper)
-    optimize(timeout)
+    try:
+        optimize(timeout)
+    except SearchTerminationError: pass
 
     all_trials = study.get_trials(deep=True, states=[optuna.trial.TrialState.COMPLETE])
 

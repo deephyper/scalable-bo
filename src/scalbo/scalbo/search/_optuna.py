@@ -156,7 +156,7 @@ def execute_optuna(
 
         data = {f"p:{k}": v for k, v in config.items()}
         data["objective"] = output["objective"]
-        data["job_id"] = trial.numberA
+        data["job_id"] = trial.number
         data.update({f"m:{k}": v for k, v in output["metadata"].items()})
         trial.set_user_attr("results", data)
 

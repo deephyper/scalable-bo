@@ -167,10 +167,6 @@ def execute_optuna(
         
         return data["objective"]
 
-    functools.partial(
-                    terminate_on_timeout, time_left, new_job.run_function
-                )
-
     timestamp_start = time.time()
     optuna_optimize = functools.partial(
         terminate_on_timeout, timeout, study.optimize

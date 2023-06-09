@@ -18,6 +18,8 @@ import optuna
 import ConfigSpace as cs
 import ConfigSpace.hyperparameters as csh
 
+from deephyper.evaluator import RunningJob
+
 from mpi4py import MPI
 
 if not MPI.Is_initialized():
@@ -150,7 +152,7 @@ def execute_optuna(
 
     def objective_wrapper(trial):
         config = optuna_suggest_from_configspace(trial, hp_problem.space)
-        output = run(config)
+        output = run(RunningJob(id=trial.number, parameters=config), optuna_trial=trial)
 
         data = {f"p:{k}": v for k, v in config.items()}
         data["objective"] = output["objective"]

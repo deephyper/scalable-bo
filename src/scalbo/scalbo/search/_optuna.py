@@ -96,12 +96,13 @@ def execute_optuna(
     pathlib.Path(search_log_dir).mkdir(parents=False, exist_ok=True)
 
     path_log_file = os.path.join(search_log_dir, f"deephyper.{rank}.log")
-    logging.basicConfig(
-        filename=path_log_file,
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
-        force=True,
-    )
+    if rank == 0:
+        logging.basicConfig(
+            filename=path_log_file,
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
+            force=True,
+        )
 
     username = getpass.getuser()
     host = os.environ["OPTUNA_DB_HOST"]

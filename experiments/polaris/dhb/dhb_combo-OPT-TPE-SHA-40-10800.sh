@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=25
+#PBS -l select=40
 #PBS -l walltime=03:10:00
 #PBS -q prod
 #PBS -l filesystems=home:grand
@@ -21,9 +21,8 @@ export random_state=42
 #!!! CONFIGURATION - END
 
 export NRANKS_PER_NODE=4
-export NDEPTH=$(( 64 / $NRANKS_PER_NODE ))
-#export NNODES=`wc -l < $PBS_NODEFILE`
-export NNODES=10
+export NDEPTH=$((64 / $NRANKS_PER_NODE))
+export NNODES=`wc -l < $PBS_NODEFILE`
 export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
 export OMP_NUM_THREADS=$NDEPTH
 

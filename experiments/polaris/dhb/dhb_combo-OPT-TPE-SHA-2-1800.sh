@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -l select=2:system=polaris
 #PBS -l place=scatter
-#PBS -l walltime=00:30:00
+#PBS -l walltime=00:15:00
 #PBS -q debug
 #PBS -A datascience
 #PBS -l filesystems=grand:home
@@ -17,7 +17,7 @@ source ../../../build/activate-dhenv.sh
 export problem="dhb_combo"
 export search="OPT-TPE"
 export pruning_strategy="SHA"
-export timeout=1800
+export timeout=720
 export random_state=42
 #!!! CONFIGURATION - END
 

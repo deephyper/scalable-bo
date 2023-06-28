@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=25
+#PBS -l select=480
 #PBS -l walltime=03:10:00
 #PBS -q prod
 #PBS -l filesystems=home:grand
@@ -21,9 +21,8 @@ export random_state=42
 #!!! CONFIGURATION - END
 
 export NRANKS_PER_NODE=4
-export NDEPTH=$(( 64 / $NRANKS_PER_NODE ))
-#export NNODES=`wc -l < $PBS_NODEFILE`
-export NNODES=10
+export NDEPTH=$((64 / $NRANKS_PER_NODE))
+export NNODES=`wc -l < $PBS_NODEFILE`
 export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
 export OMP_NUM_THREADS=$NDEPTH
 
@@ -39,7 +38,7 @@ initdb -D "$OPTUNA_DB_DIR"
 echo "host    all             all             .hsn.cm.polaris.alcf.anl.gov               trust" >> "$OPTUNA_DB_DIR/pg_hba.conf"
 
 # Set the limit of max connections to 2048
-sed -i "s/max_connections = 100/max_connections = 2048/" "$OPTUNA_DB_DIR/postgresql.conf"
+sed -i "s/max_connections = 100/max_connections = 4096/" "$OPTUNA_DB_DIR/postgresql.conf"
 
 # start the server in the background and listen to all interfaces
 pg_ctl -D $OPTUNA_DB_DIR -l "$log_dir/db.log" -o "-c listen_addresses='*'" start

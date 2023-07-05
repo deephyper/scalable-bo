@@ -1,8 +1,13 @@
+import os
+
+os.environ["DEEPHYPER_BENCHMARK_TASK"] = "slicelocalization"
+os.environ["DEEPHYPER_BENCHMARK_MOO"] = "1"
+
 import deephyper_benchmark as dhb
 
-dhb.load("HPOBench/tabular/slicelocalization")
+dhb.load("HPOBench/tabular")
 
-from deephyper_benchmark.lib.hpobench.tabular.slicelocalization import hpo
+from deephyper_benchmark.lib.hpobench.tabular import hpo
 
 hp_problem = hpo.problem
 run = hpo.run

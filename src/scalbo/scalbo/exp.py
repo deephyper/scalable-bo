@@ -49,6 +49,7 @@ SEARCHES = {
     "CBO": "scalbo.search.cbo",  # Centralized Model-Based Search (Master-Worker)
     "DBO": "scalbo.search.dbo",  # Fully Distributed Model-Based Search
     "OPT-TPE": "scalbo.search.optuna_tpe",  # TPE
+    "OPT-NSGAII": "scalbo.search.optuna_nsgaii",  # NSGAII
     "OPT-RDM": "scalbo.search.optuna_random",  # RANDOM
 }
 
@@ -169,7 +170,6 @@ def create_parser():
 
 
 def main(args):
-
     args = vars(args)
 
     # load the problem

@@ -14,14 +14,9 @@ mpi4py.rc.threads = True
 mpi4py.rc.thread_level = "multiple"
 
 import numpy as np
-import pandas as pd
 import optuna
-import ConfigSpace as cs
-import ConfigSpace.hyperparameters as csh
 
-from deephyper.core.exceptions import SearchTerminationError
-from deephyper.core.utils._timeout import terminate_on_timeout
-from deephyper.evaluator import RunningJob
+from deephyper.search.hps._mpi_doptuna import MPIDistributedOptuna
 
 from mpi4py import MPI
 
@@ -33,29 +28,6 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 
-def optuna_suggest_from_hp(trial, cs_hp):
-    name = cs_hp.name
-    if isinstance(cs_hp, csh.UniformIntegerHyperparameter):
-        value = trial.suggest_int(name, cs_hp.lower, cs_hp.upper, log=cs_hp.log)
-    elif isinstance(cs_hp, csh.UniformFloatHyperparameter):
-        value = trial.suggest_float(name, cs_hp.lower, cs_hp.upper, log=cs_hp.log)
-    elif isinstance(cs_hp, csh.CategoricalHyperparameter):
-        value = trial.suggest_categorical(name, cs_hp.choices)
-        dist = optuna.distributions.CategoricalDistribution(choices=cs_hp.choices)
-    elif isinstance(cs_hp, csh.OrdinalHyperparameter):
-        value = trial.suggest_categorical(name, cs_hp.sequence)
-    else:
-        raise TypeError(f"Cannot convert hyperparameter of type {type(cs_hp)}")
-
-    return name, value
-
-def optuna_suggest_from_configspace(trial, cs_space):
-    config = {}
-    for cs_hp in cs_space.get_hyperparameters():
-        name, value = optuna_suggest_from_hp(trial, cs_hp)
-        config[name] = value
-    return config
-
 def execute_optuna(
     problem,
     timeout,
@@ -63,7 +35,7 @@ def execute_optuna(
     random_state,
     log_dir,
     cache_dir,
-    method,  # in TPE
+    method,
     pruning_strategy=None,  # SHA, HB
     max_steps=None,
     **kwargs,
@@ -106,13 +78,15 @@ def execute_optuna(
 
     username = getpass.getuser()
     host = os.environ["OPTUNA_DB_HOST"]
-
     storage = f"postgresql://{username}@{host}:5432/hpo"
+    n_objectives = int(os.environ.get("OPTUNA_N_OBJECTIVES", 1))
 
     logging.info(f"storage={storage}")
 
     if "TPE" in method:
         sampler = optuna.samplers.TPESampler(seed=rank_seed)
+    elif "NSGAII" in method:
+        sampler = optuna.samplers.NSGAIISampler(seed=rank_seed)
     else:
         sampler = optuna.samplers.RandomSampler(seed=rank_seed)
 
@@ -136,54 +110,22 @@ def execute_optuna(
         raise ValueError(f"Wrong pruning strategy '{pruning_strategy}'")
 
     study_name = os.path.basename(log_dir)
-    study_params = dict(
+
+    search = MPIDistributedOptuna(
+        hp_problem,
+        run,
+        random_state=random_state,
+        log_dir=search_log_dir,
         study_name=study_name,
-        storage=storage,
         sampler=sampler,
         pruner=pruner,
+        storage=storage,
+        comm=comm,
+        n_objectives=n_objectives,
+        verbose=0,
     )
-
-    timestamp_start = None
-    if rank == 0:
-        timestamp_start = time.time()
-        study = optuna.create_study(direction="maximize", **study_params)
-    comm.Barrier()
-    timestamp_start = comm.bcast(timestamp_start)
-
-    if rank > 0:
-        study = optuna.load_study(**study_params)
-    comm.Barrier()
-
-    def objective_wrapper(trial):
-        config = optuna_suggest_from_configspace(trial, hp_problem.space)
-        output = run(RunningJob(id=trial.number, parameters=config), optuna_trial=trial)
-
-        data = {f"p:{k}": v for k, v in config.items()}
-        data["objective"] = output["objective"]
-        data["job_id"] = trial.number
-        data.update({f"m:{k}": v for k, v in output["metadata"].items()})
-        trial.set_user_attr("results", data)
-
-        if data["m:stopped"]:
-            raise optuna.TrialPruned()
-        
-        return data["objective"]
-    
-    def optimize_wrapper(duration):
-        study.optimize(objective_wrapper, timeout=duration)
-
-    timestamp_start = time.time()
-    optimize = functools.partial(terminate_on_timeout, timeout, optimize_wrapper)
-    try:
-        optimize(timeout)
-    except SearchTerminationError: pass
-
-    all_trials = study.get_trials(deepcopy=True, states=[
-        optuna.trial.TrialState.COMPLETE, 
-        optuna.trial.TrialState.PRUNED,
-        optuna.trial.TrialState.FAIL,
-    ])
-
-    pd.DataFrame([t.user_attrs["results"] for t in all_trials]).to_csv(os.path.join(search_log_dir, "results.csv"))
+    results = search.search(max_evals=max_evals, timeout=timeout)
 
     logging.info("Search is done")
+    
+    MPI.Finalize()

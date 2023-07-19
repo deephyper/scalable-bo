@@ -42,6 +42,7 @@ PROBLEMS = {
     "dhb_lcdb_41150": "scalbo.benchmark.dhb_lcdb_41150",
     "dhb_lcbench": "scalbo.benchmark.dhb_lcbench",
     "test": "scalbo.benchmark.test",
+    "dhb_fnobench": "scalbo.benchmark.dhb_fnobench",
 }
 
 SEARCHES = {

@@ -1,7 +1,6 @@
 import os
 
 os.environ["DEEPHYPER_BENCHMARK_TASK"] = "proteinstructure"
-os.environ["DEEPHYPER_BENCHMARK_MOO"] = "1"
 
 import deephyper_benchmark as dhb
 

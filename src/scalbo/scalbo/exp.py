@@ -43,6 +43,7 @@ PROBLEMS = {
     "dhb_lcbench": "scalbo.benchmark.dhb_lcbench",
     "test": "scalbo.benchmark.test",
     "dhb_fnobench": "scalbo.benchmark.dhb_fnobench",
+    "dhb_diffreact": "scalbo.benchmark.dhb_diffreact",
 }
 
 SEARCHES = {
@@ -95,7 +96,6 @@ def create_parser():
         "--strategy",
         type=str,
         default="cl_max",
-        # choices=["cl_max", "topk", "boltzmann", "qUCB", "qEI"],
         help="The strategy for multi-point acquisition.",
     )
     parser.add_argument(

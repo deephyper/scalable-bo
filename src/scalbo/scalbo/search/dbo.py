@@ -51,6 +51,8 @@ def execute(
     objective_scaler="identity",
     max_steps=None,
     interval_steps=1,
+    scalar_func="Chebyshev",
+    lower_bounds=None,
     **kwargs,
 ):
     # define where the outputs are saved live (in cache-dir if possible)
@@ -128,6 +130,9 @@ def execute(
     else:
         scheduler = None
 
+    if lower_bounds is not None:
+        lower_bounds = [float(lb) if lb != "None" else None for lb in lower_bounds.split(",")]
+
     search = MPIDistributedBO(
         hp_problem,
         evaluator,
@@ -141,6 +146,9 @@ def execute(
         scheduler=scheduler,
         objective_scaler=objective_scaler,
         stopper=stopper,
+        moo_scalarization_strategy=scalar_func,
+        moo_lower_bounds=lower_bounds,
+        verbose=0,
     )
     logging.info("Creation of the search done")
 

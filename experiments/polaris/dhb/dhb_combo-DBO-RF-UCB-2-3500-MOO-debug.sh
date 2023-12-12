@@ -21,9 +21,10 @@ export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
 export pruning_strategy="NONE"
-export objective_scaler="minmaxlog"
+export objective_scaler="quantile-uniform"
 export timeout=3500
 export random_state=42
+export lower_bounds="0.85,None,None"
 #!!! CONFIGURATION - END
 
 export DEEPHYPER_BENCHMARK_MOO="1"
@@ -46,8 +47,8 @@ popd
 
 sleep 5
 
-export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
-mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
+# export GPUSTAT_LOG_DIR=$PBS_O_WORKDIR/$log_dir
+# mpiexec -n ${NNODES} --ppn 1 --depth=1 --cpu-bind depth --envall ../profile_gpu_polaris.sh &
 
 mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --depth=${NDEPTH} \
@@ -67,4 +68,5 @@ mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --timeout $timeout \
     --max-steps 50 \
     --interval-steps 1 \
-    --filter-duplicated 1
+    --filter-duplicated 1 \
+    --lower-bounds $lower_bounds

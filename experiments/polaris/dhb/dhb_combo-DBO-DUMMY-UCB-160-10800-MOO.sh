@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=40:system=polaris
+#PBS -l select=160:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=03:10:00
 #PBS -q prod
@@ -10,13 +10,18 @@ set -xe
 
 cd ${PBS_O_WORKDIR}
 
+
 source ../../../build/activate-dhenv.sh
 
 #!!! CONFIGURATION - START
 export problem="dhb_combo"
-export OPTUNA_N_OBJECTIVES=3
-export search="OPT-NSGAII"
+export search="DBO"
+export model="DUMMY"
+export acq_func="UCB"
+export scheduler_periode=48
+export scheduler_rate=0.1
 export pruning_strategy="NONE"
+export objective_scaler="minmaxlog"
 export timeout=10800
 export random_state=42
 #!!! CONFIGURATION - END
@@ -30,25 +35,14 @@ export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
 export OMP_NUM_THREADS=$NDEPTH
 
 
-export log_dir="output/$problem-$search-$NNODES-$timeout-$random_state-MOO"
+export log_dir="output/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state-MOO"
 mkdir -p $log_dir
 
-### Setup Postgresql Database - START ###
-export OPTUNA_DB_DIR="$log_dir/optunadb"
-export OPTUNA_DB_HOST=$HOST
-initdb -D "$OPTUNA_DB_DIR"
-
-# Set authentication policy to "trust" for all users
-echo "host    all             all             .hsn.cm.polaris.alcf.anl.gov               trust" >> "$OPTUNA_DB_DIR/pg_hba.conf"
-
-# Set the limit of max connections to 2048
-sed -i "s/max_connections = 100/max_connections = 2048/" "$OPTUNA_DB_DIR/postgresql.conf"
-
-# start the server in the background and listen to all interfaces
-pg_ctl -D $OPTUNA_DB_DIR -l "$log_dir/db.log" -o "-c listen_addresses='*'" start
-
-createdb hpo
-### Setup Postgresql Database - END ###
+# Setup Redis Database
+pushd $log_dir
+redis-server $REDIS_CONF &
+export DEEPHYPER_DB_HOST=$HOST
+popd
 
 sleep 5
 
@@ -61,11 +55,16 @@ mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --envall \
     ../set_affinity_gpu_polaris.sh python -m scalbo.exp --problem $problem \
     --search $search \
+    --model $model \
+    --acq-func $acq_func \
+    --objective-scaler $objective_scaler \
+    --scheduler 1 \
+    --scheduler-periode $scheduler_periode \
+    --scheduler-rate $scheduler_rate \
     --random-state $random_state \
     --log-dir $log_dir \
     --pruning-strategy $pruning_strategy \
     --timeout $timeout \
-    --max-steps 50
-
-dropdb hpo
-pg_ctl -D $OPTUNA_DB_DIR -l "$log_dir/db.log" stop
+    --max-steps 50 \
+    --interval-steps 1 \
+    --filter-duplicated 1

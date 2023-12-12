@@ -21,9 +21,11 @@ export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
 export pruning_strategy="NONE"
-export objective_scaler="minmaxlog"
+export objective_scaler="quantile-uniform"
 export timeout=10200
 export random_state=42
+export scalar_func="Linear"
+# export lower_bounds="0.85,None,None"
 #!!! CONFIGURATION - END
 
 export DEEPHYPER_BENCHMARK_MOO="1"
@@ -67,4 +69,6 @@ mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --timeout $timeout \
     --max-steps 50 \
     --interval-steps 1 \
-    --filter-duplicated 1
+    --filter-duplicated 1 \
+    --scalar-func $scalar_func #\
+    # --lower-bounds $lower_bounds

@@ -14,6 +14,7 @@ source ../../../build/activate-dhenv.sh
 
 #!!! CONFIGURATION - START
 export problem="dhb_combo"
+export OPTUNA_N_OBJECTIVES=3
 export search="OPT-NSGAII"
 export pruning_strategy="NONE"
 export timeout=3500

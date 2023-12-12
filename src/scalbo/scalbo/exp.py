@@ -167,6 +167,8 @@ def create_parser():
     parser.add_argument("--objective-scaler", type=str, default="identity")
     parser.add_argument("--max-steps", type=int, default=None)
     parser.add_argument("--interval-steps", type=int, default=1)
+    parser.add_argument("--scalar-func", type=str, default="Chebyshev")
+    parser.add_argument("--lower-bounds", type=str, default=None)
     return parser
 
 

@@ -21,7 +21,7 @@ export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1
 export pruning_strategy="NONE"
-export objective_scaler="minmaxlog"
+export objective_scaler="quantile-uniform"
 export timeout=10200
 export random_state=42
 #!!! CONFIGURATION - END

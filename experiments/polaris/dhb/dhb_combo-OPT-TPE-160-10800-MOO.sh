@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=40:system=polaris
+#PBS -l select=160:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=03:10:00
 #PBS -q prod
@@ -15,7 +15,7 @@ source ../../../build/activate-dhenv.sh
 #!!! CONFIGURATION - START
 export problem="dhb_combo"
 export OPTUNA_N_OBJECTIVES=3
-export search="OPT-NSGAII"
+export search="OPT-TPE"
 export pruning_strategy="NONE"
 export timeout=10800
 export random_state=42

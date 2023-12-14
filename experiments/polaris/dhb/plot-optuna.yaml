@@ -1,0 +1,137 @@
+data-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhb/output
+figures-root: /Users/romainegele/Documents/Argonne/deephyper-scalable-bo/experiments/polaris/dhb/figures
+show: False
+negative: False
+mode: max
+experiments:
+  scaling-optuna-sha:
+    title: ""
+    t_max: 7200
+    ylim: [0.07, 1.0]
+    yscale: "log"
+    baseline_best: 0.894
+    best_objective: 1.0
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation Regret"
+    data:
+      dhb_combo-OPT-TPE-SHA-40-10800-42:
+        label: "Optuna (TPE + SHA) 160"
+        color: "yellow"
+        linestyle: "-"
+        num_workers: 160 
+      dhb_combo-OPT-TPE-SHA-160-10800-42-OLD:
+        label: "Optuna (TPE + SHA) 640"
+        color: "orange"
+        linestyle: "-"
+        num_workers: 640
+  optuna-vs-deephyper-sha-160:
+    title: ""
+    t_max: 7200
+    ylim: [0.07, 1.0]
+    yscale: "log"
+    baseline_best: 0.894
+    best_objective: 1.0
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation Regret"
+    data:
+      dhb_combo-OPT-TPE-SHA-40-10800-42:
+        label: "Optuna (TPE + SHA) 160"
+        color: "red"
+        linestyle: "-"
+        num_workers: 160 
+      dhb_combo-DBO-RF-UCB-SHA-40-10800-42:
+        label: "DeepHyper (Dist. + SHA) 160"
+        color: "deepskyblue"
+        linestyle: "-"
+        num_workers: 160
+  optuna-vs-deephyper-sha-640:
+    title: ""
+    t_max: 7200
+    ylim: [0.07, 1.0]
+    yscale: "log"
+    baseline_best: 0.894
+    best_objective: 1.0
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation Regret"
+    data:
+      dhb_combo-OPT-TPE-SHA-160-10800-42-OLD:
+        label: "Optuna (TPE + SHA) 640"
+        color: "red"
+        linestyle: "-"
+        num_workers: 640 
+      dhb_combo-DBO-RF-UCB-SHA-160-10800-42:
+        label: "DeepHyper (Dist. + SHA) 640"
+        color: "deepskyblue"
+        linestyle: "-"
+        num_workers: 640
+      dhb_combo-DBO-RF-EI-SHA-160-10800-42:
+        label: "DeepHyper (Dist. + SHA) 640"
+        color: "lime"
+        linestyle: "-"
+        num_workers: 640
+  optuna-vs-deephyper-160:
+    title: ""
+    t_max: 7200
+    ylim: [0.07, 1.0]
+    yscale: "log"
+    baseline_best: 0.894
+    best_objective: 1.0
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation Regret"
+    data:
+      dhb_combo-OPT-TPE-NONE-40-10800-42:
+        label: "Optuna (TPE) 160"
+        color: "red"
+        linestyle: "-"
+        num_workers: 160 
+      dhb_combo-DBO-RF-UCB-40-10800-42:
+        label: "DeepHyper (Dist.) 160"
+        color: "deepskyblue"
+        linestyle: "-"
+        num_workers: 160
+  optuna-vs-deephyper-640:
+    title: ""
+    t_max: 7200
+    ylim: [0.07, 1.0]
+    yscale: "log"
+    baseline_best: 0.894
+    best_objective: 1.0
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation Regret"
+    data:
+      dhb_combo-OPT-TPE-NONE-160-10800-42:
+        label: "Optuna (TPE) 640"
+        color: "red"
+        linestyle: "-"
+        num_workers: 640 
+      dhb_combo-DBO-RF-UCB-160-10800-42:
+        label: "DeepHyper (Dist.) 640"
+        color: "deepskyblue"
+        linestyle: "-"
+        num_workers: 640
+  optuna-vs-deephyper-1920:
+    title: ""
+    t_max: 7200
+    ylim: [0.07, 1.0]
+    yscale: "log"
+    baseline_best: 0.894
+    best_objective: 1.0
+    test_objective: "m:test_r2"
+    max_budget: 50
+    ylabel: "Validation Regret"
+    data:
+      dhb_combo-OPT-TPE-NONE-480-10800-42:
+        label: "Optuna (TPE) 1920"
+        color: "red"
+        linestyle: "-"
+        num_workers: 1920 
+      dhb_combo-DBO-RF-UCB-480-10800-42:
+        label: "DeepHyper (Dist.) 1920"
+        color: "deepskyblue"
+        linestyle: "-"
+        num_workers: 1920

@@ -16,7 +16,7 @@ mpi4py.rc.thread_level = "multiple"
 import numpy as np
 import optuna
 
-from deephyper.search.hps._mpi_doptuna import MPIDistributedOptuna
+from deephyper_benchmark.search import MPIDistributedOptuna
 
 from mpi4py import MPI
 
@@ -38,6 +38,7 @@ def execute_optuna(
     method,
     pruning_strategy=None,  # SHA, HB
     max_steps=None,
+    lower_bounds=None,
     **kwargs,
 ):
     """Execute the HB algorithm.
@@ -84,11 +85,11 @@ def execute_optuna(
     logging.info(f"storage={storage}")
 
     if "TPE" in method:
-        sampler = optuna.samplers.TPESampler(seed=rank_seed)
+        sampler = "TPE"
     elif "NSGAII" in method:
-        sampler = optuna.samplers.NSGAIISampler(seed=rank_seed)
+        sampler = "NSGAII"
     else:
-        sampler = optuna.samplers.RandomSampler(seed=rank_seed)
+        sampler = "DUMMY"
 
     if pruning_strategy is None or pruning_strategy == "NONE":
         pruner = optuna.pruners.NopPruner()
@@ -111,6 +112,9 @@ def execute_optuna(
 
     study_name = os.path.basename(log_dir)
 
+    if lower_bounds is not None:
+        lower_bounds = [float(lb) if lb != "None" else None for lb in lower_bounds.split(",")]
+
     search = MPIDistributedOptuna(
         hp_problem,
         run,
@@ -122,6 +126,7 @@ def execute_optuna(
         storage=storage,
         comm=comm,
         n_objectives=n_objectives,
+        moo_lower_bounds=lower_bounds,
         verbose=0,
     )
     results = search.search(max_evals=max_evals, timeout=timeout)

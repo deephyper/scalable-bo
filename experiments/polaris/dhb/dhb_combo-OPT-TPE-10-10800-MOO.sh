@@ -19,6 +19,7 @@ export search="OPT-TPE"
 export pruning_strategy="NONE"
 export timeout=10200
 export random_state=42
+export lower_bounds="0.85,None,None"
 #!!! CONFIGURATION - END
 
 export DEEPHYPER_BENCHMARK_MOO="1"
@@ -65,7 +66,8 @@ mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --log-dir $log_dir \
     --pruning-strategy $pruning_strategy \
     --timeout $timeout \
-    --max-steps 50
+    --max-steps 50 \
+    --lower-bounds $lower_bounds
 
 dropdb hpo
 pg_ctl -D $OPTUNA_DB_DIR -l "$log_dir/db.log" stop

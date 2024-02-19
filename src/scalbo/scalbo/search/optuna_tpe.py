@@ -9,6 +9,7 @@ def execute(
     log_dir,
     cache_dir,
     pruning_strategy,
+    lower_bounds=None,
     **kwargs,
 ):
     """Execute the TPE algorithm with HB."""
@@ -21,5 +22,6 @@ def execute(
         cache_dir=cache_dir,
         method="TPE",
         pruning_strategy=pruning_strategy,
+        lower_bounds=lower_bounds,
         **kwargs,
     )

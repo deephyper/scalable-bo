@@ -125,7 +125,7 @@ def execute(
     if scheduler:
         scheduler = {
             "type": "periodic-exp-decay",
-            "periode": scheduler_periode,
+            "period": scheduler_periode,
             "rate": scheduler_rate,
         }
     else:

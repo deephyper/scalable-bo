@@ -25,7 +25,8 @@ export objective_scaler="quantile-uniform"
 export timeout=10800
 export random_state=42
 export scalar_func="Linear"
-# export lower_bounds="0.85,None,None"
+export lower_bounds="0.85,None,None"
+export acq_func_optimizer="mixedga"
 #!!! CONFIGURATION - END
 
 export DEEPHYPER_BENCHMARK_MOO="1"
@@ -37,7 +38,7 @@ export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
 export OMP_NUM_THREADS=$NDEPTH
 
 
-export log_dir="output/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state-MOO"
+export log_dir="output/$problem-$search-$model-$acq_func-$acq_func_optimizer-$NNODES-$timeout-$random_state-MOO"
 mkdir -p $log_dir
 
 # Setup Redis Database
@@ -70,5 +71,6 @@ mpiexec -n ${NTOTRANKS} --ppn ${NRANKS_PER_NODE} \
     --max-steps 50 \
     --interval-steps 1 \
     --filter-duplicated 1 \
-    --scalar-func $scalar_func #\
-    # --lower-bounds $lower_bounds
+    --scalar-func $scalar_func \
+    --acq-func-optimizer $acq_func_optimizer \
+    --lower-bounds $lower_bounds

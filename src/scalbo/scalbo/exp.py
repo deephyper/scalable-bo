@@ -76,7 +76,7 @@ def create_parser():
     parser.add_argument(
         "--model",
         type=str,
-        choices=["RF", "GP", "DUMMY", "MF"],
+        choices=["RF", "GP", "DUMMY", "MF", "ET"],
         default=None,
         help="Surrogate model used by the Bayesian optimizer.",
     )

@@ -169,6 +169,7 @@ def create_parser():
     parser.add_argument("--interval-steps", type=int, default=1)
     parser.add_argument("--scalar-func", type=str, default="Chebyshev")
     parser.add_argument("--lower-bounds", type=str, default=None)
+    parser.add_argument("--acq-func-optimizer", type=str, default="sampling")
     return parser
 
 

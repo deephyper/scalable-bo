@@ -53,6 +53,7 @@ def execute(
     interval_steps=1,
     scalar_func="Chebyshev",
     lower_bounds=None,
+    acq_func_optimizer="sampling",
     **kwargs,
 ):
     # define where the outputs are saved live (in cache-dir if possible)
@@ -140,6 +141,8 @@ def execute(
         log_dir=search_log_dir,
         random_state=rs,
         acq_func=acq_func,
+        acq_func_optimizer=acq_func_optimizer,
+        acq_func_optimizer_freq=1,
         surrogate_model=model,
         filter_duplicated=filter_duplicated,
         filter_failures="min",

@@ -1,7 +1,7 @@
 #!/bin/bash
-#PBS -l select=160:system=polaris
+#PBS -l select=10:system=polaris
 #PBS -l place=scatter
-#PBS -l walltime=03:10:00
+#PBS -l walltime=03:00:00
 #PBS -q prod
 #PBS -A datascience
 #PBS -l filesystems=grand:home
@@ -17,12 +17,12 @@ source ../../../build/activate-dhenv.sh
 export problem="dhb_combo"
 export search="DBO"
 export model="ET"
-export acq_func="UCB"
+export acq_func="UCBd"
 export scheduler_periode=48
 export scheduler_rate=0.1
 export pruning_strategy="NONE"
 export objective_scaler="quantile-uniform"
-export timeout=10800
+export timeout=10200
 export random_state=42
 export scalar_func="Linear"
 export lower_bounds="0.85,None,None"

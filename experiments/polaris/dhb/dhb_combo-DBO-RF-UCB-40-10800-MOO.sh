@@ -16,7 +16,7 @@ source ../../../build/activate-dhenv.sh
 #!!! CONFIGURATION - START
 export problem="dhb_combo"
 export search="DBO"
-export model="RF"
+export model="ET"
 export acq_func="UCB"
 export scheduler_periode=48
 export scheduler_rate=0.1

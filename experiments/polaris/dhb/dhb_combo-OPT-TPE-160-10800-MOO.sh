@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -l select=160:system=polaris
 #PBS -l place=scatter
-#PBS -l walltime=03:10:00
+#PBS -l walltime=03:30:00
 #PBS -q prod
 #PBS -A datascience
 #PBS -l filesystems=grand:home
@@ -24,7 +24,7 @@ export lower_bounds="0.85,None,None"
 
 export DEEPHYPER_BENCHMARK_MOO="1"
 
-export NDEPTH=16
+export NDEPTH=8
 export NRANKS_PER_NODE=4
 export NNODES=`wc -l < $PBS_NODEFILE`
 export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))

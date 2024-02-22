@@ -1,11 +1,13 @@
-import pickle
+__all__ = ['trainingset_construct', 'load_graph_data', 'sparse_adj', 'scaled_Laplacian_list']
 
+import torch
+from torch.utils.data import Dataset, DataLoader
+import torch.nn as nn
+import pickle
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
-import torch
 from scipy.sparse.linalg import eigs
-from torch.utils.data import DataLoader, Dataset
 
 
 def training_loader_construct(dataset, batch_num, Shuffle):
@@ -34,16 +36,17 @@ class MyDataset(Dataset):
             args: 
         '''
         # extract information
+        assert args.pred_len % 12 == 0, 'this script is only for short-term traffic prediction'
         pred_len = args.pred_len
-        input_length = args.time_steps
+        input_length = args.pred_len
 
         PEMS =  traffic_data   # return (N,T)
         print('traffic data shape:', PEMS.shape)
 
         timestep_a_week = 7*24*12
         timestep_a_day = 24*12
-        time_stamp_week = np.arange(timestep_a_week).repeat(15)
-        time_stamp_day = np.arange(timestep_a_day).repeat(15*7)
+        time_stamp_week = np.arange(timestep_a_week).repeat(30)
+        time_stamp_day = np.arange(timestep_a_day).repeat(30*7)
         t = np.sin(time_stamp_week/timestep_a_week * 2*np.pi) + np.sin(time_stamp_day/timestep_a_day * 2*np.pi)
 
         self.x = []
@@ -52,17 +55,25 @@ class MyDataset(Dataset):
         self.ty = []
 
         sample_steps = 1
-        num_datapoints = int(np.floor((PEMS.shape[1] - input_length) / sample_steps))
+        num_datapoints = int(np.floor((PEMS.shape[1] - timestep_a_week) / sample_steps))
         print('total number of datapoints:', num_datapoints)
-        starting_point = input_length
+        starting_point = timestep_a_week
         endding_point = PEMS.shape[1] - pred_len
 
         num_data = 0
         for k in range(starting_point, endding_point, sample_steps):
             if num_data < num_data_limit:
-                self.x.append((PEMS[:,k-input_length:k] - mean) / std)
+
+                input_data = []
+                # store weekly data
+                input_data.append(np.expand_dims(PEMS[:,k-timestep_a_week: k-timestep_a_week+pred_len], axis=-1))
+                input_data.append(np.expand_dims(PEMS[:,k-timestep_a_day: k-timestep_a_day+pred_len], axis=-1))
+                input_data.append(np.expand_dims(PEMS[:,k-pred_len: k], axis=-1))
+                input_data = np.concatenate(tuple(input_data), axis=-1)    # return (N,T,F)
+        
+                self.x.append((input_data - mean) / std)
                 self.y.append(np.array(PEMS[:, k : k + pred_len]))
-                self.tx.append(t[k-input_length:k])
+                self.tx.append(t[k-pred_len: k])
                 self.ty.append(t[k:k+pred_len])
                 num_data += 1
 
@@ -154,18 +165,15 @@ def sparse_adj():
 
     return W
 
-def scaled_Laplacian_list(W):
+def scaled_Laplacian_list(W, device):
     '''
     compute \tilde{L}
-
     Parameters
     ----------
     W: np.ndarray, shape is (N, N), N is the num of vertices
-
     Returns
     ----------
     scaled_Laplacian: np.ndarray, shape (N, N)
-
     '''
 
     assert W.shape[0] == W.shape[1]
@@ -180,16 +188,10 @@ def scaled_Laplacian_list(W):
 
     N = L_tilde.shape[0]
 
-    cheb_polynomials = [np.identity(N), L_tilde.copy()]
+    cheb_polynomials = [torch.eye(N).to(device), torch.from_numpy(L_tilde.copy()).to(device)]
+    L_tilde = torch.from_numpy(L_tilde).to(device)
 
     for i in range(2, 3):
         cheb_polynomials.append(2 * L_tilde * cheb_polynomials[i - 1] - cheb_polynomials[i - 2])
 
     return cheb_polynomials
-
-
-
-
-    
-
-    

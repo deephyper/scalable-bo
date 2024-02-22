@@ -504,7 +504,7 @@ class Model(nn.Module):
 
         # define encoder
         self.encoder_blocks = nn.Sequential( *(encoder_depth * [Block(encoder_width)])) 
-        self.encoder = nn.Sequential(nn.Linear(1, encoder_width), nn.Tanh(), self.encoder_blocks,\
+        self.encoder = nn.Sequential(nn.Linear(3, encoder_width), nn.Tanh(), self.encoder_blocks,\
             nn.Linear(encoder_width, configs.d_model))
         
         # define the Autoformer
@@ -523,10 +523,6 @@ class Model(nn.Module):
 
         return: (B, T = num_pred_len * pred_len, N)
         '''
-
-        # always use segment of length of pred_len to initialize the future
-        # return (B,pred_len,F)
-        x_enc = x_enc.unsqueeze(-1)    # (B,T,N,1)
 
         # apply encoder: (B,T,N,F)
         x_enc = self.encoder(x_enc)

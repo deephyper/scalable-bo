@@ -4,7 +4,6 @@ import pandas as pd
 import torch
 from tqdm import tqdm
 
-
 # define training function
 def train(loader, model, optimizer, criterion, device, mean, std, update_step):
 
@@ -21,15 +20,23 @@ def train(loader, model, optimizer, criterion, device, mean, std, update_step):
 
         update_step = update_step
 
-        inputs = inputs.permute(0,2,1).to(device)  # (B,T,N)
+        if inputs.dim() == 3:
+            inputs = inputs.permute(0,2,1).to(device)  # (B,T,N)
+        if inputs.dim() == 4:
+            inputs = inputs.permute(0,2,1,3).to(device)  # (B,T,N,F)
+
         targets = targets.permute(0,2,1).to(device)    # (B,T,N)
+
+        # create a mask for missing data
+        mask = torch.where(targets<1, torch.zeros_like(targets), torch.ones_like(targets))
+
         tx = tx.to(device)    # (B,T)
         ty = ty.to(device)    # (B,T)
         t_stamp = torch.cat((tx,ty),1)
         outputs = model.forward(inputs, t_stamp)[0]    # (B,T,N)
         outputs = outputs * std + mean
 
-        loss = criterion(outputs, targets) / update_step
+        loss = criterion(mask * outputs, mask * targets) / update_step
         loss.backward()
         if idx % update_step == 0:
             optimizer.step()
@@ -49,8 +56,16 @@ def eval(loader, model, device, args, mean, std):
     for idx, (inputs, targets, tx, ty) in enumerate(tqdm(loader)):
         model.eval()
 
-        inputs = (inputs).permute(0,2,1).to(device)  # (B,T,N)
+        if inputs.dim() == 3:
+            inputs = inputs.permute(0,2,1).to(device)  # (B,T,N)
+        if inputs.dim() == 4:
+            inputs = inputs.permute(0,2,1,3).to(device)  # (B,T,N,F)
+            
         targets = targets.permute(0,2,1).to(device)  # (B,T,N)
+
+        # create a mask for missing data
+        mask = torch.where(targets<1, torch.zeros_like(targets), torch.ones_like(targets))
+
         tx = tx.to(device)    # (B,T)
         ty = ty.to(device)    # (B,T)
         t_stamp = torch.cat((tx,ty),1)
@@ -58,8 +73,8 @@ def eval(loader, model, device, args, mean, std):
 
         outputs = outputs * std + mean
         
-        out_unnorm = outputs.detach().cpu().numpy()
-        target_unnorm = (targets).detach().cpu().numpy()
+        out_unnorm = (mask * outputs).detach().cpu().numpy()
+        target_unnorm = (mask * targets).detach().cpu().numpy()
 
         mae_loss = np.zeros(args.pred_len)
         for k in range(out_unnorm.shape[1]):

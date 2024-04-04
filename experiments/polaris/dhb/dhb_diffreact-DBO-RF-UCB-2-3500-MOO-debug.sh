@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=2:system=polaris
+#PBS -l select=1:system=polaris
 #PBS -l place=scatter
 #PBS -l walltime=00:60:00
 #PBS -q debug
@@ -29,13 +29,13 @@ export random_state=42
 export DEEPHYPER_BENCHMARK_MOO="1"
 
 export NDEPTH=16
-export NRANKS_PER_NODE=4
+export NRANKS_PER_NODE=1
 export NNODES=`wc -l < $PBS_NODEFILE`
 export NTOTRANKS=$(( $NNODES * $NRANKS_PER_NODE ))
 export OMP_NUM_THREADS=$NDEPTH
 
 
-export log_dir="output-fnobench/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state-MOO"
+export log_dir="output-diffreact/$problem-$search-$model-$acq_func-$NNODES-$timeout-$random_state-MOO"
 mkdir -p $log_dir
 
 # Setup Redis Database
